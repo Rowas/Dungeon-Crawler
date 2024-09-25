@@ -8,4 +8,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Elements\" />
+    <Folder Include="Levels\" />
+  </ItemGroup>
+
 </Project>
