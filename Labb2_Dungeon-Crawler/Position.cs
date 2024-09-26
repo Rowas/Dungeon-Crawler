@@ -6,7 +6,15 @@ using System.Threading.Tasks;
 
 namespace Labb2_Dungeon_Crawler
 {
-    internal class Position
+    internal struct Position
     {
+            public int X = 5;
+            public int Y = 3;
+
+            public Position(int x, int y)
+            {
+                X = x;
+                Y = y;
+            }
     }
 }

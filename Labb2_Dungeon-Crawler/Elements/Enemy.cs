@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Labb2_Dungeon_Crawler.Elements
 {
-    internal class Enemy
+    internal class Enemy : LevelElement
     {
 
     }
