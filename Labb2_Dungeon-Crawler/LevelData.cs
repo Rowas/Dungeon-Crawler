@@ -23,7 +23,7 @@ namespace Labb2_Dungeon_Crawler
                 {
                     case 35:
                         Console.Write(new Wall());
-                        positions.Add(new Position(Console.GetCursorPosition().Top, Console.GetCursorPosition().Left));
+                        //positions.Add(new Position(Console.GetCursorPosition().Top, Console.GetCursorPosition().Left));
                         break;
                     case 32:
                         Console.Write(" ");
