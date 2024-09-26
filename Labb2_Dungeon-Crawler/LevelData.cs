@@ -16,7 +16,6 @@ namespace Labb2_Dungeon_Crawler
 
         public LevelData()
         {
-            List<Position> positions = new List<Position>();
             var fileData = System.IO.File.ReadAllBytes("Levels\\Level1.txt");
             for (int i = 0; i < fileData.Length; i++)
             {
