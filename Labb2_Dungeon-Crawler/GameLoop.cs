@@ -19,6 +19,8 @@
         Console.CursorTop = 0;
         Console.CursorLeft = 0;
 
+        Directory.SetCurrentDirectory(".\\Levels\\");
+
         level1.Load("level1.txt");
 
         foreach (LevelElements element in level1.Elements)

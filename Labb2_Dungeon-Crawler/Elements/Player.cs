@@ -64,17 +64,17 @@
                 {
                     if (element is Rat)
                     {
-                        Console.SetCursorPosition(0, 0);
+                        Console.SetCursorPosition(0, 1);
                         Console.Write("                                              ");
-                        Console.SetCursorPosition(0, 0);
+                        Console.SetCursorPosition(0, 1);
                         Console.Write($"Rat! Damage done {Attack(DamageDices, DiceSides, DiceModifier)}");
                         return 0;
                     }
                     else if (element is Snake)
                     {
-                        Console.SetCursorPosition(0, 0);
+                        Console.SetCursorPosition(0, 1);
                         Console.Write("                                              ");
-                        Console.SetCursorPosition(0, 0);
+                        Console.SetCursorPosition(0, 1);
                         Console.Write("Snake!");
                         return 0;
                     }

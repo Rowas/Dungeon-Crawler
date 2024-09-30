@@ -83,9 +83,9 @@
                 {
                     if (element is Player)
                     {
-                        Console.SetCursorPosition(0, 0);
+                        Console.SetCursorPosition(0, 2);
                         Console.Write("                                              ");
-                        Console.SetCursorPosition(0, 0);
+                        Console.SetCursorPosition(0, 2);
                         Console.Write($"Player! Damage done {Attack(DamageDices, DiceSides, DiceModifier)}");
                         break;
                     }
