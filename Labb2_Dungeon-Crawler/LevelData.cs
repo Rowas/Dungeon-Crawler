@@ -1,65 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Channels;
-using System.Threading.Tasks;
-using Labb2_Dungeon_Crawler.Elements;
-using Labb2_Dungeon_Crawler;
-using System.Security.Cryptography.X509Certificates;
-
-namespace Labb2_Dungeon_Crawler
+﻿using Labb2_Dungeon_Crawler.Elements;
+class LevelData
 {
-    internal class LevelData
-    {
-        
+    private List<LevelElements> _elements = new List<LevelElements>();
 
-        public LevelData()
+    public List<LevelElements> Elements
+    {
+        get
         {
-            var fileData = System.IO.File.ReadAllBytes("Levels\\Level1.txt");
-            for (int i = 0; i < fileData.Length; i++)
+            return _elements;
+        }
+    }
+
+    public void Load(string filename)
+    {
+        using (StreamReader reader = new StreamReader(filename))
+        {
+            string line;
+            int y = 0;
+            while ((line = reader.ReadLine()) != null)
             {
-                switch (fileData[i])
+                for (int x = 0; x < line.Length; x++)
                 {
-                    case 35:
-                        Console.Write(new Wall());
-                        //positions.Add(new Position(Console.GetCursorPosition().Top, Console.GetCursorPosition().Left));
-                        break;
-                    case 32:
-                        Console.Write(" ");
-                        break;
-                    case 115:
-                        Console.Write(new Snake());
-                        break;
-                    case 114:
-                        Console.Write(new Rat());
-                        break;
-                    case 64:
-                        Player player = new Player();
-                        break;
-                    case 13:
-                        Console.Write("\n");
-                        break;
-                    case 88:
-                        Console.ForegroundColor = ConsoleColor.Magenta;
-                        Console.Write("X");
-                        Console.ResetColor();
-                        break;
-                    case 66:
-                        Console.ForegroundColor = ConsoleColor.DarkRed;
-                        Console.Write("B");
-                        Console.ResetColor();
-                        break;
-                    case 75:
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.Write("k");
-                        Console.ResetColor();
-                        break;
-                    default:
-                        Console.Write("");
-                        continue;
+                    switch (line[x])
+                    {
+                        case '#':
+                            Elements.Add(new Wall(x, y));
+                            break;
+                        case '@':
+                            Elements.Add(new Player(x, y));
+                            break;
+                        case 'r':
+                            Elements.Add(new Rat(x, y));
+                            break;
+                        case 's':
+                            Elements.Add(new Snake(x, y));
+                            break;
+                    }
                 }
-                //Thread.Sleep(5);
+                y++;
             }
         }
     }

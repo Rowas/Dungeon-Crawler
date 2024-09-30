@@ -1,13 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Labb2_thirdTime;
 
-namespace Labb2_Dungeon_Crawler.Elements
+abstract class Enemy : LevelElements
 {
-    internal class Enemy : LevelElement
-    {
+    public string Name { get; set; }
+    public int Health { get; set; }
+    public int DamageDices { get; set; }
+    public int DiceSides { get; set; }
+    public int DiceModifier { get; set; }
+    public int DefenseDices { get; set; }
+    public bool IsDead { get; set; }
 
+    public int Attack(int DamageDices, int DiceSides, int DiceModifier)
+    {
+        Dice damage = new Dice(DamageDices, DiceSides, DiceModifier);
+        return damage.Throw();
     }
+
+    public void Defend()
+    {
+        // Defend
+    }
+    public void Die()
+    {
+        // Die
+    }
+
+    abstract public void Update(List<LevelElements> elements);
+
 }

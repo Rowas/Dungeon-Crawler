@@ -4,15 +4,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Labb2_Dungeon_Crawler
+namespace Labb2_thirdTime
 {
     internal class Dice
     {
-        private static Random random = new Random();
+        int dices;
+        int sides;
+        int modifier;
 
-        public static int Roll(int sides)
+        public Dice(int dices, int sides, int modifier)
         {
-            return random.Next(1, sides + 1);
+            this.dices = dices;
+            this.sides = sides;
+            this.modifier = modifier;
+        }
+
+        public int Throw()
+        {
+            Random rnd = new Random();
+            int result = rnd.Next(dices, dices * sides + modifier);
+
+            return result;
+        }
+
+        public override string ToString()
+        {
+            return $"{dices}D{sides}+{modifier}";
         }
     }
 }
