@@ -1,6 +1,4 @@
-﻿using Labb2_Dungeon_Crawler.Elements;
-
-class GameLoop
+﻿class GameLoop
 {
     private int turnCounter = 0;
     public ConsoleKeyInfo checkKey;
@@ -20,6 +18,7 @@ class GameLoop
         Console.CursorVisible = false;
         Console.CursorTop = 0;
         Console.CursorLeft = 0;
+
         level1.Load("level1.txt");
 
         foreach (LevelElements element in level1.Elements)

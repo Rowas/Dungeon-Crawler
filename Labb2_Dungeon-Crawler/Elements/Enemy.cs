@@ -1,6 +1,4 @@
-﻿using Labb2_thirdTime;
-
-abstract class Enemy : LevelElements
+﻿abstract class Enemy : LevelElements
 {
     public string Name { get; set; }
     public int Health { get; set; }

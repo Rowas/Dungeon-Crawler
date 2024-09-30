@@ -1,5 +1,4 @@
-﻿using Labb2_Dungeon_Crawler.Elements;
-class LevelData
+﻿class LevelData
 {
     private List<LevelElements> _elements = new List<LevelElements>();
 

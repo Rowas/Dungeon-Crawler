@@ -1,8 +1,4 @@
-﻿using Labb2_Dungeon_Crawler.Elements;
-using Labb2_thirdTime;
-using System.Xml.Linq;
-
-class Rat : Enemy
+﻿class Rat : Enemy
 {
     public Rat(int x, int y)
     {

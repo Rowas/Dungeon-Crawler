@@ -1,11 +1,4 @@
-﻿using Labb2_Dungeon_Crawler.Elements;
-using Labb2_thirdTime;
-using System.ComponentModel;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Xml.Linq;
-
-class Player : LevelElements
+﻿class Player : LevelElements
 {
     //private LevelData playerData = new LevelData();
 

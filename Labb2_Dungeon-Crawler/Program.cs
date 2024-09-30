@@ -1,7 +1,5 @@
 ﻿//Labb2 - Dungeon Crawler
 //Labb for C# programming in .NET-developer edu program on ITHS 2024.
-
-using Labb2_Dungeon_Crawler;
 using System.IO.Enumeration;
 internal class Program
 {

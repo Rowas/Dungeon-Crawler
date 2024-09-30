@@ -1,26 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Labb2_Dungeon_Crawler.Elements
+﻿class Snake : Enemy
 {
-    internal class Snake : Enemy
+    public Snake(int x, int y)
     {
-        private char _snakeTile = 's';
-        public char SnakeTile { get; }
+        Position = (x, y);
+        objectTile = 'S';
+        objectColor = ConsoleColor.Green;
+        Name = "Snake";
+        Health = 20;
+        //DamageDice = 2D4;
+        //DefenseDice = 2D6-1;
+        IsDead = false;
+    }
 
-        public Snake()
-        {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write(_snakeTile);
-            Console.ResetColor();
-        }
-
-        public override string ToString()
-        {
-            return $"{SnakeTile}";
-        }
+    public override void Update(List<LevelElements> elements)
+    {
+        //Move();
+        //Attack();
+        //Defend();
+        //Die();
     }
 }
