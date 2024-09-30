@@ -1,15 +1,5 @@
 ﻿class Player : LevelElements
 {
-    //private LevelData playerData = new LevelData();
-
-    //public LevelData PlayerData
-    //{
-    //    get
-    //    {
-    //        return playerData;
-    //    }
-    //}
-
     public int DamageDices = 2;
     public int DiceSides = 6;
     public int DiceModifier = 1;

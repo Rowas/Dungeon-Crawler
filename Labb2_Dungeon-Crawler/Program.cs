@@ -5,16 +5,6 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-
-
-        //LevelData level1 = new LevelData();
-        //level1.Load("level1.txt");
-
-        //foreach (LevelElements element in level1.elements)
-        //{
-        //    element.Draw();
-        //}
-
         GameLoop start = new GameLoop();
         start.StartUp();
         start.GameRunning();
