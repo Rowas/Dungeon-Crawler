@@ -12,7 +12,8 @@ class Snake : Enemy
         objectTile = 'S';
         objectColor = ConsoleColor.Green;
         Name = "Snake";
-        Health = 20;
+        MaxHealth = 20;
+        CurrentHealth = 20;
         //DamageDice = 2D4;
         //DefenseDice = 2D6-1;
         IsDead = false;

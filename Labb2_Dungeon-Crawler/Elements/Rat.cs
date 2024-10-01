@@ -6,12 +6,15 @@
         objectTile = 'R';
         objectColor = ConsoleColor.Red;
         Name = "Rat";
-        Health = 10;
+        MaxHealth = 10;
+        CurrentHealth = 10;
         DamageDices = 1;
-        DiceSides = 6;
-        DiceModifier = 0;
-        //DefenseDice = 2D4-1;
-        IsDead = false;
+        dmgDiceSides = 6;
+        dmgDiceModifier = 0;
+        DefenseDice = 2;
+        defDiceSides = 4;
+        defDiceModifier = 1;
+    IsDead = false;
     }
 
     public override void Update(List<LevelElements> elements)
@@ -84,9 +87,9 @@
                     if (element is Player)
                     {
                         Console.SetCursorPosition(0, 2);
-                        Console.Write("                                              ");
+                        Console.Write("                                                                                                          ");
                         Console.SetCursorPosition(0, 2);
-                        Console.Write($"Player! Damage done {Attack(DamageDices, DiceSides, DiceModifier)}");
+                        Console.Write($"Player! Damage done {Attack(DamageDices, dmgDiceSides, dmgDiceModifier)}");
                         break;
                     }
                 }

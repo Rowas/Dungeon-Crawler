@@ -20,7 +20,7 @@ class Dice
     public int Throw()
     {
         Random rnd = new Random();
-        int result = rnd.Next(dices, dices * sides + modifier);
+        int result = rnd.Next(dices + modifier, dices * sides + modifier);
 
         return result;
     }
