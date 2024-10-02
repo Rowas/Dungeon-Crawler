@@ -5,6 +5,8 @@ internal class Program
 {
     private static void Main(string[] args)
     {
+        Console.CursorVisible = false;
+        Console.Clear();
         GameLoop start = new GameLoop();
         start.StartUp();
         start.GameRunning();

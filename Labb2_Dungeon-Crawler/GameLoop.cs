@@ -1,8 +1,16 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Numerics;
+using System.Runtime.CompilerServices;
 
 class GameLoop
 {
     private int turnCounter = 0;
+    private string Name = "Adventurer";
+
+    public int CurrentHP {  get; private set; }
+    public int MaxHP { get; private set; }
+
+    static int NewHP = 100;
+
     public ConsoleKeyInfo checkKey;
 
     private LevelData level1 = new LevelData();
@@ -32,11 +40,20 @@ class GameLoop
                 element.DrawWall();
                 Console.ResetColor();
             }
+            else if (element is Player)
+            {
+                Player player = (Player)element;
+                element.Draw();
+                CurrentHP = player.currentHealth;
+                MaxHP = player.maxHealth;
+                Console.ResetColor();
+            }
             else
             {
                 element.Draw();
                 Console.ResetColor();
             }
+
         }
     }
 
@@ -47,9 +64,9 @@ class GameLoop
         Console.WriteLine();
         do
         {
+            Console.ResetColor();
             Console.SetCursorPosition(0, 0);
-            Console.Write($"Turn: {turnCounter++}");
-
+            Console.Write($"Player: {Name} | HP: {CurrentHP} / {MaxHP}  Turn: {turnCounter++}         ");
             while (Console.KeyAvailable == false)
             {
                 Thread.Sleep(50);
@@ -61,6 +78,7 @@ class GameLoop
                 if (element is Player)
                 {
                     Player player = (Player)element;
+                    CurrentHP = player.currentHealth;
                     player.Movement(checkKey, Level1.Elements);
                 }
                 else if (element is Enemy)
@@ -69,17 +87,42 @@ class GameLoop
                     enemy.Update(Level1.Elements);
                 }
             }
+
+            CurrentHP = NewHP;
+
         } while (checkKey.Key != ConsoleKey.Escape);
     }
 
-    public static void Encounter(Player player, Enemy enemy)
+    public static void Encounter(Player player, Enemy enemy, char F)
     {
+        for (int i = 1; i < 4; i++)
+        {
+            Console.SetCursorPosition(0, 1);
+            Console.Write(new String(' ', Console.WindowWidth));
+        }
+        Console.SetCursorPosition(0, 1);
         GameLoop gameLoop = new GameLoop();
-        (int, int) pResults = player.DamageDefenseRolls();
+
+        string firstActor;
+        string secondActor;
+
+        if (F == 'P')
+        {
+            firstActor = player.Name;
+            secondActor = enemy.Name;
+        }
+        else
+        {
+            firstActor = enemy.Name;
+            secondActor = player.Name;
+        }
+
+        int pDmg = player.Attack();
+        int pDef = player.Defend();
         int eDmg = enemy.Attack();
         int eDef = enemy.Defend();
-        int pDmgDone = pResults.Item1 - eDef;
-        int eDmgDone = eDmg - pResults.Item2;
+        int pDmgDone = pDmg - eDef;
+        int eDmgDone = eDmg - pDef;
 
         if (pDmgDone < 1)
         {
@@ -99,28 +142,36 @@ class GameLoop
         {
             eDmgDone = 0;
         }
-        else if (eDmgDone < 0 && enemy.IsDead == false)
+        else if (eDmgDone > 0 && enemy.IsDead == false)
         {
             player.currentHealth = player.currentHealth - eDmgDone;
+            NewHP = player.currentHealth;
+            if (player.currentHealth < 1)
+            {
+                player.IsDead = true;
+            }
         }
-
-        Console.SetCursorPosition(0, 1);
-        Console.Write(new String(' ', Console.BufferWidth + 5));
-        Console.SetCursorPosition(0, 1);
-        Console.WriteLine($"{enemy.Name} encountered! \nDamage done to {enemy.Name} using 2D6+1 is: {pResults.Item1}, {enemy.Name} defended with 2D4+1: {eDef}. Final damage is {pDmgDone}");
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"{secondActor} encountered! \nDamage done to {secondActor} using 2D6+1 is: {pDmg}, {firstActor} defended with 2D4+1: {eDef}. Final damage is {pDmgDone}    ");
+        Console.ResetColor();
         if (enemy.IsDead == true)
         {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(new String(' ', Console.WindowWidth));
             Console.SetCursorPosition(0, 3);
-            Console.Write(new String(' ', Console.BufferWidth));
-            Console.SetCursorPosition(0, 3);
-            Console.WriteLine("The Enemy have been slain.");
+            Console.WriteLine($"The {secondActor} have been slain.");
+            Console.ResetColor();
+        }
+        else if (player.IsDead == true)
+        {
+            player.GameOver();
         }
         else
         {
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.SetCursorPosition(0, 3);
-            Console.Write(new String(' ', Console.BufferWidth + 5));
-            Console.SetCursorPosition(0, 3);
-            Console.WriteLine($"Damage done to {player.Name} by {enemy.Name} using 1D6 is: {eDmg}, You defended with {pResults.Item2}. Final damage is {eDmgDone}");
+            Console.WriteLine($"Damage done to {secondActor} by {firstActor} using 1D6 is: {eDmg}, {firstActor} defended with {pDef}. Final damage is {eDmgDone}    ");
+            Console.ResetColor();
         }
     }
 }

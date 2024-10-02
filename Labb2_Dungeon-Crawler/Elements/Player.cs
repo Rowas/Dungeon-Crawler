@@ -17,6 +17,8 @@ class Player : LevelElements
 
     public bool IsDead = false;
 
+    
+
     public Player(int x, int y)
     {
         Position = (x, y);
@@ -64,6 +66,7 @@ class Player : LevelElements
                     break;
                 }
         }
+        Console.ResetColor();
     }
 
     public void TakeStep(int d, char dir, List<LevelElements> elements)
@@ -95,7 +98,6 @@ class Player : LevelElements
                 y = d; break;
         }
 
-        Player player = this;
         if (elements.Any(b => b.Position == (Position.Item1 + x, Position.Item2 + y)) == true)
         {
             foreach (var element in elements)
@@ -104,18 +106,12 @@ class Player : LevelElements
                 {
                     if (element is Rat)
                     {
-                        Console.SetCursorPosition(0, 1);
-                        Console.Write(new String(' ', Console.BufferWidth + 5));
-                        Console.SetCursorPosition(0, 1);
-                        GameLoop.Encounter(player, (Rat)element);
+                        GameLoop.Encounter(this, (Rat)element, 'P');
                         return 0;
                     }
                     else if (element is Snake)
                     {
-                        Console.SetCursorPosition(0, 1);
-                        Console.Write(new String(' ', Console.BufferWidth + 5));
-                        Console.SetCursorPosition(0, 1);
-                        GameLoop.Encounter(player, (Snake)element);
+                        GameLoop.Encounter(this, (Snake)element, 'P');
                         return 0;
                     }
                 }
@@ -128,13 +124,29 @@ class Player : LevelElements
         }
     }
 
-    public (int, int) DamageDefenseRolls()
+    public int Attack()
     {
         Dice playerDamage = new Dice(damageDices, dmgDiceSides, dmgDiceModifier);
-        Dice playerDefense = new Dice(defenseDices, defDiceSides, defDiceModifier);
         int pDmg = playerDamage.Throw();
+
+        return pDmg;
+    }
+
+    public int Defend()
+    {
+        Dice playerDefense = new Dice(defenseDices, defDiceSides, defDiceModifier);
         int pDef = playerDefense.Throw();
 
-        return (pDmg, pDef);
+        return pDef;
+    }
+
+    public void GameOver()
+    {
+        this.objectTile = ' ';
+        Draw();
+        Console.Clear();
+        Console.SetCursorPosition(33, 12);
+        Console.WriteLine("It's a sad thing that your adventures have ended here!!");
+        Environment.Exit(0);
     }
 }

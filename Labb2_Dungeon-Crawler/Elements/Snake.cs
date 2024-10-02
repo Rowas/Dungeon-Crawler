@@ -8,6 +8,7 @@ class Snake : Enemy
 {
     public Snake(int x, int y)
     {
+        //isVisible = false;
         Position = (x, y);
         objectTile = 'S';
         objectColor = ConsoleColor.Green;
@@ -17,7 +18,6 @@ class Snake : Enemy
         DamageDices = 2;
         dmgDiceSides = 4;
         dmgDiceModifier = 1;
-        //DefenseDice = 2D6-1;
         DefenseDice = 2;
         defDiceSides = 6;
         defDiceModifier = -1;
@@ -33,9 +33,6 @@ class Snake : Enemy
             Die(elements);
         }
         //Move();
-        //Attack();
-        //Defend();
-        //Die();
     }
 
 }

@@ -1,8 +1,10 @@
-﻿class Rat : Enemy
+﻿using System.Numerics;
+
+class Rat : Enemy
 {
     public Rat(int x, int y, int z)
     {
-        Row = z;
+        //isVisible = false;
         Position = (x, y);
         objectTile = 'R';
         objectColor = ConsoleColor.Red;
@@ -50,8 +52,7 @@
                     break;
                 }
         }
-        //Attack();
-        //Defend();
+        Console.ResetColor();
     }
 
     public void TakeStep(int d, char dir, List<LevelElements> elements)
@@ -92,11 +93,8 @@
                 {
                     if (element is Player)
                     {
-                        Console.SetCursorPosition(0, 2);
-                        Console.Write(new String(' ', Console.BufferWidth + 5));
-                        Console.SetCursorPosition(0, 2);
-                        Console.Write($"Player! Damage done {Attack()}");
-                        break;
+                        GameLoop.Encounter((Player)element, this, 'E');
+                        return 0;
                     }
                 }
             }
