@@ -1,5 +1,6 @@
 ﻿abstract class Enemy : LevelElements
 {
+    public int Row { get; set; }
     public string Name { get; set; }
     public int MaxHealth { get; set; }
     public int CurrentHealth { get; set; }
@@ -11,21 +12,27 @@
     public int defDiceModifier { get; set; }
     public bool IsDead { get; set; }
 
-    public int Attack(int DamageDices, int DiceSides, int DiceModifier)
+    public int Attack()
     {
-        Dice damage = new Dice(DamageDices, DiceSides, DiceModifier);
-        return damage.Throw();
+        Dice enemyDamage = new Dice(DamageDices, dmgDiceSides, dmgDiceModifier);
+        
+        int eDmg = enemyDamage.Throw();
+
+        return eDmg;
     }
 
-    public void Defend()
+    public int Defend()
     {
-        // Defend
+        Dice enemyDefend = new Dice(DamageDices, defDiceSides, defDiceModifier);
+
+        int eDef = enemyDefend.Throw();
+
+        return eDef;
     }
-    public void Die()
+    public void Die(List<LevelElements> elements)
     {
-        // Die
+        elements.Remove(this);
     }
 
     abstract public void Update(List<LevelElements> elements);
-
 }

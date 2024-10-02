@@ -1,7 +1,8 @@
 ﻿class Rat : Enemy
 {
-    public Rat(int x, int y)
+    public Rat(int x, int y, int z)
     {
+        Row = z;
         Position = (x, y);
         objectTile = 'R';
         objectColor = ConsoleColor.Red;
@@ -14,11 +15,17 @@
         DefenseDice = 2;
         defDiceSides = 4;
         defDiceModifier = 1;
-    IsDead = false;
+        IsDead = false;
     }
 
     public override void Update(List<LevelElements> elements)
     {
+        if (this.IsDead == true)
+        {
+            objectTile = ' ';
+            Draw();
+            Die(elements);
+        }
         int rand = new Random().Next(1, 5);
         switch (rand)
         {
@@ -45,7 +52,6 @@
         }
         //Attack();
         //Defend();
-        //Die();
     }
 
     public void TakeStep(int d, char dir, List<LevelElements> elements)
@@ -87,9 +93,9 @@
                     if (element is Player)
                     {
                         Console.SetCursorPosition(0, 2);
-                        Console.Write("                                                                                                          ");
+                        Console.Write(new String(' ', Console.BufferWidth + 5));
                         Console.SetCursorPosition(0, 2);
-                        Console.Write($"Player! Damage done {Attack(DamageDices, dmgDiceSides, dmgDiceModifier)}");
+                        Console.Write($"Player! Damage done {Attack()}");
                         break;
                     }
                 }

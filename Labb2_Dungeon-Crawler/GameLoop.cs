@@ -1,4 +1,6 @@
-﻿class GameLoop
+﻿using System.Runtime.CompilerServices;
+
+class GameLoop
 {
     private int turnCounter = 0;
     public ConsoleKeyInfo checkKey;
@@ -54,7 +56,7 @@
             }
             checkKey = Console.ReadKey(true);
 
-            foreach (LevelElements element in Level1.Elements)
+            foreach (LevelElements element in Level1.Elements.ToList())
             {
                 if (element is Player)
                 {
@@ -68,5 +70,57 @@
                 }
             }
         } while (checkKey.Key != ConsoleKey.Escape);
+    }
+
+    public static void Encounter(Player player, Enemy enemy)
+    {
+        GameLoop gameLoop = new GameLoop();
+        (int, int) pResults = player.DamageDefenseRolls();
+        int eDmg = enemy.Attack();
+        int eDef = enemy.Defend();
+        int pDmgDone = pResults.Item1 - eDef;
+        int eDmgDone = eDmg - pResults.Item2;
+
+        if (pDmgDone < 1)
+        {
+            pDmgDone = 0;
+        }
+        else if (pDmgDone > 1)
+        {
+            enemy.CurrentHealth = enemy.CurrentHealth - pDmgDone;
+
+            if (enemy.CurrentHealth < 1)
+            {
+                enemy.IsDead = true;
+            }
+        }
+
+        if (eDmgDone < 1)
+        {
+            eDmgDone = 0;
+        }
+        else if (eDmgDone < 0 && enemy.IsDead == false)
+        {
+            player.currentHealth = player.currentHealth - eDmgDone;
+        }
+
+        Console.SetCursorPosition(0, 1);
+        Console.Write(new String(' ', Console.BufferWidth + 5));
+        Console.SetCursorPosition(0, 1);
+        Console.WriteLine($"{enemy.Name} encountered! \nDamage done to {enemy.Name} using 2D6+1 is: {pResults.Item1}, {enemy.Name} defended with 2D4+1: {eDef}. Final damage is {pDmgDone}");
+        if (enemy.IsDead == true)
+        {
+            Console.SetCursorPosition(0, 3);
+            Console.Write(new String(' ', Console.BufferWidth));
+            Console.SetCursorPosition(0, 3);
+            Console.WriteLine("The Enemy have been slain.");
+        }
+        else
+        {
+            Console.SetCursorPosition(0, 3);
+            Console.Write(new String(' ', Console.BufferWidth + 5));
+            Console.SetCursorPosition(0, 3);
+            Console.WriteLine($"Damage done to {player.Name} by {enemy.Name} using 1D6 is: {eDmg}, You defended with {pResults.Item2}. Final damage is {eDmgDone}");
+        }
     }
 }
