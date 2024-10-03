@@ -4,7 +4,7 @@ class Wall : LevelElements
 {
     public Wall(int x, int y)
     {
-        //isVisible = false;
+        IsVisible = false;
         Position = (x, y);
         objectTile = '#';
         objectColor = ConsoleColor.Black;

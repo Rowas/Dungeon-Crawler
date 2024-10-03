@@ -4,13 +4,12 @@ class Rat : Enemy
 {
     public Rat(int x, int y, int z)
     {
-        //isVisible = false;
         Position = (x, y);
         objectTile = 'R';
         objectColor = ConsoleColor.Red;
         Name = "Rat";
-        MaxHealth = 10;
-        CurrentHealth = 10;
+        MaxHealth = 20;
+        CurrentHealth = 20;
         DamageDices = 1;
         dmgDiceSides = 6;
         dmgDiceModifier = 0;
@@ -18,6 +17,7 @@ class Rat : Enemy
         defDiceSides = 4;
         defDiceModifier = 1;
         IsDead = false;
+        IsVisible = false;
     }
 
     public override void Update(List<LevelElements> elements)
@@ -28,6 +28,9 @@ class Rat : Enemy
             Draw();
             Die(elements);
         }
+
+        DistanceCheck(elements);
+
         int rand = new Random().Next(1, 5);
         switch (rand)
         {

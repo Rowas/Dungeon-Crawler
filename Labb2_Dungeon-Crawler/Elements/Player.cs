@@ -17,10 +17,10 @@ class Player : LevelElements
 
     public bool IsDead = false;
 
-    
 
     public Player(int x, int y)
     {
+        isVisible = true;
         Position = (x, y);
         objectTile = '@';
         objectColor = ConsoleColor.Yellow;
@@ -32,6 +32,7 @@ class Player : LevelElements
         {
             case ConsoleKey.RightArrow:
                 {
+                    DistanceCheck(elements);
                     TakeStep(1, 'H', elements);
                     break;
                 }
@@ -73,13 +74,16 @@ class Player : LevelElements
     {
         if (dir == 'H')
         {
+            
             d = TileCheck(d, dir, elements);
             Console.SetCursorPosition(Position.Item1, Position.Item2);
             Position = (Position.Item1 + d, Position.Item2);
             Draw();
+
         }
         else
         {
+            DistanceCheck(elements);
             d = TileCheck(d, dir, elements);
             Console.SetCursorPosition(Position.Item1, Position.Item2);
             Position = (Position.Item1, Position.Item2 + d);
@@ -121,6 +125,37 @@ class Player : LevelElements
         else
         {
             return d;
+        }
+    }
+
+    public void DistanceCheck(List<LevelElements> elements)
+    {
+        for (int i = -5; i < 6; i++)
+        {
+            for (int j = -5; j < 6; j++)
+            {
+                if (elements.Any(b => b.Position == (Position.Item1 + i, Position.Item2 + j)) == true)
+                {
+                    foreach (var element in elements)
+                    {
+                        if (element.Position == (Position.Item1 + i, Position.Item2 + j))
+                        {
+                            if (element is Wall)
+                            {
+                                Wall wall = (Wall)element;
+                                wall.isVisible = true;
+                                wall.DrawWall();
+                            }
+                            else if (element is Enemy)
+                            {
+                                Enemy enemy = (Enemy)element;
+                                enemy.isVisible = true;
+                                enemy.Draw();
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
