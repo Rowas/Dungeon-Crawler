@@ -159,7 +159,7 @@ class GameLoop
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write(new String(' ', Console.WindowWidth));
             Console.SetCursorPosition(0, 3);
-            Console.WriteLine($"The {secondActor} have been slain.");
+            Console.WriteLine($"The {enemy.Name} have been slain.");
             Console.ResetColor();
         }
         else if (player.IsDead == true)

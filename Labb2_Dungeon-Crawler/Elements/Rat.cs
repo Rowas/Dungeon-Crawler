@@ -17,7 +17,6 @@ class Rat : Enemy
         defDiceSides = 4;
         defDiceModifier = 1;
         IsDead = false;
-        IsVisible = false;
     }
 
     public override void Update(List<LevelElements> elements)

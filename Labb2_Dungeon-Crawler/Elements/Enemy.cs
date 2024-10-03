@@ -29,7 +29,7 @@
                             }
                             else if (element is Enemy)
                             {
-                                isVisible = false;
+                                IsVisible = false;
                             }
                         }
                     }
