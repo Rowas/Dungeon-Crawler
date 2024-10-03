@@ -13,9 +13,10 @@
 
     public void DistanceCheck(List<LevelElements> elements)
     {
-        for (int i = -2; i < 5; i++)
+        IsVisible = false;
+        for (int i = -5; i < 6; i++)
         {
-            for (int j = -2; j < 5; j++)
+            for (int j = -5; j < 6; j++)
             {
                 if (elements.Any(b => b.Position == (Position.Item1 + i, Position.Item2 + j)) == true)
                 {
@@ -26,10 +27,6 @@
                             if (element is Player)
                             {
                                 IsVisible = true;
-                            }
-                            else if (element is Enemy)
-                            {
-                                IsVisible = false;
                             }
                         }
                     }

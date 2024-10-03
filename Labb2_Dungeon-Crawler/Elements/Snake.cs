@@ -33,8 +33,13 @@ class Snake : Enemy
             Die(elements);
         }
 
+        IsVisible = false;
+
         DistanceCheck(elements);
 
+        Console.SetCursorPosition(Position.Item1, Position.Item2);
+        Draw();
+        
         PlayerCheck(elements);
     }
 
@@ -61,15 +66,6 @@ class Snake : Enemy
                 }
             }
         }
-    }
-
-    public double DistanceCheck(double x1, double y1, double x2, double y2)
-    {
-        double x = Math.Pow(x2 - x1, 2);
-        double y = Math.Pow(y2 - y1, 2);
-        double d = Math.Sqrt(x * x + y * y);
-
-        return d;
     }
 
     public void TakeStep(int h, int v, List<LevelElements> elements)

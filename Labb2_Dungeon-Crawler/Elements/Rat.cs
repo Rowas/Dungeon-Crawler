@@ -28,6 +28,8 @@ class Rat : Enemy
             Die(elements);
         }
 
+        IsVisible = false;
+
         DistanceCheck(elements);
 
         int rand = new Random().Next(1, 5);

@@ -62,8 +62,26 @@ class GameLoop
         Console.WriteLine();
         Console.WriteLine("Use arrow keys to move, space to wait, and escape to exit.");
         Console.WriteLine();
+
+        foreach (LevelElements element in Level1.Elements)
+        {
+            if (element is Player)
+            {
+                Player player = (Player)element;
+                player.DistanceCheck(Level1.Elements);
+            }
+        }
+
         do
         {
+            foreach (LevelElements element in Level1.Elements)
+            {
+                if (element is Player)
+                {
+                    Player player = (Player)element;
+                    player.DistanceCheck(Level1.Elements);
+                }
+            }
             Console.ResetColor();
             Console.SetCursorPosition(0, 0);
             Console.Write($"Player: {Name} | HP: {CurrentHP} / {MaxHP}  Turn: {turnCounter++}         ");

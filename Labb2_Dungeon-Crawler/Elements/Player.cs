@@ -32,31 +32,26 @@ class Player : LevelElements
         {
             case ConsoleKey.RightArrow:
                 {
-                    DistanceCheck(elements);
                     TakeStep(1, 'H', elements);
                     break;
                 }
             case ConsoleKey.LeftArrow:
                 {
-                    DistanceCheck(elements);
                     TakeStep(-1, 'H', elements);
                     break;
                 }
             case ConsoleKey.UpArrow:
                 {
-                    DistanceCheck(elements);
                     TakeStep(-1, 'V', elements);
                     break;
                 }
             case ConsoleKey.DownArrow:
                 {
-                    DistanceCheck(elements);
                     TakeStep(1, 'V', elements);
                     break;
                 }
             case ConsoleKey.Spacebar:
                 {
-                    DistanceCheck(elements);
                     Draw();
                     break;
                 }
