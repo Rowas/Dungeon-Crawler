@@ -2,7 +2,7 @@
 
 class Rat : Enemy
 {
-    public Rat(int x, int y, int z)
+    public Rat(int x, int y)
     {
         Position = (x, y);
         objectTile = 'R';

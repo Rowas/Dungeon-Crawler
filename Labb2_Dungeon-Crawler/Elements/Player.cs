@@ -154,12 +154,22 @@ class Player : LevelElements
                     if (element is Rat)
                     {
                         GameLoop.Encounter(this, (Rat)element, 'P');
-                        return 0;
                     }
                     else if (element is Snake)
                     {
                         GameLoop.Encounter(this, (Snake)element, 'P');
-                        return 0;
+                    }
+                    else if (element is Boss)
+                    {
+                        GameLoop.Encounter(this, (Boss)element, 'P');
+                    }
+                    else if (element is Guard)
+                    {
+                        GameLoop.Encounter(this, (Guard)element, 'P');
+                    }
+                    else if (element is Equipment)
+                    {
+                        GameLoop.ItemPickup(this, (Equipment)element);
                     }
                 }
             }
@@ -171,20 +181,22 @@ class Player : LevelElements
         }
     }
 
-    public int Attack()
+    public (int,string) Attack()
     {
         Dice playerDamage = new Dice(damageDices, dmgDiceSides, dmgDiceModifier);
         int pDmg = playerDamage.Throw();
+        string pDmgDice = playerDamage.ToString();
 
-        return pDmg;
+        return (pDmg, pDmgDice);
     }
 
-    public int Defend()
+    public (int, string) Defend()
     {
         Dice playerDefense = new Dice(defenseDices, defDiceSides, defDiceModifier);
         int pDef = playerDefense.Throw();
+        string pDefDice = playerDefense.ToString();
 
-        return pDef;
+        return (pDef, pDefDice);
     }
 
     public void GameOver()

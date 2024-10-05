@@ -24,7 +24,6 @@
     {
         if (this.IsVisible == true)
         {
-            Console.Write(" ");
             Console.SetCursorPosition(Position.Item1, Position.Item2);
             Console.ForegroundColor = (ConsoleColor)objectColor;
             Console.BackgroundColor = ConsoleColor.White;

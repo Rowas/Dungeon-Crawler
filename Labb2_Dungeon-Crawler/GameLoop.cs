@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.ComponentModel.Design;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
 class GameLoop
@@ -23,7 +24,7 @@ class GameLoop
         }
     }
 
-    public void StartUp()
+    public void StartUp(string levelFile)
     {
         Console.CursorVisible = false;
         Console.CursorTop = 0;
@@ -31,7 +32,7 @@ class GameLoop
 
         Directory.SetCurrentDirectory(".\\Levels\\");
 
-        level1.Load("level1.txt");
+        level1.Load(levelFile);
 
         foreach (LevelElements element in level1.Elements)
         {
@@ -104,6 +105,11 @@ class GameLoop
                     Enemy enemy = (Enemy)element;
                     enemy.Update(Level1.Elements);
                 }
+                else if (element is Equipment)
+                {
+                    Equipment item = (Equipment)element;
+                    item.Update(level1.Elements);
+                }
             }
 
             CurrentHP = NewHP;
@@ -135,20 +141,29 @@ class GameLoop
             secondActor = player.Name;
         }
 
-        int pDmg = player.Attack();
-        int pDef = player.Defend();
-        int eDmg = enemy.Attack();
-        int eDef = enemy.Defend();
-        int pDmgDone = pDmg - eDef;
-        int eDmgDone = eDmg - pDef;
+        int[] dmgNumbers = new int[6];
 
-        if (pDmgDone < 1)
+        dmgNumbers[0] = player.Attack().Item1; //Player attack roll
+        dmgNumbers[1] = player.Defend().Item1; //Player defense roll
+        dmgNumbers[2] = enemy.Attack().Item1; //Enemy attack roll
+        dmgNumbers[3] = enemy.Defend().Item1; //Enemy defense roll
+        dmgNumbers[4] = dmgNumbers[0] - dmgNumbers[3]; //Player damage done
+        dmgNumbers[5] = dmgNumbers[2] - dmgNumbers[1]; //Enemy damage done
+
+        string[] actorDices = new string[5];
+
+        actorDices[0] = player.Attack().Item2;
+        actorDices[1] = player.Defend().Item2;
+        actorDices[2] = enemy.Attack().Item2;
+        actorDices[3] = enemy.Defend().Item2;
+
+        if (dmgNumbers[4] < 1)
         {
-            pDmgDone = 0;
+            dmgNumbers[4] = 0;
         }
-        else if (pDmgDone > 1)
+        else if (dmgNumbers[4] > 1)
         {
-            enemy.CurrentHealth = enemy.CurrentHealth - pDmgDone;
+            enemy.CurrentHealth = enemy.CurrentHealth - dmgNumbers[4];
 
             if (enemy.CurrentHealth < 1)
             {
@@ -156,40 +171,109 @@ class GameLoop
             }
         }
 
-        if (eDmgDone < 1)
+        if (dmgNumbers[5] < 1)
         {
-            eDmgDone = 0;
+            dmgNumbers[5] = 0;
         }
-        else if (eDmgDone > 0 && enemy.IsDead == false)
+        else if (dmgNumbers[5] > 0 && enemy.IsDead == false)
         {
-            player.currentHealth = player.currentHealth - eDmgDone;
+            player.currentHealth = player.currentHealth - dmgNumbers[5];
             NewHP = player.currentHealth;
             if (player.currentHealth < 1)
             {
                 player.IsDead = true;
             }
         }
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"{secondActor} encountered! \nDamage done to {secondActor} using 2D6+1 is: {pDmg}, {firstActor} defended with 2D4+1: {eDef}. Final damage is {pDmgDone}    ");
-        Console.ResetColor();
-        if (enemy.IsDead == true)
+
+        PrintCombatResult(dmgNumbers, actorDices, firstActor, secondActor, player, enemy);
+    }
+
+    public static void PrintCombatResult(int[] dmgNumbers, string[] actorDices, string firstActor, string secondActor, Player player, Enemy enemy)
+    {
+        if (firstActor == "Adventurer")
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write(new String(' ', Console.WindowWidth));
-            Console.SetCursorPosition(0, 3);
-            Console.WriteLine($"The {enemy.Name} have been slain.");
-            Console.ResetColor();
-        }
-        else if (player.IsDead == true)
-        {
-            player.GameOver();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.SetCursorPosition(60, 0);
+            Console.Write($"{secondActor} encountered.          ");
+            Console.SetCursorPosition(60, 1);
+            Console.Write($"{firstActor} rolled {actorDices[0]} to attack, result: {dmgNumbers[0]}.          ");
+            Console.SetCursorPosition(60, 2);
+            Console.Write($"{secondActor} defended using {actorDices[3]}, result: {dmgNumbers[3]}.          ");
+            Console.SetCursorPosition(60, 3);
+            Console.Write($"Damage done by {firstActor} to {secondActor} is: {dmgNumbers[4]}.          ");
+            if (enemy.IsDead == true)
+            {
+                Console.SetCursorPosition(60, 5);
+                Console.Write($"{secondActor} has been slain.                             ");
+                Console.SetCursorPosition(60, 6);
+                Console.Write("                                                  ");
+                Console.SetCursorPosition(60, 7);
+                Console.Write("                                                  ");
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.SetCursorPosition(60, 5);
+                Console.Write($"Counter attack by {secondActor}, {actorDices[2]} with result: {dmgNumbers[2]}.    ");
+                Console.SetCursorPosition(60, 6);
+                Console.Write($"{firstActor} defended with {actorDices[1]}, result: {dmgNumbers[1]}.          ");
+                Console.SetCursorPosition(60, 7);
+                Console.Write($"Counter attack by {secondActor} against {firstActor} did {dmgNumbers[5]}.    ");
+                if (player.IsDead == true)
+                {
+                    player.GameOver();
+                }
+            }
         }
         else
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.SetCursorPosition(0, 3);
-            Console.WriteLine($"Damage done to {secondActor} by {firstActor} using 1D6 is: {eDmg}, {firstActor} defended with {pDef}. Final damage is {eDmgDone}    ");
-            Console.ResetColor();
+            Console.SetCursorPosition(60, 0);
+            Console.Write($"{secondActor} encountered.          ");
+            Console.SetCursorPosition(60, 1);
+            Console.Write($"{firstActor} rolled {actorDices[2]} to attack, result: {dmgNumbers[2]}.          ");
+            Console.SetCursorPosition(60, 2);
+            Console.Write($"{secondActor} defended using {actorDices[1]}, result: {dmgNumbers[1]}.          ");
+            Console.SetCursorPosition(60, 3);
+            Console.Write($"Damage done by {firstActor} to {secondActor} is: {dmgNumbers[5]}.          ");
+            if (player.IsDead == true)
+            {
+                player.GameOver();
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.SetCursorPosition(60, 5);
+                Console.Write($"Counter attack by {secondActor}, {actorDices[0]} with result: {dmgNumbers[0]}.    ");
+                Console.SetCursorPosition(60, 6);
+                Console.Write($"{firstActor} defended with {actorDices[3]}, result: {dmgNumbers[3]}.          ");
+                Console.SetCursorPosition(60, 7);
+                Console.Write($"Counter attack by {secondActor} against {firstActor} did {dmgNumbers[4]}.    ");
+            }
+            if (enemy.IsDead == true)
+            {
+                Console.SetCursorPosition(60, 8);
+                Console.Write($"{firstActor} has been slain.                                ");
+            }
+        }
+    }
+
+    public static void ItemPickup(Player player, Equipment item)
+    {
+        switch (item.Name)
+        {
+            case "Magic Sword":
+                player.damageDices = item.DamageDices;
+                player.dmgDiceSides = item.dmgDiceSides;
+                player.dmgDiceModifier = item.dmgDiceModifier;
+                item.IsDead = true;
+                break;
+            case "Magic Armor":
+                player.defenseDices = item.DefenseDice;
+                player.defDiceSides = item.defDiceSides;
+                player.defDiceModifier = item.defDiceModifier;
+                item.IsDead = true;
+                break;
         }
     }
 }
