@@ -45,6 +45,9 @@ internal class Program
             case "2":
                 pickedLevel = "Level1_w_Boss.txt";
                 break;
+            default:
+                pickedLevel = "Level1.txt";
+                break;
         }
         return pickedLevel;
     }   
