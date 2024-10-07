@@ -17,12 +17,6 @@ class Sword : Equipment
 
     public override void Update(List<LevelElements> elements)
     {
-        if (this.IsDead == true)
-        {
-            objectTile = ' ';
-            Draw();
-            Die(elements);
-        }
 
         IsVisible = false;
 

@@ -16,6 +16,8 @@ abstract class Equipment : LevelElements
 
     public void Die(List<LevelElements> elements)
     {
+        this.objectTile = ' ';
+        this.Draw();
         elements.Remove(this);
     }
 }

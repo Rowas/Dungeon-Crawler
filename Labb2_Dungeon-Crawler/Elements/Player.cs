@@ -177,35 +177,30 @@ class Player : LevelElements
 
         if (elements.Any(b => b.Position == (Position.Item1 + x, Position.Item2 + y)) == true)
         {
-            foreach (var element in elements)
+            foreach (var element in elements.ToList())
             {
                 if (element.Position == (Position.Item1 + x, Position.Item2 + y))
                 {
-                    if (element is Rat)
+                    switch (element)
                     {
-                        GameLoop.Encounter(this, (Rat)element, 'P', elements);
-                    }
-                    else if (element is Snake)
-                    {
-                        GameLoop.Encounter(this, (Snake)element, 'P', elements);
-                    }
-                    else if (element is Boss)
-                    {
-                        GameLoop.Encounter(this, (Boss)element, 'P', elements);
-                    }
-                    else if (element is Guard)
-                    {
-                        GameLoop.Encounter(this, (Guard)element, 'P', elements);
-                    }
-                    else if (element is Equipment)
-                    {
-                        GameLoop.EquipmentPickup(this, (Equipment)element);
-                        return d;
-                    }
-                    else if (element is Items)
-                    {
-                        GameLoop.ItemPickup(this, (Items)element);
-                        return d;
+                        case Rat:
+                            GameLoop.Encounter(this, (Rat)element, 'P', elements);
+                            break;
+                        case Snake:
+                            GameLoop.Encounter(this, (Snake)element, 'P', elements);
+                            break;
+                        case Boss:
+                            GameLoop.Encounter(this, (Boss)element, 'P', elements);
+                            break;
+                        case Guard:
+                            GameLoop.Encounter(this, (Guard)element, 'P', elements);
+                            break;
+                        case Equipment:
+                            GameLoop.EquipmentPickup(this, (Equipment)element, elements);
+                            return d;
+                        case Items:
+                            GameLoop.ItemPickup(this, (Items)element, elements);
+                            return d;
                     }
                 }
             }

@@ -90,7 +90,7 @@ class Rat : Enemy
                 {
                     if (element is Player)
                     {
-                        GameLoop.Encounter((Player)element, this, 'E');
+                        GameLoop.Encounter((Player)element, this, 'E', elements);
                         return 0;
                     }
                 }

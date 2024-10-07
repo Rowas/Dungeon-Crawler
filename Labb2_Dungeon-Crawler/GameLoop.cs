@@ -64,6 +64,11 @@ class GameLoop
                     player.DistanceCheck(Level1.Elements);
                     MaxHP = player.maxHealth;
                     CurrentHP = player.currentHealth;
+                    if (CurrentHP > player.maxHealth)
+                    {
+                        player.currentHealth = player.maxHealth;
+                        CurrentHP = player.maxHealth;
+                    }
                 }
             }
             Console.ResetColor();
@@ -80,45 +85,27 @@ class GameLoop
                 switch (element)
                 {
                     case Player:
-                        {
-                            Player player = (Player)element;
-                            CurrentHP = player.currentHealth;
-                            player.Movement(checkKey, Level1.Elements);
-                            break;
-                        }
+                        Player player = (Player)element;
+                        player.Movement(checkKey, Level1.Elements);
+                        break;
                     case Enemy:
-                        {
-                            Enemy enemy = (Enemy)element;
-                            enemy.Update(Level1.Elements);
-                            break;
-                        }
+                        Enemy enemy = (Enemy)element;
+                        enemy.Update(Level1.Elements);
+                        break;
                     case Wall:
-                        {
-                            Wall wall = (Wall)element;
-                            wall.DrawWall();
-                            break;
-                        }
+                        Wall wall = (Wall)element;
+                        wall.DrawWall();
+                        break;
                     case Items:
-                        {
-                            Items item = (Items)element;
-                            item.Update(level1.Elements);
-                            break;
-                        }
+                        Items item = (Items)element;
+                        item.Update(level1.Elements);
+                        break;
                     case Equipment:
-                        {
-                            Equipment equipment = (Equipment)element;
-                            equipment.Update(level1.Elements);
-                            break;
-                        }
-
+                        Equipment equipment = (Equipment)element;
+                        equipment.Update(level1.Elements);
+                        break;
                 }
             }
-            if (NewHP > 100)
-            {
-                NewHP = 100;
-            }
-            CurrentHP = NewHP;
-
         } while (checkKey.Key != ConsoleKey.Escape);
     }
 
@@ -176,7 +163,7 @@ class GameLoop
             }
         }
 
-        PrintCombatResult(playerCombat, enemyCombat, playerDamage, enemyDamage, firstActor, secondActor, player, enemy, elements;
+        PrintCombatResult(playerCombat, enemyCombat, playerDamage, enemyDamage, firstActor, secondActor, player, enemy, elements);
     }
 
     public static void PrintCombatResult((int,string,int,string) playerCombat, (int,string,int,string) enemyCombat, int playerDamage, int enemyDamage, string firstActor, string secondActor, Player player, Enemy enemy, List<LevelElements> elements)
@@ -254,12 +241,12 @@ class GameLoop
                 Console.WriteLine();
                 Console.WriteLine($"{firstActor} has been slain.");
                 Console.ResetColor();
-                enemy.Die();
+                enemy.Die(elements);
             }
         }
     }
 
-    public static void EquipmentPickup(Player player, Equipment equipment)
+    public static void EquipmentPickup(Player player, Equipment equipment, List<LevelElements> elements)
     {
         switch (equipment.Name)
         {
@@ -271,6 +258,7 @@ class GameLoop
                 player.dmgDiceSides = equipment.DmgDiceSides;
                 player.dmgDiceModifier = equipment.DmgDiceModifier;
                 equipment.IsDead = true;
+                equipment.Die(elements);
                 break;
             case "Magic Armor":
                 Console.SetCursorPosition(0, 10);
@@ -280,10 +268,11 @@ class GameLoop
                 player.defDiceSides = equipment.DefDiceSides;
                 player.defDiceModifier = equipment.DefDiceModifier;
                 equipment.IsDead = true;
+                equipment.Die(elements);
                 break;
         }
     }
-    public static void ItemPickup(Player player, Items item)
+    public static void ItemPickup(Player player, Items item, List<LevelElements> elements)
     {
         switch (item.Name)
         {
@@ -297,7 +286,12 @@ class GameLoop
                     Console.WriteLine($"{item.Name} acquired, HP restored with {item.HealthRestore}.");
                     player.currentHealth = player.currentHealth + item.HealthRestore;
                     NewHP = player.currentHealth;
+                    if (NewHP > player.maxHealth)
+                    {
+                        NewHP = 100;
+                    }
                     item.IsDead = true;
+                    item.Die(elements);
                     break;
                 }
             case "Potion":
@@ -310,7 +304,12 @@ class GameLoop
                     Console.WriteLine($"{item.Name} acquired, HP restored with {item.HealthRestore}.");
                     player.currentHealth = player.currentHealth + item.HealthRestore;
                     NewHP = player.currentHealth;
+                    if (NewHP > player.maxHealth)
+                    {
+                        NewHP = 100;
+                    }
                     item.IsDead = true;
+                    item.Die(elements);
                     break;
                 }
         }
