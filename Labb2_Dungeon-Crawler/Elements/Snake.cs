@@ -27,12 +27,6 @@ class Snake : Enemy
 
     public override void Update(List<LevelElements> elements)
     {
-        if (this.IsDead == true)
-        {
-            objectTile = ' ';
-            Draw();
-            Die(elements);
-        }
 
         IsVisible = false;
 
@@ -80,13 +74,6 @@ class Snake : Enemy
 
         if (elements.Any(b => b.Position == (Position.Item1 + h, Position.Item2 + v)) == true)
         {
-            foreach (var element in elements)
-            {
-                if (element.Position == (Position.Item1 + h, Position.Item2 + v))
-                {
-    
-                }
-            }
             return (0, 0);
         }
         else

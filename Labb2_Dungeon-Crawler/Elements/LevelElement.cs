@@ -30,10 +30,5 @@
             Console.Write(objectTile);
             Console.ResetColor();
         }
-            else
-        {
-            Console.Write(" ");
-            Console.SetCursorPosition(Position.Item1, Position.Item2);
-        }
     }
 }

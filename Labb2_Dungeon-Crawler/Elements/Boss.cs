@@ -22,13 +22,6 @@ class Boss : Enemy
 
     public override void Update(List<LevelElements> elements)
     {
-        if (this.IsDead == true)
-        {
-            objectTile = ' ';
-            Draw();
-            Die(elements);
-            YouWin();
-        }
 
         IsVisible = false;
 
@@ -37,7 +30,7 @@ class Boss : Enemy
 
     }
 
-    public void YouWin()
+    public static void YouWin()
     {
         Console.Clear();
         Console.SetCursorPosition(53, 11);

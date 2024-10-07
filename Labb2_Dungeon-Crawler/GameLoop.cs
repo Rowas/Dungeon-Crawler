@@ -15,9 +15,9 @@ class GameLoop
 
     public ConsoleKeyInfo checkKey;
 
-    private LevelData level1 = new LevelData();
+    private static LevelData level1 = new LevelData();
 
-    public LevelData Level1
+    public static LevelData Level1
     {
         get
         {
@@ -77,30 +77,40 @@ class GameLoop
 
             foreach (LevelElements element in Level1.Elements.ToList())
             {
-                if (element is Player)
+                switch (element)
                 {
-                    Player player = (Player)element;
-                    CurrentHP = player.currentHealth;
-                    player.Movement(checkKey, Level1.Elements);
-                }
-                else if (element is Enemy)
-                {
-                    Enemy enemy = (Enemy)element;
-                    enemy.Update(Level1.Elements);
-                }
-                else if (element is Equipment)
-                {
-                    Equipment equipment = (Equipment)element;
-                    equipment.Update(level1.Elements);
-                }
-                else if (element is Items)
-                {
-                    Items item = (Items)element;
-                    item.Update(level1.Elements);
-                }
-                else if (element is Wall)
-                {
-                    element.DrawWall();
+                    case Player:
+                        {
+                            Player player = (Player)element;
+                            CurrentHP = player.currentHealth;
+                            player.Movement(checkKey, Level1.Elements);
+                            break;
+                        }
+                    case Enemy:
+                        {
+                            Enemy enemy = (Enemy)element;
+                            enemy.Update(Level1.Elements);
+                            break;
+                        }
+                    case Wall:
+                        {
+                            Wall wall = (Wall)element;
+                            wall.DrawWall();
+                            break;
+                        }
+                    case Items:
+                        {
+                            Items item = (Items)element;
+                            item.Update(level1.Elements);
+                            break;
+                        }
+                    case Equipment:
+                        {
+                            Equipment equipment = (Equipment)element;
+                            equipment.Update(level1.Elements);
+                            break;
+                        }
+
                 }
             }
             if (NewHP > 100)
@@ -173,7 +183,7 @@ class GameLoop
     {
         if (firstActor == "Adventurer")
         {
-            for (int i = 0; i < 12; i++)
+            for (int i = 0; i < 13; i++)
             {
                 Console.SetCursorPosition(0, i);
                 Console.Write("                                                         ");
@@ -196,7 +206,8 @@ class GameLoop
                     Console.Write("                                                         ");
                 }
                 Console.ResetColor();
-                enemy.Draw();
+
+                enemy.Die();
             }
             else
             {
@@ -213,7 +224,7 @@ class GameLoop
         }
         else
         {
-            for (int i = 0; i < 12; i++)
+            for (int i = 0; i < 13; i++)
             {
                 Console.SetCursorPosition(0, i);
                 Console.Write("                                                         ");
@@ -239,9 +250,11 @@ class GameLoop
             }
             if (enemy.IsDead == true)
             {
+                Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine();
                 Console.WriteLine($"{firstActor} has been slain.");
-                enemy.Draw();
+                Console.ResetColor();
+                enemy.Die();
             }
         }
     }

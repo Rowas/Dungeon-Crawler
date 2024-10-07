@@ -40,9 +40,16 @@
 
         return (eDef, eDefDice);
     }
-    public void Die(List<LevelElements> elements)
+    public void Die()
     {
-        elements.Remove(this);
+        this.objectTile = ' ';
+        this.Draw();
+        GameLoop.Level1.Elements.Remove(this);
+        if (this is Boss)
+        {
+            Boss.YouWin();
+        }
+
     }
 
     abstract public void Update(List<LevelElements> elements);

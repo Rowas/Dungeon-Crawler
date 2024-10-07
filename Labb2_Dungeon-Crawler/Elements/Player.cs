@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Diagnostics;
+using System.Numerics;
 using System.Reflection.Metadata;
 
 class Player : LevelElements
@@ -17,6 +18,7 @@ class Player : LevelElements
 
     public bool IsDead = false;
 
+    public bool isVisible = true;
 
     public Player(int x, int y)
     {

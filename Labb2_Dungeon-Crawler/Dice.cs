@@ -27,6 +27,12 @@ class Dice
 
     public override string ToString()
     {
-        return $"{dices}D{sides}+{modifier}";
+        string sign = "";
+        if (modifier < 0)
+            sign = "";
+        else if (modifier >= 0)
+            sign = "+";
+
+        return $"{dices}D{sides}{sign}{modifier}";
     }
 }

@@ -22,12 +22,6 @@ class Rat : Enemy
 
     public override void Update(List<LevelElements> elements)
     {
-        if (this.IsDead == true)
-        {
-            objectTile = ' ';
-            Draw();
-            Die(elements);
-        }
 
         IsVisible = false;
 
@@ -65,7 +59,6 @@ class Rat : Enemy
             d = TileCheck(d, dir, elements);
             Console.SetCursorPosition(Position.Item1, Position.Item2);
             Position = (Position.Item1 + d, Position.Item2);
-            Console.Write(" ");
             Draw();
         }
         else
@@ -73,7 +66,6 @@ class Rat : Enemy
             d = TileCheck(d, dir, elements);
             Console.SetCursorPosition(Position.Item1, Position.Item2);
             Position = (Position.Item1, Position.Item2 + d);
-            Console.Write(" ");
             Draw();
         }
     }
