@@ -193,31 +193,31 @@ class GameLoop
         if (firstActor == "Adventurer")
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.SetCursorPosition(60, 0);
+            Console.SetCursorPosition(63, 0);
             Console.Write($"{secondActor} encountered.          ");
-            Console.SetCursorPosition(60, 1);
+            Console.SetCursorPosition(63, 1);
             Console.Write($"{firstActor} rolled {actorDices[0]} to attack, result: {dmgNumbers[0]}.          ");
-            Console.SetCursorPosition(60, 2);
+            Console.SetCursorPosition(63, 2);
             Console.Write($"{secondActor} defended using {actorDices[3]}, result: {dmgNumbers[3]}.          ");
-            Console.SetCursorPosition(60, 3);
+            Console.SetCursorPosition(63, 3);
             Console.Write($"Damage done by {firstActor} to {secondActor} is: {dmgNumbers[4]}.          ");
             if (enemy.IsDead == true)
             {
-                Console.SetCursorPosition(60, 5);
+                Console.SetCursorPosition(63, 5);
                 Console.Write($"{secondActor} has been slain.                             ");
-                Console.SetCursorPosition(60, 6);
+                Console.SetCursorPosition(63, 6);
                 Console.Write("                                                  ");
-                Console.SetCursorPosition(60, 7);
+                Console.SetCursorPosition(63, 7);
                 Console.Write("                                                  ");
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.SetCursorPosition(60, 5);
+                Console.SetCursorPosition(63, 5);
                 Console.Write($"Counter attack by {secondActor}, {actorDices[2]} with result: {dmgNumbers[2]}.    ");
-                Console.SetCursorPosition(60, 6);
+                Console.SetCursorPosition(63, 6);
                 Console.Write($"{firstActor} defended with {actorDices[1]}, result: {dmgNumbers[1]}.          ");
-                Console.SetCursorPosition(60, 7);
+                Console.SetCursorPosition(63, 7);
                 Console.Write($"Counter attack by {secondActor} against {firstActor} did {dmgNumbers[5]}.    ");
                 if (player.IsDead == true)
                 {
@@ -228,13 +228,13 @@ class GameLoop
         else
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.SetCursorPosition(60, 0);
+            Console.SetCursorPosition(63, 0);
             Console.Write($"{secondActor} encountered.          ");
-            Console.SetCursorPosition(60, 1);
+            Console.SetCursorPosition(63, 1);
             Console.Write($"{firstActor} rolled {actorDices[2]} to attack, result: {dmgNumbers[2]}.          ");
-            Console.SetCursorPosition(60, 2);
+            Console.SetCursorPosition(63, 2);
             Console.Write($"{secondActor} defended using {actorDices[1]}, result: {dmgNumbers[1]}.          ");
-            Console.SetCursorPosition(60, 3);
+            Console.SetCursorPosition(63, 3);
             Console.Write($"Damage done by {firstActor} to {secondActor} is: {dmgNumbers[5]}.          ");
             if (player.IsDead == true)
             {
@@ -243,16 +243,16 @@ class GameLoop
             else
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.SetCursorPosition(60, 5);
+                Console.SetCursorPosition(63, 5);
                 Console.Write($"Counter attack by {secondActor}, {actorDices[0]} with result: {dmgNumbers[0]}.    ");
-                Console.SetCursorPosition(60, 6);
+                Console.SetCursorPosition(63, 6);
                 Console.Write($"{firstActor} defended with {actorDices[3]}, result: {dmgNumbers[3]}.          ");
-                Console.SetCursorPosition(60, 7);
+                Console.SetCursorPosition(63, 7);
                 Console.Write($"Counter attack by {secondActor} against {firstActor} did {dmgNumbers[4]}.    ");
             }
             if (enemy.IsDead == true)
             {
-                Console.SetCursorPosition(60, 8);
+                Console.SetCursorPosition(63, 8);
                 Console.Write($"{firstActor} has been slain.                                ");
             }
         }
@@ -263,12 +263,20 @@ class GameLoop
         switch (item.Name)
         {
             case "Magic Sword":
+                Console.SetCursorPosition(63, 5);
+                Console.Write($"The {item.Name} have been acquired.");
+                Console.SetCursorPosition(63, 6);
+                Console.Write("Attack have been increased to 2D10+2");
                 player.damageDices = item.DamageDices;
                 player.dmgDiceSides = item.dmgDiceSides;
                 player.dmgDiceModifier = item.dmgDiceModifier;
                 item.IsDead = true;
                 break;
             case "Magic Armor":
+                Console.SetCursorPosition(63, 5);
+                Console.Write($"The {item.Name} have been acquired.");
+                Console.SetCursorPosition(63, 6);
+                Console.Write("Defense have been increased to 2D8+2");
                 player.defenseDices = item.DefenseDice;
                 player.defDiceSides = item.defDiceSides;
                 player.defDiceModifier = item.defDiceModifier;
