@@ -151,7 +151,7 @@ class Player : LevelElements
             d = TileCheck(d, dir, elements);
             Console.SetCursorPosition(Position.Item1, Position.Item2);
             Position = (Position.Item1 + d, Position.Item2);
-            Draw();
+            DrawPlayer();
 
         }
         else
@@ -159,7 +159,7 @@ class Player : LevelElements
             d = TileCheck(d, dir, elements);
             Console.SetCursorPosition(Position.Item1, Position.Item2);
             Position = (Position.Item1, Position.Item2 + d);
-            Draw();
+            DrawPlayer();
         }
     }
     public int TileCheck(int d, char dir, List<LevelElements> elements)

@@ -8,11 +8,28 @@
     {
         if (this.IsVisible == true)
         {
+        Console.SetCursorPosition(Position.Item1, Position.Item2);
         Console.Write(" ");
         Console.SetCursorPosition(Position.Item1, Position.Item2);
         Console.ForegroundColor = (ConsoleColor)objectColor;
         Console.Write(objectTile);
         Console.ResetColor();
+        }
+        else
+        {
+            Console.Write(" ");
+            Console.SetCursorPosition(Position.Item1, Position.Item2);
+        }
+    }
+    public void DrawPlayer()
+    {
+        if (this.IsVisible == true)
+        {
+            Console.Write(" ");
+            Console.SetCursorPosition(Position.Item1, Position.Item2);
+            Console.ForegroundColor = (ConsoleColor)objectColor;
+            Console.Write(objectTile);
+            Console.ResetColor();
         }
         else
         {
