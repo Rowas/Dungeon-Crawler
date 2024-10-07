@@ -11,30 +11,6 @@
     public int defDiceModifier { get; set; }
     public bool IsDead { get; set; }
 
-    public void DistanceCheck(List<LevelElements> elements)
-    {
-        IsVisible = false;
-        for (int i = -5; i < 6; i++)
-        {
-            for (int j = -5; j < 6; j++)
-            {
-                if (elements.Any(b => b.Position == (Position.Item1 + i, Position.Item2 + j)) == true)
-                {
-                    foreach (var element in elements)
-                    {
-                        if (element.Position == (Position.Item1 + i, Position.Item2 + j))
-                        {
-                            if (element is Player)
-                            {
-                                IsVisible = true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     public (int, string) Attack()
     {
         Dice enemyDamage = new Dice(DamageDices, dmgDiceSides, dmgDiceModifier);

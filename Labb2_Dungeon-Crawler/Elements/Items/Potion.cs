@@ -23,8 +23,6 @@ class Potion : Items
 
         IsVisible = false;
 
-        DistanceCheck(elements);
-
         Console.SetCursorPosition(Position.Item1, Position.Item2);
         Draw();
 

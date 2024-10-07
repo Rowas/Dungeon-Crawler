@@ -30,8 +30,6 @@ class Rat : Enemy
 
         IsVisible = false;
 
-        DistanceCheck(elements);
-
         int rand = new Random().Next(1, 5);
         switch (rand)
         {

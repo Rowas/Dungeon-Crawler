@@ -21,6 +21,9 @@ internal class Program
             case "2":
                 levelFile = CustomMap();
                 break;
+            default:
+                levelFile = LevelPicker();
+                break;
         }
 
         Console.CursorVisible = false;
