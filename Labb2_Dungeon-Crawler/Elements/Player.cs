@@ -107,6 +107,32 @@ class Player : LevelElements
                                     continue;
                                 }
                             }
+                            else if (element is Equipment)
+                            {
+                                Equipment equipment = (Equipment)element;
+                                if (equipment.IsVisible == false)
+                                {
+                                    equipment.IsVisible = true;
+                                    equipment.Draw();
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+                            }
+                            else if (element is Items)
+                            {
+                                Items item = (Items)element;
+                                if (item.IsVisible == false)
+                                {
+                                    item.IsVisible = true;
+                                    item.Draw();
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+                            }
                         }
                     }
                 }

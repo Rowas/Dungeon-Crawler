@@ -1,16 +1,16 @@
 ﻿using System.Numerics;
 
-class Sword : Equipment
+class Armor : Equipment
 {
-    public Sword(int x, int y)
+    public Armor(int x, int y)
     {
         Position = (x, y);
-        objectTile = 'W';
-        objectColor = ConsoleColor.DarkYellow;
-        Name = "Magic Sword";
-        DamageDices = 2;
-        dmgDiceSides = 10;
-        dmgDiceModifier = 2;
+        objectTile = 'A';
+        objectColor = ConsoleColor.DarkCyan;
+        Name = "Magic Armor";
+        DefenseDice = 2;
+        DefDiceSides = 8;
+        DefDiceModifier = 2;
         IsDead = false;
     }
 

@@ -283,8 +283,8 @@ class GameLoop
                 Console.SetCursorPosition(63, 6);
                 Console.Write("Attack have been increased to 2D10+2.              ");
                 player.damageDices = equipment.DamageDices;
-                player.dmgDiceSides = equipment.dmgDiceSides;
-                player.dmgDiceModifier = equipment.dmgDiceModifier;
+                player.dmgDiceSides = equipment.DmgDiceSides;
+                player.dmgDiceModifier = equipment.DmgDiceModifier;
                 equipment.IsDead = true;
                 break;
             case "Magic Armor":
@@ -293,8 +293,8 @@ class GameLoop
                 Console.SetCursorPosition(63, 6);
                 Console.Write("Defense have been increased to 2D8+2.              ");
                 player.defenseDices = equipment.DefenseDice;
-                player.defDiceSides = equipment.defDiceSides;
-                player.defDiceModifier = equipment.defDiceModifier;
+                player.defDiceSides = equipment.DefDiceSides;
+                player.defDiceModifier = equipment.DefDiceModifier;
                 equipment.IsDead = true;
                 break;
         }

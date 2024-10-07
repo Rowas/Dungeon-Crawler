@@ -26,7 +26,7 @@
         {
             Console.SetCursorPosition(Position.Item1, Position.Item2);
             Console.ForegroundColor = (ConsoleColor)objectColor;
-            Console.BackgroundColor = ConsoleColor.White;
+            Console.BackgroundColor = ConsoleColor.DarkGray;
             Console.Write(objectTile);
             Console.ResetColor();
         }

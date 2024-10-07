@@ -1,5 +1,5 @@
 ﻿//Labb2 - Dungeon Crawler
-//Labb for C# programming in .NET-developer edu program on ITHS 2024.
+//Labb2 for C# programming in .NET-developer edu program on ITHS Fall 2024.
 using System.IO.Enumeration;
 using System.Transactions;
 internal class Program
@@ -59,8 +59,31 @@ internal class Program
     {
         Console.Clear();
         Console.WriteLine("Enter the name of your custom map.");
-        Console.WriteLine("Map file have to be placed in ./Levels/ \n as a .txt file and correctly formatted to work. \n Consult pre-made maps for requirements.");
+        Console.WriteLine("Map file have to be placed in ./Levels/ \nas a .txt file and correctly formatted to work. \n\nConsult pre-made maps for requirements. \nFor further information, type 'Help' or '?'.");
         string customMap = Console.ReadLine();
+        switch (customMap)
+        {
+            case "help":
+                MapHelp();
+                Environment.Exit(0);
+                break;
+            case "Help":
+                MapHelp();
+                Environment.Exit(0);
+                break;
+            case "?":
+                MapHelp();
+                Environment.Exit(0);
+                break;
+        }
         return customMap;
+    }
+
+    public static void MapHelp()
+    {
+        Console.Clear();
+        Console.WriteLine("The following characters are required for a functioning map: \n@ = Player tile \n# = Wall tile \n");
+        Console.WriteLine("The following characters are optional for the map: \nr = Rats \ns = Snakes \nG = Guards \nF/P = Restorative items (25/50 HP) \nA = Magic Armor \nW = Magic Sword \nB = Boss monster\n");
+        Console.WriteLine("After having created a custom map, place it in .\\Levels\\ as a txt-file and reload the program.");
     }
 }
