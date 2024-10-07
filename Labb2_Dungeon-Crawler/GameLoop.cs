@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Design;
+using System.Globalization;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
@@ -130,29 +131,20 @@ class GameLoop
             secondActor = player.Name;
         }
 
-        int[] CombatRollResults = new int[6];
+        (int, string, int, string) playerCombat = player.Combat();
+        (int, string, int, string) enemyCombat = enemy.Combat();
 
-        CombatRollResults[0] = player.Attack().Item1; //Player attack roll
-        CombatRollResults[1] = player.Defend().Item1; //Player defense roll
-        CombatRollResults[2] = enemy.Attack().Item1; //Enemy attack roll
-        CombatRollResults[3] = enemy.Defend().Item1; //Enemy defense roll
-        CombatRollResults[4] = player.Attack().Item1 - enemy.Defend().Item1; //Player damage done
-        CombatRollResults[5] = enemy.Attack().Item1 - player.Defend().Item1; //Enemy damage done
+        int playerDamage = playerCombat.Item1 - enemyCombat.Item3;
 
-        string[] actorDices = new string[5];
+        int enemyDamage = enemyCombat.Item1 - playerCombat.Item3;
 
-        actorDices[0] = player.Attack().Item2;
-        actorDices[1] = player.Defend().Item2;
-        actorDices[2] = enemy.Attack().Item2;
-        actorDices[3] = enemy.Defend().Item2;
-
-        if (CombatRollResults[4] < 1)
+        if (playerDamage < 1)
         {
-            CombatRollResults[4] = 0;
+            playerDamage = 0;
         }
-        else if (CombatRollResults[4] > 1)
+        else if (playerDamage > 1)
         {
-            enemy.CurrentHealth = enemy.CurrentHealth - CombatRollResults[4];
+            enemy.CurrentHealth = enemy.CurrentHealth - playerDamage;
 
             if (enemy.CurrentHealth < 1)
             {
@@ -160,13 +152,13 @@ class GameLoop
             }
         }
 
-        if (CombatRollResults[5] < 1)
+        if (enemyDamage < 1)
         {
-            CombatRollResults[5] = 0;
+            enemyDamage = 0;
         }
-        else if (CombatRollResults[5] > 0 && enemy.IsDead == false)
+        else if (enemyDamage > 0 && enemy.IsDead == false)
         {
-            player.currentHealth = player.currentHealth - CombatRollResults[5];
+            player.currentHealth = player.currentHealth - enemyDamage;
             NewHP = player.currentHealth;
             if (player.currentHealth < 1)
             {
@@ -174,10 +166,10 @@ class GameLoop
             }
         }
 
-        PrintCombatResult(CombatRollResults, actorDices, firstActor, secondActor, player, enemy);
+        PrintCombatResult(playerCombat, enemyCombat, playerDamage, enemyDamage, firstActor, secondActor, player, enemy);
     }
 
-    public static void PrintCombatResult(int[] dmgNumbers, string[] actorDices, string firstActor, string secondActor, Player player, Enemy enemy)
+    public static void PrintCombatResult((int,string,int,string) playerCombat, (int,string,int,string) enemyCombat, int playerDamage, int enemyDamage, string firstActor, string secondActor, Player player, Enemy enemy)
     {
         if (firstActor == "Adventurer")
         {
@@ -190,9 +182,9 @@ class GameLoop
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"{secondActor} encountered.");
             Console.WriteLine();
-            Console.WriteLine($"{firstActor} rolled {actorDices[0]} to attack, result: {dmgNumbers[0]}.");
-            Console.WriteLine($"{secondActor} defended using {actorDices[3]}, result: {dmgNumbers[3]}.");
-            Console.WriteLine($"Damage done by {firstActor} to {secondActor} is: {dmgNumbers[4]}.");
+            Console.WriteLine($"{firstActor} rolled {playerCombat.Item2} to attack, result: {playerCombat.Item1}.");
+            Console.WriteLine($"{secondActor} defended using {enemyCombat.Item4}, result: {enemyCombat.Item3}.");
+            Console.WriteLine($"Damage done by {firstActor} to {secondActor} is: {playerDamage}.");
             if (enemy.IsDead == true)
             {
                 Console.ForegroundColor = ConsoleColor.Cyan;
@@ -210,9 +202,9 @@ class GameLoop
             {
                 Console.WriteLine();
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Counter attack by {secondActor}, {actorDices[2]} with result: {dmgNumbers[2]}.");
-                Console.WriteLine($"{firstActor} defended with {actorDices[1]}, result: {dmgNumbers[1]}.");
-                Console.WriteLine($"Counter attack by {secondActor} against {firstActor} did {dmgNumbers[5]}.");
+                Console.WriteLine($"Counter attack by {secondActor}, {enemyCombat.Item2} with result: {enemyCombat.Item1}.");
+                Console.WriteLine($"{firstActor} defended with {playerCombat.Item4}, result: {playerCombat.Item3}.");
+                Console.WriteLine($"Counter attack by {secondActor} against {firstActor} did {enemyDamage}.");
                 if (player.IsDead == true)
                 {
                     player.GameOver();
@@ -230,9 +222,9 @@ class GameLoop
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"{secondActor} encountered.");
             Console.WriteLine();
-            Console.WriteLine($"{firstActor} rolled {actorDices[2]} to attack, result: {dmgNumbers[2]}.");
-            Console.WriteLine($"{secondActor} defended using {actorDices[1]}, result: {dmgNumbers[1]}.");
-            Console.WriteLine($"Damage done by {firstActor} to {secondActor} is: {dmgNumbers[5]}.");
+            Console.WriteLine($"{firstActor} rolled {enemyCombat.Item2} to attack, result: {enemyCombat.Item1}.");
+            Console.WriteLine($"{secondActor} defended using {playerCombat.Item4}, result: {playerCombat.Item3}.");
+            Console.WriteLine($"Damage done by {firstActor} to {secondActor} is: {enemyDamage}.");
             if (player.IsDead == true)
             {
                 player.GameOver();
@@ -241,9 +233,9 @@ class GameLoop
             {
                 Console.WriteLine();
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"Counter attack by {secondActor}, {actorDices[0]} with result: {dmgNumbers[0]}.");
-                Console.WriteLine($"{firstActor} defended with {actorDices[3]}, result: {dmgNumbers[3]}.");
-                Console.WriteLine($"Counter attack by {secondActor} against {firstActor} did {dmgNumbers[4]}.");
+                Console.WriteLine($"Counter attack by {secondActor}, {playerCombat.Item2} with result: {playerCombat.Item1}.");
+                Console.WriteLine($"{firstActor} defended with {enemyCombat.Item4}, result: {enemyCombat.Item3}.");
+                Console.WriteLine($"Counter attack by {secondActor} against {firstActor} did {playerDamage}.");
             }
             if (enemy.IsDead == true)
             {

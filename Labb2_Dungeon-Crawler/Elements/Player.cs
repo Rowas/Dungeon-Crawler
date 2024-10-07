@@ -214,6 +214,14 @@ class Player : LevelElements
         }
     }
 
+    public (int, string, int, string) Combat()
+    {
+        (int, string) attack = Attack();
+        (int, string) defense = Defend();
+
+        return (attack.Item1, attack.Item2, defense.Item1, defense.Item2);
+    }
+
     public (int,string) Attack()
     {
         Dice playerDamage = new Dice(damageDices, dmgDiceSides, dmgDiceModifier);
