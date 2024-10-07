@@ -107,11 +107,19 @@ class GameLoop
                 }
                 else if (element is Equipment)
                 {
-                    Equipment item = (Equipment)element;
+                    Equipment equipment = (Equipment)element;
+                    equipment.Update(level1.Elements);
+                }
+                else if (element is Items)
+                {
+                    Items item = (Items)element;
                     item.Update(level1.Elements);
                 }
             }
-
+            if (NewHP > 100)
+            {
+                NewHP = 100;
+            }
             CurrentHP = NewHP;
 
         } while (checkKey.Key != ConsoleKey.Escape);
@@ -219,6 +227,8 @@ class GameLoop
                 Console.Write($"{firstActor} defended with {actorDices[1]}, result: {dmgNumbers[1]}.          ");
                 Console.SetCursorPosition(63, 7);
                 Console.Write($"Counter attack by {secondActor} against {firstActor} did {dmgNumbers[5]}.    ");
+                Console.SetCursorPosition(63, 8);
+                Console.Write("                                                  ");
                 if (player.IsDead == true)
                 {
                     player.GameOver();
@@ -249,6 +259,8 @@ class GameLoop
                 Console.Write($"{firstActor} defended with {actorDices[3]}, result: {dmgNumbers[3]}.          ");
                 Console.SetCursorPosition(63, 7);
                 Console.Write($"Counter attack by {secondActor} against {firstActor} did {dmgNumbers[4]}.    ");
+                Console.SetCursorPosition(63, 8);
+                Console.Write("                                                  ");
             }
             if (enemy.IsDead == true)
             {
@@ -258,30 +270,54 @@ class GameLoop
         }
     }
 
-    public static void ItemPickup(Player player, Equipment item)
+    public static void EquipmentPickup(Player player, Equipment equipment)
     {
-        switch (item.Name)
+        switch (equipment.Name)
         {
             case "Magic Sword":
                 Console.SetCursorPosition(63, 5);
-                Console.Write($"The {item.Name} have been acquired.");
+                Console.Write($"The {equipment.Name} have been acquired.");
                 Console.SetCursorPosition(63, 6);
                 Console.Write("Attack have been increased to 2D10+2");
-                player.damageDices = item.DamageDices;
-                player.dmgDiceSides = item.dmgDiceSides;
-                player.dmgDiceModifier = item.dmgDiceModifier;
-                item.IsDead = true;
+                player.damageDices = equipment.DamageDices;
+                player.dmgDiceSides = equipment.dmgDiceSides;
+                player.dmgDiceModifier = equipment.dmgDiceModifier;
+                equipment.IsDead = true;
                 break;
             case "Magic Armor":
                 Console.SetCursorPosition(63, 5);
-                Console.Write($"The {item.Name} have been acquired.");
+                Console.Write($"The {equipment.Name} have been acquired.");
                 Console.SetCursorPosition(63, 6);
                 Console.Write("Defense have been increased to 2D8+2");
-                player.defenseDices = item.DefenseDice;
-                player.defDiceSides = item.defDiceSides;
-                player.defDiceModifier = item.defDiceModifier;
-                item.IsDead = true;
+                player.defenseDices = equipment.DefenseDice;
+                player.defDiceSides = equipment.defDiceSides;
+                player.defDiceModifier = equipment.defDiceModifier;
+                equipment.IsDead = true;
                 break;
+        }
+    }
+    public static void ItemPickup(Player player, Items item)
+    {
+        switch (item.Name)
+        {
+            case "Food":
+                {
+                    Console.SetCursorPosition(63, 5);
+                    Console.Write($"{item.Name} acquired, HP restored with {item.HealthRestore}.");
+                    player.currentHealth = player.currentHealth + item.HealthRestore;
+                    NewHP = player.currentHealth;
+                    item.IsDead = true;
+                    break;
+                }
+            case "Potion":
+                {
+                    Console.SetCursorPosition(63, 5);
+                    Console.Write($"{item.Name} acquired, HP restored with {item.HealthRestore}.");
+                    player.currentHealth = player.currentHealth + item.HealthRestore;
+                    NewHP = player.currentHealth;
+                    item.IsDead = true;
+                    break;
+                }
         }
     }
 }

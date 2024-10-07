@@ -169,7 +169,12 @@ class Player : LevelElements
                     }
                     else if (element is Equipment)
                     {
-                        GameLoop.ItemPickup(this, (Equipment)element);
+                        GameLoop.EquipmentPickup(this, (Equipment)element);
+                        return d;
+                    }
+                    else if (element is Items)
+                    {
+                        GameLoop.ItemPickup(this, (Items)element);
                         return d;
                     }
                 }

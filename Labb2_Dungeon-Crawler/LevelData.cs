@@ -46,6 +46,12 @@
                         case 'A':
                             Elements.Add(new Armor(x + 2, y + 2));
                             break;
+                        case 'F':
+                            Elements.Add(new Food(x + 2, y + 2));
+                            break;
+                        case 'P':
+                            Elements.Add(new Potion(x + 2, y + 2));
+                            break;
                     }
                 }
                 y++;
