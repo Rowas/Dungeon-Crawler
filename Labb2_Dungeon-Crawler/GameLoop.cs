@@ -15,9 +15,9 @@ class GameLoop
 
     public ConsoleKeyInfo checkKey;
 
-    private static LevelData level1 = new LevelData();
+    private LevelData level1 = new LevelData();
 
-    public static LevelData Level1
+    public LevelData Level1
     {
         get
         {
@@ -122,7 +122,7 @@ class GameLoop
         } while (checkKey.Key != ConsoleKey.Escape);
     }
 
-    public static void Encounter(Player player, Enemy enemy, char F)
+    public static void Encounter(Player player, Enemy enemy, char F, List<LevelElements> elements)
     {
         Console.SetCursorPosition(0, 1);
         GameLoop gameLoop = new GameLoop();
@@ -176,10 +176,10 @@ class GameLoop
             }
         }
 
-        PrintCombatResult(playerCombat, enemyCombat, playerDamage, enemyDamage, firstActor, secondActor, player, enemy);
+        PrintCombatResult(playerCombat, enemyCombat, playerDamage, enemyDamage, firstActor, secondActor, player, enemy, elements;
     }
 
-    public static void PrintCombatResult((int,string,int,string) playerCombat, (int,string,int,string) enemyCombat, int playerDamage, int enemyDamage, string firstActor, string secondActor, Player player, Enemy enemy)
+    public static void PrintCombatResult((int,string,int,string) playerCombat, (int,string,int,string) enemyCombat, int playerDamage, int enemyDamage, string firstActor, string secondActor, Player player, Enemy enemy, List<LevelElements> elements)
     {
         if (firstActor == "Adventurer")
         {
@@ -207,7 +207,7 @@ class GameLoop
                 }
                 Console.ResetColor();
 
-                enemy.Die();
+                enemy.Die(elements);
             }
             else
             {

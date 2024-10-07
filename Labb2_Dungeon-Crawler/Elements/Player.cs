@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Numerics;
 using System.Reflection.Metadata;
 
@@ -182,19 +183,19 @@ class Player : LevelElements
                 {
                     if (element is Rat)
                     {
-                        GameLoop.Encounter(this, (Rat)element, 'P');
+                        GameLoop.Encounter(this, (Rat)element, 'P', elements);
                     }
                     else if (element is Snake)
                     {
-                        GameLoop.Encounter(this, (Snake)element, 'P');
+                        GameLoop.Encounter(this, (Snake)element, 'P', elements);
                     }
                     else if (element is Boss)
                     {
-                        GameLoop.Encounter(this, (Boss)element, 'P');
+                        GameLoop.Encounter(this, (Boss)element, 'P', elements);
                     }
                     else if (element is Guard)
                     {
-                        GameLoop.Encounter(this, (Guard)element, 'P');
+                        GameLoop.Encounter(this, (Guard)element, 'P', elements);
                     }
                     else if (element is Equipment)
                     {
