@@ -17,6 +17,7 @@ class Boss : Enemy
         defDiceSides = 8;
         defDiceModifier = -1;
         IsDead = false;
+        this.Draw();
     }
 
     public override void Update(List<LevelElements> elements)

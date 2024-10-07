@@ -10,6 +10,7 @@ class Food : Items
         Name = "Food";
         HealthRestore = 25;
         IsDead = false;
+        this.Draw();
     }
 
     public override void Update(List<LevelElements> elements)

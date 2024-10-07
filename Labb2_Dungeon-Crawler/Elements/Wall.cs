@@ -8,5 +8,6 @@ class Wall : LevelElements
         Position = (x, y);
         objectTile = '#';
         objectColor = ConsoleColor.Black;
+        this.DrawWall();
     }
 }

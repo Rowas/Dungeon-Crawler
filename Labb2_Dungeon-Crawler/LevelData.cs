@@ -25,34 +25,34 @@
                         switch (line[x])
                         {
                             case '#':
-                                Elements.Add(new Wall(x + 2, y + 2));
+                                Elements.Add(new Wall(x + 59, y + 2));
                                 break;
                             case '@':
-                                Elements.Add(new Player(x + 2, y + 2));
+                                Elements.Add(new Player(x + 59, y + 2));
                                 break;
                             case 'r':
-                                Elements.Add(new Rat(x + 2, y + 2));
+                                Elements.Add(new Rat(x + 59, y + 2));
                                 break;
                             case 's':
-                                Elements.Add(new Snake(x + 2, y + 2));
+                                Elements.Add(new Snake(x + 59, y + 2));
                                 break;
                             case 'B':
-                                Elements.Add(new Boss(x + 2, y + 2));
+                                Elements.Add(new Boss(x + 59, y + 2));
                                 break;
                             case 'G':
-                                Elements.Add(new Guard(x + 2, y + 2));
+                                Elements.Add(new Guard(x + 59, y + 2));
                                 break;
                             case 'W':
-                                Elements.Add(new Sword(x + 2, y + 2));
+                                Elements.Add(new Sword(x + 59, y + 2));
                                 break;
                             case 'A':
-                                Elements.Add(new Armor(x + 2, y + 2));
+                                Elements.Add(new Armor(x + 59, y + 2));
                                 break;
                             case 'F':
-                                Elements.Add(new Food(x + 2, y + 2));
+                                Elements.Add(new Food(x + 59, y + 2));
                                 break;
                             case 'P':
-                                Elements.Add(new Potion(x + 2, y + 2));
+                                Elements.Add(new Potion(x + 59, y + 2));
                                 break;
                         }
                     }

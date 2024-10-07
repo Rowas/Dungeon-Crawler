@@ -10,6 +10,7 @@ class Potion : Items
         Name = "Potion";
         HealthRestore = 50;
         IsDead = false;
+        this.Draw();
     }
 
     public override void Update(List<LevelElements> elements)

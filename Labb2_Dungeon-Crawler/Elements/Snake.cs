@@ -22,6 +22,7 @@ class Snake : Enemy
         defDiceModifier = -1;
         IsDead = false;
         IsVisible = false;
+        this.Draw();
     }
 
     public override void Update(List<LevelElements> elements)

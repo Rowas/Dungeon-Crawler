@@ -17,6 +17,7 @@ class Rat : Enemy
         defDiceSides = 4;
         defDiceModifier = 1;
         IsDead = false;
+        this.Draw();
     }
 
     public override void Update(List<LevelElements> elements)
@@ -64,6 +65,7 @@ class Rat : Enemy
             d = TileCheck(d, dir, elements);
             Console.SetCursorPosition(Position.Item1, Position.Item2);
             Position = (Position.Item1 + d, Position.Item2);
+            Console.Write(" ");
             Draw();
         }
         else
@@ -71,6 +73,7 @@ class Rat : Enemy
             d = TileCheck(d, dir, elements);
             Console.SetCursorPosition(Position.Item1, Position.Item2);
             Position = (Position.Item1, Position.Item2 + d);
+            Console.Write(" ");
             Draw();
         }
     }

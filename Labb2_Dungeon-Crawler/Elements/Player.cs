@@ -24,6 +24,7 @@ class Player : LevelElements
         Position = (x, y);
         objectTile = '@';
         objectColor = ConsoleColor.Yellow;
+        this.Draw();
     }
 
     public void Movement(ConsoleKeyInfo checkKey, List<LevelElements> elements)

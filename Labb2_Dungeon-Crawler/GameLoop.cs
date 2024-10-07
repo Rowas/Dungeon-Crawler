@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 class GameLoop
 {
-    private int turnCounter = 0;
+    private int turnCounter = 1;
     private string Name = "Adventurer";
 
     public int CurrentHP {  get; private set; }
@@ -33,29 +33,6 @@ class GameLoop
         Directory.SetCurrentDirectory(".\\Levels\\");
 
         level1.Load(levelFile);
-
-        foreach (LevelElements element in level1.Elements)
-        {
-            if (element is Wall)
-            {
-                element.DrawWall();
-                Console.ResetColor();
-            }
-            else if (element is Player)
-            {
-                Player player = (Player)element;
-                element.Draw();
-                CurrentHP = player.currentHealth;
-                MaxHP = player.maxHealth;
-                Console.ResetColor();
-            }
-            else
-            {
-                element.Draw();
-                Console.ResetColor();
-            }
-
-        }
     }
 
     public void GameRunning()
@@ -84,6 +61,8 @@ class GameLoop
                 {
                     Player player = (Player)element;
                     player.DistanceCheck(Level1.Elements);
+                    MaxHP = player.maxHealth;
+                    CurrentHP = player.currentHealth;
                 }
             }
             Console.ResetColor();
@@ -91,7 +70,7 @@ class GameLoop
             Console.Write($"Player: {Name} | HP: {CurrentHP} / {MaxHP}  Turn: {turnCounter++}         ");
             while (Console.KeyAvailable == false)
             {
-                Thread.Sleep(50);
+                Thread.Sleep(16);
             }
             checkKey = Console.ReadKey(true);
 
@@ -118,6 +97,10 @@ class GameLoop
                     Items item = (Items)element;
                     item.Update(level1.Elements);
                 }
+                else if (element is Wall)
+                {
+                    element.DrawWall();
+                }
             }
             if (NewHP > 100)
             {
@@ -130,11 +113,6 @@ class GameLoop
 
     public static void Encounter(Player player, Enemy enemy, char F)
     {
-        for (int i = 1; i < 4; i++)
-        {
-            Console.SetCursorPosition(0, 1);
-            Console.Write(new String(' ', Console.WindowWidth));
-        }
         Console.SetCursorPosition(0, 1);
         GameLoop gameLoop = new GameLoop();
 
@@ -152,14 +130,14 @@ class GameLoop
             secondActor = player.Name;
         }
 
-        int[] dmgNumbers = new int[6];
+        int[] CombatRollResults = new int[6];
 
-        dmgNumbers[0] = player.Attack().Item1; //Player attack roll
-        dmgNumbers[1] = player.Defend().Item1; //Player defense roll
-        dmgNumbers[2] = enemy.Attack().Item1; //Enemy attack roll
-        dmgNumbers[3] = enemy.Defend().Item1; //Enemy defense roll
-        dmgNumbers[4] = dmgNumbers[0] - dmgNumbers[3]; //Player damage done
-        dmgNumbers[5] = dmgNumbers[2] - dmgNumbers[1]; //Enemy damage done
+        CombatRollResults[0] = player.Attack().Item1; //Player attack roll
+        CombatRollResults[1] = player.Defend().Item1; //Player defense roll
+        CombatRollResults[2] = enemy.Attack().Item1; //Enemy attack roll
+        CombatRollResults[3] = enemy.Defend().Item1; //Enemy defense roll
+        CombatRollResults[4] = player.Attack().Item1 - enemy.Defend().Item1; //Player damage done
+        CombatRollResults[5] = enemy.Attack().Item1 - player.Defend().Item1; //Enemy damage done
 
         string[] actorDices = new string[5];
 
@@ -168,13 +146,13 @@ class GameLoop
         actorDices[2] = enemy.Attack().Item2;
         actorDices[3] = enemy.Defend().Item2;
 
-        if (dmgNumbers[4] < 1)
+        if (CombatRollResults[4] < 1)
         {
-            dmgNumbers[4] = 0;
+            CombatRollResults[4] = 0;
         }
-        else if (dmgNumbers[4] > 1)
+        else if (CombatRollResults[4] > 1)
         {
-            enemy.CurrentHealth = enemy.CurrentHealth - dmgNumbers[4];
+            enemy.CurrentHealth = enemy.CurrentHealth - CombatRollResults[4];
 
             if (enemy.CurrentHealth < 1)
             {
@@ -182,13 +160,13 @@ class GameLoop
             }
         }
 
-        if (dmgNumbers[5] < 1)
+        if (CombatRollResults[5] < 1)
         {
-            dmgNumbers[5] = 0;
+            CombatRollResults[5] = 0;
         }
-        else if (dmgNumbers[5] > 0 && enemy.IsDead == false)
+        else if (CombatRollResults[5] > 0 && enemy.IsDead == false)
         {
-            player.currentHealth = player.currentHealth - dmgNumbers[5];
+            player.currentHealth = player.currentHealth - CombatRollResults[5];
             NewHP = player.currentHealth;
             if (player.currentHealth < 1)
             {
@@ -196,42 +174,45 @@ class GameLoop
             }
         }
 
-        PrintCombatResult(dmgNumbers, actorDices, firstActor, secondActor, player, enemy);
+        PrintCombatResult(CombatRollResults, actorDices, firstActor, secondActor, player, enemy);
     }
 
     public static void PrintCombatResult(int[] dmgNumbers, string[] actorDices, string firstActor, string secondActor, Player player, Enemy enemy)
     {
         if (firstActor == "Adventurer")
         {
+            for (int i = 0; i < 12; i++)
+            {
+                Console.SetCursorPosition(0, i);
+                Console.Write("                                                         ");
+            }
+            Console.SetCursorPosition(0, 2);
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.SetCursorPosition(63, 0);
-            Console.Write($"{secondActor} encountered.          ");
-            Console.SetCursorPosition(63, 1);
-            Console.Write($"{firstActor} rolled {actorDices[0]} to attack, result: {dmgNumbers[0]}.            ");
-            Console.SetCursorPosition(63, 2);
-            Console.Write($"{secondActor} defended using {actorDices[3]}, result: {dmgNumbers[3]}.            ");
-            Console.SetCursorPosition(63, 3);
-            Console.Write($"Damage done by {firstActor} to {secondActor} is: {dmgNumbers[4]}.            ");
+            Console.WriteLine($"{secondActor} encountered.");
+            Console.WriteLine();
+            Console.WriteLine($"{firstActor} rolled {actorDices[0]} to attack, result: {dmgNumbers[0]}.");
+            Console.WriteLine($"{secondActor} defended using {actorDices[3]}, result: {dmgNumbers[3]}.");
+            Console.WriteLine($"Damage done by {firstActor} to {secondActor} is: {dmgNumbers[4]}.");
             if (enemy.IsDead == true)
             {
-                Console.SetCursorPosition(63, 5);
-                Console.Write($"{secondActor} has been slain.                               ");
-                Console.SetCursorPosition(63, 6);
-                Console.Write("                                                    ");
-                Console.SetCursorPosition(63, 7);
-                Console.Write("                                                    ");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine();
+                Console.WriteLine($"{secondActor} has been slain.");
+                for (int i = 9; i < 12; i++)
+                {
+                    Console.SetCursorPosition(0, i);
+                    Console.Write("                                                         ");
+                }
+                Console.ResetColor();
+                enemy.Draw();
             }
             else
             {
+                Console.WriteLine();
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.SetCursorPosition(63, 5);
-                Console.Write($"Counter attack by {secondActor}, {actorDices[2]} with result: {dmgNumbers[2]}.      ");
-                Console.SetCursorPosition(63, 6);
-                Console.Write($"{firstActor} defended with {actorDices[1]}, result: {dmgNumbers[1]}.            ");
-                Console.SetCursorPosition(63, 7);
-                Console.Write($"Counter attack by {secondActor} against {firstActor} did {dmgNumbers[5]}.      ");
-                Console.SetCursorPosition(63, 8);
-                Console.Write("                                                    ");
+                Console.WriteLine($"Counter attack by {secondActor}, {actorDices[2]} with result: {dmgNumbers[2]}.");
+                Console.WriteLine($"{firstActor} defended with {actorDices[1]}, result: {dmgNumbers[1]}.");
+                Console.WriteLine($"Counter attack by {secondActor} against {firstActor} did {dmgNumbers[5]}.");
                 if (player.IsDead == true)
                 {
                     player.GameOver();
@@ -240,35 +221,35 @@ class GameLoop
         }
         else
         {
+            for (int i = 0; i < 12; i++)
+            {
+                Console.SetCursorPosition(0, i);
+                Console.Write("                                                         ");
+            }
+            Console.SetCursorPosition(0, 2);
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.SetCursorPosition(63, 0);
-            Console.Write($"{secondActor} encountered.            ");
-            Console.SetCursorPosition(63, 1);
-            Console.Write($"{firstActor} rolled {actorDices[2]} to attack, result: {dmgNumbers[2]}.            ");
-            Console.SetCursorPosition(63, 2);
-            Console.Write($"{secondActor} defended using {actorDices[1]}, result: {dmgNumbers[1]}.            ");
-            Console.SetCursorPosition(63, 3);
-            Console.Write($"Damage done by {firstActor} to {secondActor} is: {dmgNumbers[5]}.            ");
+            Console.WriteLine($"{secondActor} encountered.");
+            Console.WriteLine();
+            Console.WriteLine($"{firstActor} rolled {actorDices[2]} to attack, result: {dmgNumbers[2]}.");
+            Console.WriteLine($"{secondActor} defended using {actorDices[1]}, result: {dmgNumbers[1]}.");
+            Console.WriteLine($"Damage done by {firstActor} to {secondActor} is: {dmgNumbers[5]}.");
             if (player.IsDead == true)
             {
                 player.GameOver();
             }
             else
             {
+                Console.WriteLine();
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.SetCursorPosition(63, 5);
-                Console.Write($"Counter attack by {secondActor}, {actorDices[0]} with result: {dmgNumbers[0]}.      ");
-                Console.SetCursorPosition(63, 6);
-                Console.Write($"{firstActor} defended with {actorDices[3]}, result: {dmgNumbers[3]}.            ");
-                Console.SetCursorPosition(63, 7);
-                Console.Write($"Counter attack by {secondActor} against {firstActor} did {dmgNumbers[4]}.      ");
-                Console.SetCursorPosition(63, 8);
-                Console.Write("                                                    ");
+                Console.WriteLine($"Counter attack by {secondActor}, {actorDices[0]} with result: {dmgNumbers[0]}.");
+                Console.WriteLine($"{firstActor} defended with {actorDices[3]}, result: {dmgNumbers[3]}.");
+                Console.WriteLine($"Counter attack by {secondActor} against {firstActor} did {dmgNumbers[4]}.");
             }
             if (enemy.IsDead == true)
             {
-                Console.SetCursorPosition(63, 8);
-                Console.Write($"{firstActor} has been slain.                                  ");
+                Console.WriteLine();
+                Console.WriteLine($"{firstActor} has been slain.");
+                enemy.Draw();
             }
         }
     }
@@ -278,20 +259,18 @@ class GameLoop
         switch (equipment.Name)
         {
             case "Magic Sword":
-                Console.SetCursorPosition(63, 5);
-                Console.Write($"The {equipment.Name} have been acquired.         ");
-                Console.SetCursorPosition(63, 6);
-                Console.Write("Attack have been increased to 2D10+2.              ");
+                Console.SetCursorPosition(0, 10);
+                Console.WriteLine($"The {equipment.Name} have been acquired.     ");
+                Console.WriteLine("Attack have been increased to 2D10+2.");
                 player.damageDices = equipment.DamageDices;
                 player.dmgDiceSides = equipment.DmgDiceSides;
                 player.dmgDiceModifier = equipment.DmgDiceModifier;
                 equipment.IsDead = true;
                 break;
             case "Magic Armor":
-                Console.SetCursorPosition(63, 5);
-                Console.Write($"The {equipment.Name} have been acquired.         ");
-                Console.SetCursorPosition(63, 6);
-                Console.Write("Defense have been increased to 2D8+2.              ");
+                Console.SetCursorPosition(0, 10);
+                Console.WriteLine($"The {equipment.Name} have been acquired.     ");
+                Console.WriteLine("Defense have been increased to 2D8+2.");
                 player.defenseDices = equipment.DefenseDice;
                 player.defDiceSides = equipment.DefDiceSides;
                 player.defDiceModifier = equipment.DefDiceModifier;
@@ -305,8 +284,12 @@ class GameLoop
         {
             case "Food":
                 {
-                    Console.SetCursorPosition(63, 5);
-                    Console.Write($"{item.Name} acquired, HP restored with {item.HealthRestore}.              ");
+                    for (int i = 13; i > 15; i++)
+                    {
+                        Console.Write("                                                         ");
+                    }
+                    Console.SetCursorPosition(0, 13);
+                    Console.WriteLine($"{item.Name} acquired, HP restored with {item.HealthRestore}.");
                     player.currentHealth = player.currentHealth + item.HealthRestore;
                     NewHP = player.currentHealth;
                     item.IsDead = true;
@@ -314,8 +297,12 @@ class GameLoop
                 }
             case "Potion":
                 {
-                    Console.SetCursorPosition(63, 5);
-                    Console.Write($"{item.Name} acquired, HP restored with {item.HealthRestore}.              ");
+                    for (int i = 13; i > 13; i++)
+                    {
+                        Console.Write("                                                         "); 
+                    }
+                    Console.SetCursorPosition(0, 13);
+                    Console.WriteLine($"{item.Name} acquired, HP restored with {item.HealthRestore}.");
                     player.currentHealth = player.currentHealth + item.HealthRestore;
                     NewHP = player.currentHealth;
                     item.IsDead = true;

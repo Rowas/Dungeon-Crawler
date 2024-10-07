@@ -16,6 +16,7 @@
         defDiceModifier = 0;
         IsDead = false;
         IsVisible = false;
+        this.Draw();
     }
 
     public override void Update(List<LevelElements> elements)

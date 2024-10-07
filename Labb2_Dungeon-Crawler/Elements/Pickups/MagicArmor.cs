@@ -12,6 +12,7 @@ class Armor : Equipment
         DefDiceSides = 8;
         DefDiceModifier = 2;
         IsDead = false;
+        this.Draw();
     }
 
     public override void Update(List<LevelElements> elements)

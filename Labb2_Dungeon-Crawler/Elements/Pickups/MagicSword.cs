@@ -12,6 +12,7 @@ class Sword : Equipment
         DmgDiceSides = 10;
         DmgDiceModifier = 2;
         IsDead = false;
+        this.Draw();
     }
 
     public override void Update(List<LevelElements> elements)
