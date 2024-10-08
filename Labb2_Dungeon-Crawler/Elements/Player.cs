@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Numerics;
 using System.Reflection.Metadata;
+using System.Linq;
 
 class Player : LevelElements
 {
@@ -35,40 +36,24 @@ class Player : LevelElements
         switch (checkKey.Key)
         {
             case ConsoleKey.RightArrow:
-                {
-                    TakeStep(1, 'H', elements);
-                    break;
-                }
+                TakeStep(1, 'H', elements);
+                break;
             case ConsoleKey.LeftArrow:
-                {
-                    TakeStep(-1, 'H', elements);
-                    break;
-                }
-            case ConsoleKey.UpArrow:
-                {
-                    TakeStep(-1, 'V', elements);
-                    break;
-                }
+                TakeStep(-1, 'H', elements);
+                break;
+            case ConsoleKey.UpArrow:            
+                TakeStep(-1, 'V', elements);
+                break;
             case ConsoleKey.DownArrow:
-                {
-                    TakeStep(1, 'V', elements);
-                    break;
-                }
-            case ConsoleKey.Spacebar:
-                {
-                    Draw();
-                    break;
-                }
+                TakeStep(1, 'V', elements);
+                break;
             case ConsoleKey.Escape:
-                {
-                    Console.SetCursorPosition(0, 21);
-                    Environment.Exit(0);
-                    break;
-                }
+                Console.SetCursorPosition(0, 21);
+                Environment.Exit(0);
+                break;
             default:
-                {
-                    break;
-                }
+                Draw();
+                break;
         }
         Console.ResetColor();
     }
@@ -81,62 +66,47 @@ class Player : LevelElements
             {
                 if (elements.Any(b => b.Position == (Position.Item1 + i, Position.Item2 + j)) == true)
                 {
-                    foreach (var element in elements)
+                    foreach (var element in from element in elements
+                                            where element.Position == (Position.Item1 + i, Position.Item2 + j)
+                                            select element)
                     {
-                        if (element.Position == (Position.Item1 + i, Position.Item2 + j))
+                        switch (element)
                         {
-                            if (element is Wall)
-                            {
+                            case Wall:
                                 Wall wall = (Wall)element;
                                 if (wall.IsVisible == false)
                                 {
                                     wall.IsVisible = true;
                                     wall.DrawWall();
                                 }
-                                else
-                                {
-                                    continue;
-                                }
-                            }
-                            else if (element is Enemy)
-                            {
+                                break;
+
+                            case Enemy:
                                 Enemy enemy = (Enemy)element;
                                 if (enemy.IsVisible == false)
                                 {
                                     enemy.IsVisible = true;
                                     enemy.Draw();
                                 }
-                                else
-                                {
-                                    continue;
-                                }
-                            }
-                            else if (element is Equipment)
-                            {
+                                break;
+
+                            case Equipment:
                                 Equipment equipment = (Equipment)element;
                                 if (equipment.IsVisible == false)
                                 {
                                     equipment.IsVisible = true;
                                     equipment.Draw();
                                 }
-                                else
-                                {
-                                    continue;
-                                }
-                            }
-                            else if (element is Items)
-                            {
+                                break;
+
+                            case Items:
                                 Items item = (Items)element;
                                 if (item.IsVisible == false)
                                 {
                                     item.IsVisible = true;
                                     item.Draw();
                                 }
-                                else
-                                {
-                                    continue;
-                                }
-                            }
+                                break;
                         }
                     }
                 }
@@ -144,12 +114,12 @@ class Player : LevelElements
         }
     }
 
-    public void TakeStep(int d, char dir, List<LevelElements> elements)
+    public void TakeStep(int d, char direction, List<LevelElements> elements)
     {
-        if (dir == 'H')
+        if (direction == 'H')
         {
             
-            d = TileCheck(d, dir, elements);
+            d = TileCheck(d, direction, elements);
             Console.SetCursorPosition(Position.Item1, Position.Item2);
             Position = (Position.Item1 + d, Position.Item2);
             DrawPlayer();
@@ -157,17 +127,17 @@ class Player : LevelElements
         }
         else
         {
-            d = TileCheck(d, dir, elements);
+            d = TileCheck(d, direction, elements);
             Console.SetCursorPosition(Position.Item1, Position.Item2);
             Position = (Position.Item1, Position.Item2 + d);
             DrawPlayer();
         }
     }
-    public int TileCheck(int d, char dir, List<LevelElements> elements)
+    public int TileCheck(int d, char direction, List<LevelElements> elements)
     {
         int x = 0;
         int y = 0;
-        switch (dir)
+        switch (direction)
         {
             case 'H':
                 x = d; break;
@@ -177,33 +147,33 @@ class Player : LevelElements
 
         if (elements.Any(b => b.Position == (Position.Item1 + x, Position.Item2 + y)) == true)
         {
-            foreach (var element in elements.ToList())
+            foreach (var element in from element in elements.ToList()
+                                    where element.Position == (Position.Item1 + x, Position.Item2 + y)
+                                    select element)
             {
-                if (element.Position == (Position.Item1 + x, Position.Item2 + y))
+                switch (element)
                 {
-                    switch (element)
-                    {
-                        case Rat:
-                            GameLoop.Encounter(this, (Rat)element, 'P', elements);
-                            break;
-                        case Snake:
-                            GameLoop.Encounter(this, (Snake)element, 'P', elements);
-                            break;
-                        case Boss:
-                            GameLoop.Encounter(this, (Boss)element, 'P', elements);
-                            break;
-                        case Guard:
-                            GameLoop.Encounter(this, (Guard)element, 'P', elements);
-                            break;
-                        case Equipment:
-                            GameLoop.EquipmentPickup(this, (Equipment)element, elements);
-                            return d;
-                        case Items:
-                            GameLoop.ItemPickup(this, (Items)element, elements);
-                            return d;
-                    }
+                    case Rat:
+                        GameLoop.Encounter(this, (Rat)element, 'P', elements);
+                        break;
+                    case Snake:
+                        GameLoop.Encounter(this, (Snake)element, 'P', elements);
+                        break;
+                    case Boss:
+                        GameLoop.Encounter(this, (Boss)element, 'P', elements);
+                        break;
+                    case Guard:
+                        GameLoop.Encounter(this, (Guard)element, 'P', elements);
+                        break;
+                    case Equipment:
+                        GameLoop.EquipmentPickup(this, (Equipment)element, elements);
+                        return d;
+                    case Items:
+                        GameLoop.ItemPickup(this, (Items)element, elements);
+                        return d;
                 }
             }
+
             return 0;
         }
         else

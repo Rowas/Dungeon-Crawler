@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using System.Linq;
 
 class Rat : Enemy
 {
@@ -29,52 +30,45 @@ class Rat : Enemy
         switch (rand)
         {
             case 1:
-                {
                     TakeStep(1, 'H', elements);
                     break;
-                }
             case 2:
-                {
                     TakeStep(-1, 'H', elements);
                     break;
-                }
             case 3:
-                {
                     TakeStep(-1, 'V', elements);
                     break;
-                }
             case 4:
-                {
                     TakeStep(1, 'V', elements);
                     break;
-                }
         }
         Console.ResetColor();
     }
 
-    public void TakeStep(int d, char dir, List<LevelElements> elements)
+    public void TakeStep(int d, char direction, List<LevelElements> elements)
     {
-        if (dir == 'H')
+        switch (direction)
         {
-            d = TileCheck(d, dir, elements);
-            Console.SetCursorPosition(Position.Item1, Position.Item2);
-            Position = (Position.Item1 + d, Position.Item2);
-            Draw();
-        }
-        else
-        {
-            d = TileCheck(d, dir, elements);
-            Console.SetCursorPosition(Position.Item1, Position.Item2);
-            Position = (Position.Item1, Position.Item2 + d);
-            Draw();
+            case 'H':
+                d = TileCheck(d, direction, elements);
+                Console.SetCursorPosition(Position.Item1, Position.Item2);
+                Position = (Position.Item1 + d, Position.Item2);
+                Draw();
+                break;
+            default:
+                d = TileCheck(d, direction, elements);
+                Console.SetCursorPosition(Position.Item1, Position.Item2);
+                Position = (Position.Item1, Position.Item2 + d);
+                Draw();
+                break;
         }
     }
 
-    public int TileCheck(int d, char dir, List<LevelElements> elements)
+    public int TileCheck(int d, char direction, List<LevelElements> elements)
     {
         int x = 0;
         int y = 0;
-        switch (dir)
+        switch (direction)
         {
             case 'H':
                 x = d; break;
@@ -84,17 +78,15 @@ class Rat : Enemy
 
         if (elements.Any(b => b.Position == (Position.Item1 + x, Position.Item2 + y)) == true)
         {
-            foreach (var element in elements)
+            foreach (var element in from element in elements
+                                    where element.Position == (Position.Item1 + x, Position.Item2 + y)
+                                    where element is Player
+                                    select element)
             {
-                if (element.Position == (Position.Item1 + x, Position.Item2 + y))
-                {
-                    if (element is Player)
-                    {
-                        GameLoop.Encounter((Player)element, this, 'E', elements);
-                        return 0;
-                    }
-                }
+                GameLoop.Encounter((Player)element, this, 'E', elements);
+                return 0;
             }
+
             return 0;
         }
         else

@@ -6,35 +6,37 @@
     public bool IsVisible { get; set; } = false;
     public void Draw()
     {
-        if (this.IsVisible == true)
+        switch (IsVisible)
         {
-        Console.SetCursorPosition(Position.Item1, Position.Item2);
-        Console.Write(" ");
-        Console.SetCursorPosition(Position.Item1, Position.Item2);
-        Console.ForegroundColor = (ConsoleColor)objectColor;
-        Console.Write(objectTile);
-        Console.ResetColor();
-        }
-        else
-        {
-            Console.Write(" ");
-            Console.SetCursorPosition(Position.Item1, Position.Item2);
+            case true:
+                Console.SetCursorPosition(Position.Item1, Position.Item2);
+                Console.Write(" ");
+                Console.SetCursorPosition(Position.Item1, Position.Item2);
+                Console.ForegroundColor = objectColor;
+                Console.Write(objectTile);
+                Console.ResetColor();
+                break;
+            default:
+                Console.Write(" ");
+                Console.SetCursorPosition(Position.Item1, Position.Item2);
+                break;
         }
     }
     public void DrawPlayer()
     {
-        if (this.IsVisible == true)
+        switch (IsVisible)
         {
-            Console.Write(" ");
-            Console.SetCursorPosition(Position.Item1, Position.Item2);
-            Console.ForegroundColor = (ConsoleColor)objectColor;
-            Console.Write(objectTile);
-            Console.ResetColor();
-        }
-        else
-        {
-            Console.Write(" ");
-            Console.SetCursorPosition(Position.Item1, Position.Item2);
+            case true:
+                Console.Write(" ");
+                Console.SetCursorPosition(Position.Item1, Position.Item2);
+                Console.ForegroundColor = objectColor;
+                Console.Write(objectTile);
+                Console.ResetColor();
+                break;
+            default:
+                Console.Write(" ");
+                Console.SetCursorPosition(Position.Item1, Position.Item2);
+                break;
         }
     }
     public void DrawWall()

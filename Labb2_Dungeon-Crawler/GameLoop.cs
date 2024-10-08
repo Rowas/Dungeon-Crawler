@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Linq;
 
 class GameLoop
 {
@@ -45,32 +46,31 @@ class GameLoop
         Console.WriteLine("Use arrow keys to move, space to wait, and escape to exit.");
         Console.WriteLine();
 
-        foreach (LevelElements element in Level1.Elements)
+        foreach (var player in from LevelElements element in Level1.Elements
+                               where element is Player
+                               let player = (Player)element
+                               select player)
         {
-            if (element is Player)
-            {
-                Player player = (Player)element;
-                player.Exploration(Level1.Elements);
-            }
+            player.Exploration(Level1.Elements);
         }
 
         do
         {
-            foreach (LevelElements element in Level1.Elements)
+            foreach (var player in from LevelElements element in Level1.Elements
+                                   where element is Player
+                                   let player = (Player)element
+                                   select player)
             {
-                if (element is Player)
+                player.Exploration(Level1.Elements);
+                MaxHP = player.maxHealth;
+                CurrentHP = player.currentHealth;
+                if (CurrentHP > player.maxHealth)
                 {
-                    Player player = (Player)element;
-                    player.Exploration(Level1.Elements);
-                    MaxHP = player.maxHealth;
-                    CurrentHP = player.currentHealth;
-                    if (CurrentHP > player.maxHealth)
-                    {
-                        player.currentHealth = player.maxHealth;
-                        CurrentHP = player.maxHealth;
-                    }
+                    player.currentHealth = player.maxHealth;
+                    CurrentHP = player.maxHealth;
                 }
             }
+
             Console.ResetColor();
             Console.SetCursorPosition(0, 0);
             Console.Write($"Player: {Name} | HP: {CurrentHP} / {MaxHP}  Turn: {turnCounter++}         ");
@@ -166,7 +166,15 @@ class GameLoop
         PrintCombatResult(playerCombat, enemyCombat, playerDamage, enemyDamage, firstActor, secondActor, player, enemy, elements);
     }
 
-    public static void PrintCombatResult((int,string,int,string) playerCombat, (int,string,int,string) enemyCombat, int playerDamage, int enemyDamage, string firstActor, string secondActor, Player player, Enemy enemy, List<LevelElements> elements)
+    public static void PrintCombatResult((int, string, int, string) playerCombat,
+                                         (int, string, int, string) enemyCombat,
+                                         int playerDamage,
+                                         int enemyDamage,
+                                         string firstActor,
+                                         string secondActor,
+                                         Player player,
+                                         Enemy enemy,
+                                         List<LevelElements> elements)
     {
         if (firstActor == "Adventurer")
         {

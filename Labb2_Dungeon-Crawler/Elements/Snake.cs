@@ -44,17 +44,14 @@ class Snake : Enemy
             {
                 if (elements.Any(b => b.Position == (Position.Item1 + i, Position.Item2 + j)) == true)
                 {
-                    foreach (var element in elements)
+                    foreach (var element in from element in elements
+                                            where element.Position == (Position.Item1 + i, Position.Item2 + j)
+                                            where element is Player
+                                            select element)
                     {
-                        if (element.Position == (Position.Item1 + i, Position.Item2 + j))
-                        {
-                            if (element is Player)
-                            {
-                                Console.SetCursorPosition(0, 2);
-                                Player player = (Player)element;
-                                TakeStep(-i, -j, elements);
-                            }
-                        }
+                        Console.SetCursorPosition(0, 2);
+                        Player player = (Player)element;
+                        TakeStep(-i, -j, elements);
                     }
                 }
             }
@@ -72,14 +69,7 @@ class Snake : Enemy
     public (int, int) TileCheck(int h, int v, List<LevelElements> elements)
     {
 
-        if (elements.Any(b => b.Position == (Position.Item1 + h, Position.Item2 + v)) == true)
-        {
-            return (0, 0);
-        }
-        else
-        {
-            return (h, v);
-        }
+        return elements.Any(b => b.Position == (Position.Item1 + h, Position.Item2 + v)) == true ? (0, 0) : (h, v);
     }
 
 }
