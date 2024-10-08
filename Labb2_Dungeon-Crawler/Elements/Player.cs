@@ -31,6 +31,11 @@ class Player : LevelElements
         this.Draw();
     }
 
+    public Player()
+    { 
+
+    }
+
     public void Movement(ConsoleKeyInfo checkKey, List<LevelElements> elements)
     {
         switch (checkKey.Key)
@@ -60,55 +65,51 @@ class Player : LevelElements
 
     public void Exploration(List<LevelElements> elements)
     {
-        for (int i = -5; i < 6; i++)
+        Player player = new Player();
+        player.Position = this.Position;
+        if (elements.Any(b => double.Hypot((b.Position.Item1 - player.Position.Item1), (b.Position.Item2 - player.Position.Item2)) <= 5) == true)
         {
-            for (int j = -5; j < 6; j++)
+            foreach (var element in from LevelElements element in elements
+                                    where double.Hypot((element.Position.Item1 - player.Position.Item1), (element.Position.Item2 - player.Position.Item2)) <= 5
+                                    select element)
             {
-                if (elements.Any(b => b.Position == (Position.Item1 + i, Position.Item2 + j)) == true)
+                switch (element)
                 {
-                    foreach (var element in from element in elements
-                                            where element.Position == (Position.Item1 + i, Position.Item2 + j)
-                                            select element)
-                    {
-                        switch (element)
+                    case Wall:
+                        Wall wall = (Wall)element;
+                        if (wall.IsVisible == false)
                         {
-                            case Wall:
-                                Wall wall = (Wall)element;
-                                if (wall.IsVisible == false)
-                                {
-                                    wall.IsVisible = true;
-                                    wall.DrawWall();
-                                }
-                                break;
-
-                            case Enemy:
-                                Enemy enemy = (Enemy)element;
-                                if (enemy.IsVisible == false)
-                                {
-                                    enemy.IsVisible = true;
-                                    enemy.Draw();
-                                }
-                                break;
-
-                            case Equipment:
-                                Equipment equipment = (Equipment)element;
-                                if (equipment.IsVisible == false)
-                                {
-                                    equipment.IsVisible = true;
-                                    equipment.Draw();
-                                }
-                                break;
-
-                            case Items:
-                                Items item = (Items)element;
-                                if (item.IsVisible == false)
-                                {
-                                    item.IsVisible = true;
-                                    item.Draw();
-                                }
-                                break;
+                            wall.IsVisible = true;
+                            wall.DrawWall();
                         }
-                    }
+                        break;
+
+                    case Enemy:
+                        Enemy enemy = (Enemy)element;
+                        if (enemy.IsVisible == false)
+                        {
+                            enemy.IsVisible = true;
+                            enemy.Draw();
+                        }
+                        break;
+
+                    case Equipment:
+                        Equipment equipment = (Equipment)element;
+                        if (equipment.IsVisible == false)
+                        {
+                            equipment.IsVisible = true;
+                            equipment.Draw();
+                        }
+                        break;
+
+                    case Items:
+                        Items item = (Items)element;
+                        if (item.IsVisible == false)
+                        {
+                            item.IsVisible = true;
+                            item.Draw();
+                        }
+                        break;
                 }
             }
         }
