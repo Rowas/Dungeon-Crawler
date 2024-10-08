@@ -50,7 +50,7 @@ class GameLoop
             if (element is Player)
             {
                 Player player = (Player)element;
-                player.DistanceCheck(Level1.Elements);
+                player.Exploration(Level1.Elements);
             }
         }
 
@@ -61,7 +61,7 @@ class GameLoop
                 if (element is Player)
                 {
                     Player player = (Player)element;
-                    player.DistanceCheck(Level1.Elements);
+                    player.Exploration(Level1.Elements);
                     MaxHP = player.maxHealth;
                     CurrentHP = player.currentHealth;
                     if (CurrentHP > player.maxHealth)

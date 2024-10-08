@@ -73,7 +73,7 @@ class Player : LevelElements
         Console.ResetColor();
     }
 
-    public void DistanceCheck(List<LevelElements> elements)
+    public void Exploration(List<LevelElements> elements)
     {
         for (int i = -5; i < 6; i++)
         {
