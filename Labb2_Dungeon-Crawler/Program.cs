@@ -7,7 +7,7 @@ internal class Program
         //Main Menu
         Console.WriteLine("Welcome, Adventurer.");
         Console.WriteLine("You have entered a dark place.");
-        Console.WriteLine("Let's hope you are not eaten by a Grue in the darkness.");
+        Console.WriteLine("Let's hope you survive...");
         Console.WriteLine();
         string levelFile = "";
         Console.WriteLine("Pick an option:");

@@ -322,7 +322,7 @@
                     {
                         Console.Write("                                                         ");
                     }
-                    Console.SetCursorPosition(0, 13);
+                    Console.SetCursorPosition(0, 15);
                     Console.WriteLine($"{item.Name} acquired, HP restored with {item.HealthRestore}.");
                     player.currentHealth = player.currentHealth + item.HealthRestore;
                     NewHP = player.currentHealth;
@@ -340,7 +340,7 @@
                     {
                         Console.Write("                                                         ");
                     }
-                    Console.SetCursorPosition(0, 13);
+                    Console.SetCursorPosition(0, 15);
                     Console.WriteLine($"{item.Name} acquired, HP restored with {item.HealthRestore}.");
                     player.currentHealth = player.currentHealth + item.HealthRestore;
                     NewHP = player.currentHealth;

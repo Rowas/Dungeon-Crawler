@@ -46,7 +46,7 @@
     {
         if (IsWarned == false)
         {
-            Console.SetCursorPosition(0, 17);
+            Console.SetCursorPosition(0, 20);
             Console.WriteLine("It's dark in here ... I hope I don't get eaten by a Grue...");
             IsWarned = true;
         }
