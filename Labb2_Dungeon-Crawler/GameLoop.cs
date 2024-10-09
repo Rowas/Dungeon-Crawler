@@ -1,4 +1,6 @@
-﻿class GameLoop
+﻿using System.Xml.Linq;
+
+class GameLoop
 {
     private int turnCounter = 1;
     private string Name = "Adventurer";

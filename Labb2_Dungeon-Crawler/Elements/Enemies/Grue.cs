@@ -10,7 +10,7 @@ class Grue : Enemy
     {
         var rand = new Random();
         rand.NextDouble();
-        if (rand.NextDouble() > 0.05)
+        if (rand.NextDouble() < 0.05)
         {
             IsSpawned = true;
         }
