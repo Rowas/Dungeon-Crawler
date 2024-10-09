@@ -27,6 +27,7 @@
 
     public void GameRunning()
     {
+        Console.CursorVisible = false;
         Console.WriteLine();
         Console.WriteLine();
         Console.WriteLine();
@@ -124,11 +125,11 @@
                         break;
                     case Items:
                         Items item = (Items)element;
-                        item.Update(level.Elements);
+                        item.Update(Level.Elements);
                         break;
                     case Equipment:
                         Equipment equipment = (Equipment)element;
-                        equipment.Update(level.Elements);
+                        equipment.Update(Level.Elements);
                         break;
                 }
             }

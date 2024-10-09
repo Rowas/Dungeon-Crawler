@@ -1,18 +1,22 @@
 ﻿//Labb2 - Dungeon Crawler
 //Labb2 for C# programming in .NET-developer edu program on ITHS Fall 2024.
+using System;
+
 internal class Program
 {
     private static void Main(string[] args)
     {
-        //Main Menu
-        Console.WriteLine("Welcome, Adventurer.");
-        Console.WriteLine("You have entered a dark place.");
-        Console.WriteLine("Let's hope you survive...");
-        Console.WriteLine();
         string levelFile = "";
-        Console.WriteLine("Pick an option:");
-        Console.WriteLine("1. Load a pre-made map.");
-        Console.WriteLine("2. Load a custom map.");
+
+        //Main Menu
+        CenterText("Welcome, Adventurer.");
+        CenterText("You have entered a dark place.");
+        CenterText("Let's hope you survive...");
+        Console.WriteLine();
+        CenterText("Pick an option:");
+        CenterText("1. Load a pre-made map.");
+        CenterText("2. Load a custom map.");
+        Console.SetCursorPosition(Console.WindowWidth / 2, 7);
         string menuChoice = Console.ReadLine();
 
         switch (menuChoice)
@@ -28,7 +32,6 @@ internal class Program
                 break;
         }
 
-        Console.CursorVisible = false;
         Console.Clear();
         GameLoop start = new GameLoop();
         start.StartUp(levelFile);
@@ -38,9 +41,10 @@ internal class Program
     public static string LevelPicker()
     {
         Console.Clear();
-        Console.WriteLine("1. Level 1 (default map).");
-        Console.WriteLine("2. Level 1 (/w Boss).");
-        Console.WriteLine("Answer with the number matching your choice:");
+        CenterText("1. Level 1 (default map).");
+        CenterText("2. Level 1 (/w Boss).");
+        CenterText("Answer with the number matching your choice:");
+        Console.SetCursorPosition(Console.WindowWidth / 2, 3);
         string pickedLevel = Console.ReadLine();
         switch (pickedLevel)
         {
@@ -60,8 +64,12 @@ internal class Program
     public static string CustomMap()
     {
         Console.Clear();
-        Console.WriteLine("Enter the name of your custom map.");
-        Console.WriteLine("Map file have to be placed in ./Levels/ \nas a .txt file and correctly formatted to work. \n\nConsult pre-made maps for requirements. \nFor further information, type 'Help' or '?'.");
+        CenterText("Enter the name of your custom map.");
+        CenterText("Map file have to be placed in ./Levels/");
+        CenterText("as a .txt file and correctly formatted to work.");
+        CenterText("Consult pre-made maps for requirements.");
+        CenterText("For further information, type 'Help' or '?'.");
+        Console.SetCursorPosition(Console.WindowWidth / 2, 5);
         string customMap = Console.ReadLine();
         switch (customMap)
         {
@@ -84,8 +92,23 @@ internal class Program
     public static void MapHelp()
     {
         Console.Clear();
-        Console.WriteLine("The following characters are required for a functioning map: \n@ = Player tile \n# = Wall tile \n");
-        Console.WriteLine("The following characters are optional for the map: \nr = Rats \ns = Snakes \nG = Guards \nF/P = Restorative items (25/50 HP) \nA = Magic Armor \nW = Magic Sword \nB = Boss monster\n");
-        Console.WriteLine("After having created a custom map, place it in .\\Levels\\ as a txt-file and reload the program.");
+        CenterText("The following characters are required for a functioning map: ");CenterText("@ = Player tile"); CenterText("# = Wall tile");
+        Console.WriteLine();
+        CenterText("The following characters are optional for the map: ");
+        CenterText("r = Rats");
+        CenterText("s = Snakes");
+        CenterText("G = Guards");
+        CenterText("F /P = Restorative items (25/50 HP)");
+        CenterText("A = Magic Armor");
+        CenterText("W = Magic Sword");
+        CenterText("B = Boss monster");
+        Console.WriteLine();
+        CenterText("After having created a custom map, place it in .\\Levels\\ as a txt-file and reload the program.");
+    }   
+
+    private static void CenterText(String text)
+    {
+        Console.Write(new string(' ', (Console.WindowWidth - text.Length) / 2));
+        Console.WriteLine(text);
     }
 }
