@@ -10,15 +10,9 @@
 
     public ConsoleKeyInfo checkKey;
 
-    private LevelData level1 = new LevelData();
+    private LevelData _level = new LevelData();
 
-    public LevelData Level1
-    {
-        get
-        {
-            return level1;
-        }
-    }
+    public LevelData Level { get { return _level; } }
 
     public void StartUp(string levelFile)
     {
@@ -28,7 +22,7 @@
 
         Directory.SetCurrentDirectory(".\\Levels\\");
 
-        level1.Load(levelFile);
+        Level.Load(levelFile);
     }
 
     public void GameRunning()
@@ -40,19 +34,19 @@
         Console.WriteLine("Use arrow keys to move, space to wait, and escape to exit.");
         Console.WriteLine();
 
-        foreach (var player in from LevelElements element in Level1.Elements
+        foreach (var player in from LevelElements element in Level.Elements
                                where element is Player
                                let player = (Player)element
                                select player)
         {
-            player.Exploration(Level1.Elements);
+            player.Exploration(Level.Elements);
         }
-        foreach (var grue in from LevelElements element in Level1.Elements
+        foreach (var grue in from LevelElements element in Level.Elements
                              where element is Grue
                              let grue = (Grue)element
                              select grue)
         {
-            grue.Update(Level1.Elements.ToList());
+            grue.Update(Level.Elements.ToList());
         }
 
         do
@@ -62,8 +56,8 @@
                 var rand = new Random();
                 if (rand.NextDouble() < 0.25)
                 {
-                    var elements = Level1.Elements.ToList();
-                    foreach (LevelElements element in Level1.Elements.ToList())
+                    var elements = Level.Elements.ToList();
+                    foreach (LevelElements element in Level.Elements.ToList())
                     {
                         if (element is Grue || LevelElements.GrueSpawned == true)
                         {
@@ -71,29 +65,29 @@
                         }
                         else
                         {
-                            Level1.Elements.ToList();
+                            Level.Elements.ToList();
                             if (rand.NextDouble() < 0.5)
                             {
                                 LevelElements.GrueSpawned = true;
-                                Level1.Elements.Add(new Grue(107, 13));
+                                Level.Elements.Add(new Grue(107, 13));
                                 Grue.Warning();
                             }
                             else
                             {
                                 LevelElements.GrueSpawned = true;
-                                Level1.Elements.Add(new Grue(63, 6));
+                                Level.Elements.Add(new Grue(63, 6));
                                 Grue.Warning();
                             }
                         }
                     }
                 }
             }
-            foreach (var player in from LevelElements element in Level1.Elements
+            foreach (var player in from LevelElements element in Level.Elements
                                    where element is Player
                                    let player = (Player)element
                                    select player)
             {
-                player.Exploration(Level1.Elements);
+                player.Exploration(Level.Elements);
                 MaxHP = player.maxHealth;
                 CurrentHP = player.currentHealth;
                 if (CurrentHP > player.maxHealth)
@@ -112,17 +106,17 @@
             }
             checkKey = Console.ReadKey(true);
 
-            foreach (LevelElements element in Level1.Elements.ToList())
+            foreach (LevelElements element in Level.Elements.ToList())
             {
                 switch (element)
                 {
                     case Player:
                         Player player = (Player)element;
-                        player.Movement(checkKey, Level1.Elements);
+                        player.Movement(checkKey, Level.Elements);
                         break;
                     case Enemy:
                         Enemy enemy = (Enemy)element;
-                        enemy.Update(Level1.Elements);
+                        enemy.Update(Level.Elements);
                         break;
                     case Wall:
                         Wall wall = (Wall)element;
@@ -130,11 +124,11 @@
                         break;
                     case Items:
                         Items item = (Items)element;
-                        item.Update(level1.Elements);
+                        item.Update(level.Elements);
                         break;
                     case Equipment:
                         Equipment equipment = (Equipment)element;
-                        equipment.Update(level1.Elements);
+                        equipment.Update(level.Elements);
                         break;
                 }
             }
