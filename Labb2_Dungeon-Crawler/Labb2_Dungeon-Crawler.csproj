@@ -15,7 +15,7 @@
     <None Update="Levels\Level1_w_Boss.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Levels\Level2.txt">
+    <None Update="Levels\TestMap.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
