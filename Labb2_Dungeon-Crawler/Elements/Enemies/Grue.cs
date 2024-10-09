@@ -1,18 +1,13 @@
-﻿
-using System.Collections.Generic;
-using System.Data;
-
-class Grue : Enemy
+﻿class Grue : Enemy
 {
-    public bool IsSpawned { get; set; }
-    public bool IsWarned{ get; set; }
+    public static bool IsWarned { get; set; }
     public Grue(int x, int y)
     {
         var rand = new Random();
         rand.NextDouble();
-        if (rand.NextDouble() < 0.05)
+        if (rand.NextDouble() < 0.1)
         {
-            IsSpawned = true;
+            GrueSpawned = true;
         }
         Position = (x, y);
         objectTile = 'g';
@@ -34,14 +29,8 @@ class Grue : Enemy
 
     public override void Update(List<LevelElements> elements)
     {
-        if (IsSpawned == true)
+        if (GrueSpawned == true)
         {
-            if (IsWarned == false)
-            {
-                Console.SetCursorPosition(0, 17);
-                Console.WriteLine("It's dark in here ... I hope I don't get eaten by a Grue...");
-                IsWarned = true;
-            }
             IsVisible = false;
 
             Console.SetCursorPosition(Position.Item1, Position.Item2);
@@ -50,6 +39,16 @@ class Grue : Enemy
         else
         {
             Die(elements);
+        }
+    }
+
+    public static void Warning()
+    {
+        if (IsWarned == false)
+        {
+            Console.SetCursorPosition(0, 17);
+            Console.WriteLine("It's dark in here ... I hope I don't get eaten by a Grue...");
+            IsWarned = true;
         }
     }
 }

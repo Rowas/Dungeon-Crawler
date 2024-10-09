@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-class GameLoop
+﻿class GameLoop
 {
     private int turnCounter = 1;
     private string Name = "Adventurer";
@@ -59,6 +57,37 @@ class GameLoop
 
         do
         {
+            if (turnCounter > 50)
+            {
+                var rand = new Random();
+                if (rand.NextDouble() < 0.25)
+                {
+                    var elements = Level1.Elements.ToList();
+                    foreach (LevelElements element in Level1.Elements.ToList())
+                    {
+                        if (element is Grue || LevelElements.GrueSpawned == true)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            Level1.Elements.ToList();
+                            if (rand.NextDouble() < 0.5)
+                            {
+                                LevelElements.GrueSpawned = true;
+                                Level1.Elements.Add(new Grue(107, 13));
+                                Grue.Warning();
+                            }
+                            else
+                            {
+                                LevelElements.GrueSpawned = true;
+                                Level1.Elements.Add(new Grue(63, 6));
+                                Grue.Warning();
+                            }
+                        }
+                    }
+                }
+            }
             foreach (var player in from LevelElements element in Level1.Elements
                                    where element is Player
                                    let player = (Player)element

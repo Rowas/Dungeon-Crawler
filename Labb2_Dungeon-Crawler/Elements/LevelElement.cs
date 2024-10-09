@@ -4,6 +4,7 @@
     public char objectTile { get; set; }
     public ConsoleColor objectColor { get; set; }
     public bool IsVisible { get; set; } = false;
+    public static bool GrueSpawned { get; set; }
     public void Draw()
     {
         switch (IsVisible)

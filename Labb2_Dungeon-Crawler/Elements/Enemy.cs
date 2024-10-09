@@ -49,6 +49,10 @@
         {
             Boss.YouWin();
         }
+        if (this is Grue)
+        {
+            GrueSpawned = false;
+        }
 
     }
 
