@@ -1,15 +1,9 @@
-﻿using System.ComponentModel.Design;
-using System.Globalization;
-using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Linq;
-
-class GameLoop
+﻿class GameLoop
 {
     private int turnCounter = 1;
     private string Name = "Adventurer";
 
-    public int CurrentHP {  get; private set; }
+    public int CurrentHP { get; private set; }
     public int MaxHP { get; private set; }
 
     static int NewHP = 100;
@@ -306,7 +300,7 @@ class GameLoop
                 {
                     for (int i = 13; i > 13; i++)
                     {
-                        Console.Write("                                                         "); 
+                        Console.Write("                                                         ");
                     }
                     Console.SetCursorPosition(0, 13);
                     Console.WriteLine($"{item.Name} acquired, HP restored with {item.HealthRestore}.");

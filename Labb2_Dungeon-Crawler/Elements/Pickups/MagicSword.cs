@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-class Sword : Equipment
+﻿class Sword : Equipment
 {
     public Sword(int x, int y)
     {

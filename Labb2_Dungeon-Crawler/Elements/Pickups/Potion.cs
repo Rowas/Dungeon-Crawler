@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-class Potion : Items
+﻿class Potion : Items
 {
     public Potion(int x, int y)
     {

@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-class Wall : LevelElements
+﻿class Wall : LevelElements
 {
     public Wall(int x, int y)
     {

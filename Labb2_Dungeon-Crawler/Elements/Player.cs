@@ -1,10 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Numerics;
-using System.Reflection.Metadata;
-using System.Linq;
-
-class Player : LevelElements
+﻿class Player : LevelElements
 {
     public string Name = "Adventurer";
     public int maxHealth = 100;
@@ -32,7 +26,7 @@ class Player : LevelElements
     }
 
     public Player()
-    { 
+    {
 
     }
 
@@ -46,7 +40,7 @@ class Player : LevelElements
             case ConsoleKey.LeftArrow:
                 TakeStep(-1, 'H', elements);
                 break;
-            case ConsoleKey.UpArrow:            
+            case ConsoleKey.UpArrow:
                 TakeStep(-1, 'V', elements);
                 break;
             case ConsoleKey.DownArrow:
@@ -119,7 +113,7 @@ class Player : LevelElements
     {
         if (direction == 'H')
         {
-            
+
             d = TileCheck(d, direction, elements);
             Console.SetCursorPosition(Position.Item1, Position.Item2);
             Position = (Position.Item1 + d, Position.Item2);
@@ -191,7 +185,7 @@ class Player : LevelElements
         return (attack.Item1, attack.Item2, defense.Item1, defense.Item2);
     }
 
-    public (int,string) Attack()
+    public (int, string) Attack()
     {
         Dice playerDamage = new Dice(damageDices, dmgDiceSides, dmgDiceModifier);
         int pDmg = playerDamage.Throw();

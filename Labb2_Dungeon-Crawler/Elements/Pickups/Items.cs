@@ -1,10 +1,7 @@
-﻿using System.Numerics;
-using System.Xml.Linq;
-
-abstract class Items : LevelElements
+﻿abstract class Items : LevelElements
 {
     public string Name { get; set; }
-    public int HealthRestore {  get; set; }
+    public int HealthRestore { get; set; }
     public bool IsDead { get; set; }
 
     abstract public void Update(List<LevelElements> elements);

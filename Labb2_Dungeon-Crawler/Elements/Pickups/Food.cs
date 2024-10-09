@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-class Food : Items
+﻿class Food : Items
 {
     public Food(int x, int y)
     {

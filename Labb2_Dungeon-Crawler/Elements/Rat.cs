@@ -1,7 +1,4 @@
-﻿using System.Numerics;
-using System.Linq;
-
-class Rat : Enemy
+﻿class Rat : Enemy
 {
     public Rat(int x, int y)
     {
@@ -30,17 +27,17 @@ class Rat : Enemy
         switch (rand)
         {
             case 1:
-                    TakeStep(1, 'H', elements);
-                    break;
+                TakeStep(1, 'H', elements);
+                break;
             case 2:
-                    TakeStep(-1, 'H', elements);
-                    break;
+                TakeStep(-1, 'H', elements);
+                break;
             case 3:
-                    TakeStep(-1, 'V', elements);
-                    break;
+                TakeStep(-1, 'V', elements);
+                break;
             case 4:
-                    TakeStep(1, 'V', elements);
-                    break;
+                TakeStep(1, 'V', elements);
+                break;
         }
         Console.ResetColor();
     }

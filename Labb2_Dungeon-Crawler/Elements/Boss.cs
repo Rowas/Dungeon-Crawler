@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-class Boss : Enemy
+﻿class Boss : Enemy
 {
     public Boss(int x, int y)
     {

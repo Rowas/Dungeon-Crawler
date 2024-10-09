@@ -22,7 +22,7 @@
     public (int, string) Attack()
     {
         Dice enemyDamage = new Dice(DamageDices, dmgDiceSides, dmgDiceModifier);
-        
+
         int eDmg = enemyDamage.Throw();
 
         string eDmgDice = enemyDamage.ToString();

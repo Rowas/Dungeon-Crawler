@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-class Snake : Enemy
+﻿class Snake : Enemy
 {
     public Snake(int x, int y)
     {
@@ -32,7 +26,7 @@ class Snake : Enemy
 
         Console.SetCursorPosition(Position.Item1, Position.Item2);
         Draw();
-        
+
         PlayerCheck(elements);
     }
 

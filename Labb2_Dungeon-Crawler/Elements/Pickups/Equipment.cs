@@ -1,7 +1,4 @@
-﻿using System.Numerics;
-using System.Xml.Linq;
-
-abstract class Equipment : LevelElements
+﻿abstract class Equipment : LevelElements
 {
     public string Name { get; set; }
     public int DamageDices { get; set; }

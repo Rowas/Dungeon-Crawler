@@ -1,7 +1,5 @@
 ﻿//Labb2 - Dungeon Crawler
 //Labb2 for C# programming in .NET-developer edu program on ITHS Fall 2024.
-using System.IO.Enumeration;
-using System.Transactions;
 internal class Program
 {
     private static void Main(string[] args)
@@ -53,8 +51,8 @@ internal class Program
                 break;
         }
         return pickedLevel;
-    }   
-    
+    }
+
     public static string CustomMap()
     {
         Console.Clear();
