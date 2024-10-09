@@ -66,7 +66,7 @@ internal class Program
     {
         Console.Clear();
         CenterText("Enter the name of your custom map.");
-        CenterText("Map file have to be placed in ./Levels/");
+        CenterText("Map file have to be placed in .\\Levels\\");
         CenterText("as a .txt file and correctly formatted to work.");
         CenterText("Consult pre-made maps for requirements.");
         CenterText("For further information, type 'Help' or '?'.");
@@ -93,13 +93,15 @@ internal class Program
     public static void MapHelp()
     {
         Console.Clear();
-        CenterText("The following characters are required for a functioning map: ");CenterText("@ = Player tile"); CenterText("# = Wall tile");
+        CenterText("The following characters are required for a functioning map: ");
+        CenterText("@ = Player tile");
+        CenterText("# = Wall tile");
         Console.WriteLine();
         CenterText("The following characters are optional for the map: ");
         CenterText("r = Rats");
         CenterText("s = Snakes");
         CenterText("G = Guards");
-        CenterText("F /P = Restorative items (25/50 HP)");
+        CenterText("F/P = Restorative items (25/50 HP)");
         CenterText("A = Magic Armor");
         CenterText("W = Magic Sword");
         CenterText("B = Boss monster");
