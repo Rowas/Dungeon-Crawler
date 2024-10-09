@@ -67,6 +67,7 @@
         {
             Console.Clear();
             Console.WriteLine("Invalid Custom Map selected.");
+            Console.WriteLine("Map does not exist.");
             Console.WriteLine("Exiting game.");
             Environment.Exit(0);
         }
