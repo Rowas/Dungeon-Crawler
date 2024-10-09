@@ -47,6 +47,13 @@
         {
             player.Exploration(Level1.Elements);
         }
+        foreach (var grue in from LevelElements element in Level1.Elements
+                             where element is Grue
+                             let grue = (Grue)element
+                             select grue)
+        {
+            grue.Update(Level1.Elements.ToList());
+        }
 
         do
         {

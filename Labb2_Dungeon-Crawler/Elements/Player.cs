@@ -160,6 +160,9 @@
                     case Guard:
                         GameLoop.Encounter(this, (Guard)element, 'P', elements);
                         break;
+                    case Grue:
+                        GameLoop.Encounter(this, (Grue)element, 'P', elements);
+                        break;
                     case Equipment:
                         GameLoop.EquipmentPickup(this, (Equipment)element, elements);
                         return d;

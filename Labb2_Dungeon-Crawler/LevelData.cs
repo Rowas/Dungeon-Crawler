@@ -54,6 +54,9 @@
                             case 'P':
                                 Elements.Add(new Potion(x + 59, y + 2));
                                 break;
+                            case 'E':
+                                Elements.Add(new Grue(x + 59, y + 2));
+                                break;
                         }
                     }
                     y++;

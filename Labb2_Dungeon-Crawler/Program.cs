@@ -4,8 +4,12 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        string levelFile = "";
         //Main Menu
+        Console.WriteLine("Welcome, Adventurer.");
+        Console.WriteLine("You have entered a dark place.");
+        Console.WriteLine("Let's hope you are not eaten by a Grue in the darkness.");
+        Console.WriteLine();
+        string levelFile = "";
         Console.WriteLine("Pick an option:");
         Console.WriteLine("1. Load a pre-made map.");
         Console.WriteLine("2. Load a custom map.");
