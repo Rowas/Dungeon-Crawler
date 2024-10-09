@@ -8,7 +8,8 @@ internal class Program
     {
         string levelFile = "";
 
-        //Main Menu
+        CenterText("Main Menu");
+        Console.WriteLine();
         CenterText("Welcome, Adventurer.");
         CenterText("You have entered a dark place.");
         CenterText("Let's hope you survive...");
@@ -16,7 +17,7 @@ internal class Program
         CenterText("Pick an option:");
         CenterText("1. Load a pre-made map.");
         CenterText("2. Load a custom map.");
-        Console.SetCursorPosition(Console.WindowWidth / 2, 7);
+        Console.SetCursorPosition(Console.WindowWidth / 2, 9);
         string menuChoice = Console.ReadLine();
 
         switch (menuChoice)
