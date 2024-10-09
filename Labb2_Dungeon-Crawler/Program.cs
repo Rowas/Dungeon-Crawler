@@ -14,8 +14,8 @@ internal class Program
         CenterText("You have entered a dark place.");
         CenterText("Let's hope you survive...");
         Console.WriteLine();
-        CenterText("Pick an option:");
-        CenterText("1. Load a pre-made map.");
+        CenterText("Pick an option: ");
+        CenterText("1. Load a pre-made map. (Default)");
         CenterText("2. Load a custom map.");
         Console.SetCursorPosition(Console.WindowWidth / 2, 9);
         string menuChoice = Console.ReadLine();
@@ -42,8 +42,8 @@ internal class Program
     public static string LevelPicker()
     {
         Console.Clear();
-        CenterText("1. Level 1 (default map).");
-        CenterText("2. Level 1 (/w Boss).");
+        CenterText("1. Level 1 (Default).");
+        CenterText("2. Level 1 (/w Boss & Items).");
         CenterText("Answer with the number matching your choice:");
         Console.SetCursorPosition(Console.WindowWidth / 2, 3);
         string pickedLevel = Console.ReadLine();
