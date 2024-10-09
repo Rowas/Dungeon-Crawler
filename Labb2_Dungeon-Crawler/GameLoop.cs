@@ -51,7 +51,7 @@
 
         do
         {
-            if (turnCounter > 50)
+            if (turnCounter > 150)
             {
                 var rand = new Random();
                 if (rand.NextDouble() < 0.25)
