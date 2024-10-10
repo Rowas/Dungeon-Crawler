@@ -1,4 +1,8 @@
-﻿class GameLoop
+﻿using System;
+using System.Runtime.CompilerServices;
+using System.Xml.Linq;
+
+class GameLoop
 {
     private int turnCounter = 1;
     private string Name = "Adventurer";
@@ -28,12 +32,8 @@
     public void GameRunning()
     {
         Console.CursorVisible = false;
-        Console.WriteLine();
-        Console.WriteLine();
-        Console.WriteLine();
-        Console.WriteLine();
+        Console.SetCursorPosition(0, 20);
         Console.WriteLine("Use arrow keys to move, space to wait, and escape to exit.");
-        Console.WriteLine();
 
         foreach (var player in from LevelElements element in Level.Elements
                                where element is Player
@@ -138,215 +138,216 @@
 
     public static void Encounter(Player player, Enemy enemy, char F, List<LevelElements> elements)
     {
-        Console.SetCursorPosition(0, 1);
-        GameLoop gameLoop = new GameLoop();
+        var (firstActor, secondActor) = DetermineActors(player, enemy, F);
 
-        string firstActor;
-        string secondActor;
+        var playerCombat = player.Combat();
+        var enemyCombat = enemy.Combat();
 
-        if (F == 'P')
+        var playerDamage = CalculateDamage(playerCombat.Item1, enemyCombat.Item3);
+        var enemyDamage = CalculateDamage(enemyCombat.Item1, playerCombat.Item3);
+
+        ApplyDamage(player, enemy, playerDamage, enemyDamage);
+
+        PrintCombatResult(playerCombat, enemyCombat, playerDamage, enemyDamage, firstActor, secondActor, player, enemy, elements);
+
+    }
+
+    private static (string firstActor, string secondActor) DetermineActors(Player player, Enemy enemy, char F)
+    {
+        return F == 'P' ? (player.Name, enemy.Name) : (enemy.Name, player.Name);
+    }
+
+    private static int CalculateDamage(int attack, int defense)
+    {
+        int damage = attack - defense;
+        return damage < 1 ? 0 : damage;
+    }
+
+    private static void ApplyDamage(Player player, Enemy enemy, int playerDamage, int enemyDamage)
+    {
+        if (playerDamage > 0)
         {
-            firstActor = player.Name;
-            secondActor = enemy.Name;
-        }
-        else
-        {
-            firstActor = enemy.Name;
-            secondActor = player.Name;
-        }
-
-        (int, string, int, string) playerCombat = player.Combat();
-        (int, string, int, string) enemyCombat = enemy.Combat();
-
-        int playerDamage = playerCombat.Item1 - enemyCombat.Item3;
-
-        int enemyDamage = enemyCombat.Item1 - playerCombat.Item3;
-
-        if (playerDamage < 1)
-        {
-            playerDamage = 0;
-        }
-        else if (playerDamage > 1)
-        {
-            enemy.CurrentHealth = enemy.CurrentHealth - playerDamage;
-
+            enemy.CurrentHealth -= playerDamage;
             if (enemy.CurrentHealth < 1)
             {
                 enemy.IsDead = true;
             }
         }
 
-        if (enemyDamage < 1)
+        if (enemyDamage > 0 && !enemy.IsDead)
         {
-            enemyDamage = 0;
-        }
-        else if (enemyDamage > 0 && enemy.IsDead == false)
-        {
-            player.currentHealth = player.currentHealth - enemyDamage;
+            player.currentHealth -= enemyDamage;
             NewHP = player.currentHealth;
             if (player.currentHealth < 1)
             {
                 player.IsDead = true;
             }
         }
-
-        PrintCombatResult(playerCombat, enemyCombat, playerDamage, enemyDamage, firstActor, secondActor, player, enemy, elements);
     }
 
     public static void PrintCombatResult((int, string, int, string) playerCombat,
-                                         (int, string, int, string) enemyCombat,
-                                         int playerDamage,
-                                         int enemyDamage,
-                                         string firstActor,
-                                         string secondActor,
-                                         Player player,
-                                         Enemy enemy,
-                                         List<LevelElements> elements)
+                                     (int, string, int, string) enemyCombat,
+                                     int playerDamage,
+                                     int enemyDamage,
+                                     string firstActor,
+                                     string secondActor,
+                                     Player player,
+                                     Enemy enemy,
+                                     List<LevelElements> elements)
     {
+        Console.SetCursorPosition(0, 2);
+        Console.ForegroundColor = firstActor == "Adventurer" ? ConsoleColor.Green : ConsoleColor.Red;
+        Console.WriteLine($"{secondActor} encountered.".PadRight(55));
+        Console.WriteLine("".PadRight(55));
+
+        PrintAttackResult(firstActor, secondActor, playerCombat, enemyCombat, playerDamage, enemyDamage);
+
         if (firstActor == "Adventurer")
         {
-            for (int i = 0; i < 13; i++)
-            {
-                Console.SetCursorPosition(0, i);
-                Console.Write("                                                         ");
-            }
-            Console.SetCursorPosition(0, 2);
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"{secondActor} encountered.");
-            Console.WriteLine();
-            Console.WriteLine($"{firstActor} rolled {playerCombat.Item2} to attack, result: {playerCombat.Item1}.");
-            Console.WriteLine($"{secondActor} defended using {enemyCombat.Item4}, result: {enemyCombat.Item3}.");
-            Console.WriteLine($"Damage done by {firstActor} to {secondActor} is: {playerDamage}.");
-            if (enemy.IsDead == true)
-            {
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine();
-                Console.WriteLine($"{secondActor} has been slain.");
-                for (int i = 9; i < 12; i++)
-                {
-                    Console.SetCursorPosition(0, i);
-                    Console.Write("                                                         ");
-                }
-                Console.ResetColor();
-
-                enemy.Die(elements);
-            }
-            else
-            {
-                Console.WriteLine();
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Counter attack by {secondActor}, {enemyCombat.Item2} with result: {enemyCombat.Item1}.");
-                Console.WriteLine($"{firstActor} defended with {playerCombat.Item4}, result: {playerCombat.Item3}.");
-                Console.WriteLine($"Counter attack by {secondActor} against {firstActor} did {enemyDamage}.");
-                if (player.IsDead == true)
-                {
-                    player.GameOver();
-                }
-            }
+            HandleAdventurerCombat(playerCombat, enemyCombat, playerDamage, enemyDamage, player, enemy, elements);
         }
         else
         {
-            for (int i = 0; i < 13; i++)
+            HandleEnemyCombat(playerCombat, enemyCombat, playerDamage, enemyDamage, player, enemy, elements);
+        }
+    }
+
+    private static void PrintAttackResult(string firstActor, string secondActor,
+                                          (int, string, int, string) playerCombat,
+                                          (int, string, int, string) enemyCombat,
+                                          int playerDamage, int enemyDamage)
+    {
+        Console.WriteLine($"{firstActor} rolled {(firstActor == "Adventurer" ? playerCombat.Item2 : enemyCombat.Item2)} to attack, result: {(firstActor == "Adventurer" ? playerCombat.Item1 : enemyCombat.Item1)}.".PadRight(55));
+        Console.WriteLine($"{secondActor} defended using {(firstActor == "Adventurer" ? enemyCombat.Item4 : playerCombat.Item4)}, result: {(firstActor == "Adventurer" ? enemyCombat.Item3 : playerCombat.Item3)}.".PadRight(55));
+        Console.WriteLine($"Damage done by {firstActor} to {secondActor} is: {(firstActor == "Adventurer" ? playerDamage : enemyDamage)}.".PadRight(55));
+    }
+
+    private static void HandleAdventurerCombat((int, string, int, string) playerCombat,
+                                               (int, string, int, string) enemyCombat,
+                                               int playerDamage, int enemyDamage,
+                                               Player player, Enemy enemy,
+                                               List<LevelElements> elements)
+    {
+        if (enemy.IsDead)
+        {
+            PrintEnemySlain(enemy.Name, elements, enemy, isCounter: false);
+        }
+        else
+        {
+            PrintCounterAttack(enemy.Name, enemyCombat, playerCombat, enemyDamage, player, enemy, elements);
+        }
+    }
+
+    private static void HandleEnemyCombat((int, string, int, string) playerCombat,
+                                          (int, string, int, string) enemyCombat,
+                                          int playerDamage, int enemyDamage,
+                                          Player player, Enemy enemy,
+                                          List<LevelElements> elements)
+    {
+        if (player.IsDead)
+        {
+            player.GameOver();
+        }
+        else
+        {
+            PrintCounterAttack(player.Name, playerCombat, enemyCombat, playerDamage, player, enemy, elements);
+        }
+    }
+
+    private static void PrintCounterAttack(string secondActor,
+                                           (int, string, int, string) attackCombat,
+                                           (int, string, int, string) defenseCombat,
+                                           int damage, Player player, Enemy enemy,
+                                           List<LevelElements> elements)
+    {
+        Console.WriteLine("".PadRight(55));
+        Console.ForegroundColor = secondActor == "Adventurer" ? ConsoleColor.Green : ConsoleColor.Red;
+        Console.WriteLine($"Counter attack by {secondActor}, {attackCombat.Item2} with result: {attackCombat.Item1}.".PadRight(55));
+        Console.WriteLine($"{secondActor} defended with {defenseCombat.Item4}, result: {defenseCombat.Item3}.".PadRight(55));
+        Console.WriteLine($"Counter attack by {secondActor} against {player.Name} did {damage}.".PadRight(55));
+        if (player.IsDead)
+        {
+            player.GameOver();
+        }
+        if (enemy.IsDead)
+        {
+            PrintEnemySlain(enemy.Name, elements, enemy, isCounter: true);
+        }
+    }
+
+    private static void PrintEnemySlain(string actor, List<LevelElements> elements, Enemy enemy, bool isCounter)
+    {
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("".PadRight(55));
+        Console.WriteLine($"{actor} has been slain.".PadRight(55));
+        if (!isCounter)
+        {
+            for (int i = 9; i < 13; i++)
             {
                 Console.SetCursorPosition(0, i);
-                Console.Write("                                                         ");
-            }
-            Console.SetCursorPosition(0, 2);
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"{secondActor} encountered.");
-            Console.WriteLine();
-            Console.WriteLine($"{firstActor} rolled {enemyCombat.Item2} to attack, result: {enemyCombat.Item1}.");
-            Console.WriteLine($"{secondActor} defended using {playerCombat.Item4}, result: {playerCombat.Item3}.");
-            Console.WriteLine($"Damage done by {firstActor} to {secondActor} is: {enemyDamage}.");
-            if (player.IsDead == true)
-            {
-                player.GameOver();
-            }
-            else
-            {
-                Console.WriteLine();
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"Counter attack by {secondActor}, {playerCombat.Item2} with result: {playerCombat.Item1}.");
-                Console.WriteLine($"{firstActor} defended with {enemyCombat.Item4}, result: {enemyCombat.Item3}.");
-                Console.WriteLine($"Counter attack by {secondActor} against {firstActor} did {playerDamage}.");
-            }
-            if (enemy.IsDead == true)
-            {
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine();
-                Console.WriteLine($"{firstActor} has been slain.");
-                Console.ResetColor();
-                enemy.Die(elements);
+                Console.Write(" ".PadRight(55));
             }
         }
+        Console.ResetColor();
+        enemy.Die(elements);
     }
 
     public static void EquipmentPickup(Player player, Equipment equipment, List<LevelElements> elements)
     {
+        Console.SetCursorPosition(0, 14);
+        Console.WriteLine($"The {equipment.Name} have been acquired.".PadRight(55));
         switch (equipment.Name)
         {
             case "Magic Sword":
-                Console.SetCursorPosition(0, 10);
-                Console.WriteLine($"The {equipment.Name} have been acquired.     ");
-                Console.WriteLine("Attack have been increased to 2D10+2.");
-                player.damageDices = equipment.DamageDices;
-                player.dmgDiceSides = equipment.DmgDiceSides;
-                player.dmgDiceModifier = equipment.DmgDiceModifier;
-                equipment.IsDead = true;
-                equipment.Die(elements);
+                Console.WriteLine("Attack have been increased to 2D10+2.".PadRight(55));
+                UpdatingStats(player, equipment.DamageDices, equipment.DmgDiceSides, equipment.DmgDiceModifier, isAttack: true);
                 break;
             case "Magic Armor":
-                Console.SetCursorPosition(0, 10);
-                Console.WriteLine($"The {equipment.Name} have been acquired.     ");
-                Console.WriteLine("Defense have been increased to 2D8+2.");
-                player.defenseDices = equipment.DefenseDice;
-                player.defDiceSides = equipment.DefDiceSides;
-                player.defDiceModifier = equipment.DefDiceModifier;
-                equipment.IsDead = true;
-                equipment.Die(elements);
+                Console.WriteLine("Defense have been increased to 2D8+2.".PadRight(55));
+                UpdatingStats(player, equipment.DefenseDice, equipment.DefDiceSides, equipment.DefDiceModifier, isAttack: false);
                 break;
+        }
+        equipment.IsDead = true;
+        equipment.Die(elements);
+
+        void UpdatingStats(Player player, int dices, int sides, int modifier, bool isAttack)
+        {
+            if (isAttack)
+            {
+                player.damageDices = dices;
+                player.dmgDiceSides = sides;
+                player.dmgDiceModifier = modifier;
+            }
+            else
+            {
+                player.defenseDices = dices;
+                player.defDiceSides = sides;
+                player.defDiceModifier = modifier;
+            }
         }
     }
     public static void ItemPickup(Player player, Items item, List<LevelElements> elements)
     {
+        Console.SetCursorPosition(0, 17);
+        Console.WriteLine($"{item.Name} acquired, HP restored with {item.HealthRestore}.".PadRight(55));
+
         switch (item.Name)
         {
             case "Food":
                 {
-                    for (int i = 13; i > 15; i++)
-                    {
-                        Console.Write("                                                         ");
-                    }
-                    Console.SetCursorPosition(0, 15);
-                    Console.WriteLine($"{item.Name} acquired, HP restored with {item.HealthRestore}.");
                     player.currentHealth = player.currentHealth + item.HealthRestore;
-                    NewHP = player.currentHealth;
-                    if (NewHP > player.maxHealth)
-                    {
-                        NewHP = 100;
-                    }
-                    item.IsDead = true;
-                    item.Die(elements);
                     break;
                 }
             case "Potion":
                 {
-                    for (int i = 13; i > 13; i++)
-                    {
-                        Console.Write("                                                         ");
-                    }
-                    Console.SetCursorPosition(0, 15);
-                    Console.WriteLine($"{item.Name} acquired, HP restored with {item.HealthRestore}.");
                     player.currentHealth = player.currentHealth + item.HealthRestore;
-                    NewHP = player.currentHealth;
-                    if (NewHP > player.maxHealth)
-                    {
-                        NewHP = 100;
-                    }
-                    item.IsDead = true;
-                    item.Die(elements);
                     break;
                 }
         }
+
+        NewHP = player.currentHealth > player.maxHealth ? player.maxHealth : player.currentHealth;
+        
+        item.IsDead = true;
+        item.Die(elements);
     }
 }

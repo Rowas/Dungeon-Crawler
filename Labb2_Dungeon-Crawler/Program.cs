@@ -1,7 +1,5 @@
 ﻿//Labb2 - Dungeon Crawler
 //Labb2 for C# programming in .NET-developer edu program on ITHS Fall 2024.
-using System;
-
 internal class Program
 {
     private static void Main(string[] args)
@@ -32,7 +30,6 @@ internal class Program
                 levelFile = LevelPicker();
                 break;
         }
-
         Console.Clear();
         GameLoop start = new GameLoop();
         start.StartUp(levelFile);
@@ -107,7 +104,7 @@ internal class Program
         CenterText("B = Boss monster");
         Console.WriteLine();
         CenterText("After having created a custom map, place it in .\\Levels\\ as a txt-file and reload the program.");
-    }   
+    }
 
     private static void CenterText(String text)
     {
