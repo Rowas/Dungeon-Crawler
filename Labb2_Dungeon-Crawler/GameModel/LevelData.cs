@@ -10,7 +10,7 @@
         }
     }
 
-    public void Load(string filename)
+    public void Load(string filename, string playerName)
     {
         try
         {
@@ -28,7 +28,7 @@
                                 Elements.Add(new Wall(x + 59, y + 2));
                                 break;
                             case '@':
-                                Elements.Add(new Player(x + 59, y + 2));
+                                Elements.Add(new Player(x + 59, y + 2, playerName));
                                 break;
                             case 'r':
                                 Elements.Add(new Rat(x + 59, y + 2));
@@ -68,8 +68,9 @@
             Console.Clear();
             Console.WriteLine("Invalid Custom Map selected.");
             Console.WriteLine("Map does not exist.");
-            Console.WriteLine("Exiting game.");
-            Environment.Exit(0);
+            Console.WriteLine();
+            Console.WriteLine("Press any key to return to exit.");
+            Console.ReadKey();
         }
     }
 }

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using System.Xml.Linq;
-
-class GameLoop
+﻿class GameLoop
 {
     private int turnCounter = 1;
-    private string Name = "Adventurer";
-
+    string? name { get; set; }
     public int CurrentHP { get; private set; }
     public int MaxHP { get; private set; }
 
@@ -18,15 +13,17 @@ class GameLoop
 
     public LevelData Level { get { return _level; } }
 
-    public void StartUp(string levelFile)
+    public void StartUp(string levelFile, string playerName)
     {
         Console.CursorVisible = false;
         Console.CursorTop = 0;
         Console.CursorLeft = 0;
 
+        name = playerName;
+
         Directory.SetCurrentDirectory(".\\Levels\\");
 
-        Level.Load(levelFile);
+        Level.Load(levelFile, playerName);
     }
 
     public void GameRunning()
@@ -34,6 +31,8 @@ class GameLoop
         Console.CursorVisible = false;
         Console.SetCursorPosition(0, 20);
         Console.WriteLine("Use arrow keys to move, space to wait, and escape to exit.");
+        Console.WriteLine("Press \"L\" to open the combat log.");
+        Console.WriteLine("Press \"S\" to save your game.");
 
         foreach (var player in from LevelElements element in Level.Elements
                                where element is Player
@@ -100,7 +99,7 @@ class GameLoop
 
             Console.ResetColor();
             Console.SetCursorPosition(0, 0);
-            Console.Write($"Player: {Name} | HP: {CurrentHP} / {MaxHP}  Turn: {turnCounter++}         ");
+            Console.Write($"Player: {name} | HP: {CurrentHP} / {MaxHP}  Turn: {turnCounter++}         ");
             while (Console.KeyAvailable == false)
             {
                 Thread.Sleep(16);
@@ -346,8 +345,16 @@ class GameLoop
         }
 
         NewHP = player.currentHealth > player.maxHealth ? player.maxHealth : player.currentHealth;
-        
+
         item.IsDead = true;
         item.Die(elements);
+    }
+    public static void SaveGame()
+    {
+        //not implemented
+    }
+    public static void GameLog()
+    {
+        //not implemented
     }
 }

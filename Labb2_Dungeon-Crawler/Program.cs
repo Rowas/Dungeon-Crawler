@@ -1,11 +1,28 @@
-﻿//Labb2 - Dungeon Crawler
-//Labb2 for C# programming in .NET-developer edu program on ITHS Fall 2024.
+﻿//Labb3 - Dungeon Crawler
+//Labb3 for Development against databases and database administration in .NET-developer edu program on ITHS winter 2024/2025.
+//Branch of Dungeon Crawler game project that was Labb2 for C# .NET-developer edu program on ITHS fall 2024.
+//Adding database functionality to the game, allowing for saving of game state.
+
 internal class Program
 {
     private static void Main(string[] args)
     {
         string levelFile = "";
 
+        levelFile = MainMenu(levelFile);
+        string[] values = new string[2];
+        values = levelFile.Split('+');
+        levelFile = values[1];
+        var playerName = values[0];
+        Console.Clear();
+        GameLoop start = new GameLoop();
+        start.StartUp(levelFile, playerName);
+        start.GameRunning();
+    }
+
+    public static string MainMenu(string levelFile)
+    {
+        Console.Clear();
         CenterText("Main Menu");
         Console.WriteLine();
         CenterText("Welcome, Adventurer.");
@@ -13,9 +30,58 @@ internal class Program
         CenterText("Let's hope you survive...");
         Console.WriteLine();
         CenterText("Pick an option: ");
+
+        CenterText("1. Start a new game. (default)");
+        CenterText("2. Load a saved game.");
+        Console.WriteLine();
+        CenterText("0. Exit the game.");
+        Console.SetCursorPosition(Console.WindowWidth / 2, 12);
+        string menuChoice = Console.ReadLine();
+
+        switch (menuChoice)
+        {
+            case "1":
+                levelFile = NewGame(levelFile);
+                break;
+            case "2":
+                LoadGame();
+                break;
+            case "3":
+                break;
+            case "0":
+                Environment.Exit(0);
+                break;
+            default:
+                levelFile = NewGame(levelFile);
+                break;
+        }
+        return levelFile;
+    }
+
+    public static string NewGame(string levelFile)
+    {
+        Console.Clear();
+        CenterText("Tell me, Adventurer, what is your name? ");
+        Console.SetCursorPosition(Console.WindowWidth / 2, 3);
+        string playerName = Console.ReadLine();
+        if (playerName == "")
+        {
+            playerName = "Adventurer";
+        }
+        Console.WriteLine();
+        Console.Clear();
+        CenterText("Ah, " + playerName + ". I greet you. ");
+        CenterText("I hope that your quest will be a fortuitous one.");
+        CenterText("But... That is something that time will tell, is it not?");
+        Console.WriteLine();
+        CenterText("Now, let us begin.");
+        Console.WriteLine();
+        CenterText("Pick and option below: ");
+        Console.WriteLine();
         CenterText("1. Load a pre-made map. (Default)");
         CenterText("2. Load a custom map.");
-        Console.SetCursorPosition(Console.WindowWidth / 2, 9);
+
+        Console.SetCursorPosition(Console.WindowWidth / 2, 12);
         string menuChoice = Console.ReadLine();
 
         switch (menuChoice)
@@ -30,10 +96,13 @@ internal class Program
                 levelFile = LevelPicker();
                 break;
         }
-        Console.Clear();
-        GameLoop start = new GameLoop();
-        start.StartUp(levelFile);
-        start.GameRunning();
+        levelFile = playerName + "+" + levelFile;
+        return levelFile;
+    }
+
+    public static void LoadGame()
+    {
+        //Not implemented yet.
     }
 
     public static string LevelPicker()

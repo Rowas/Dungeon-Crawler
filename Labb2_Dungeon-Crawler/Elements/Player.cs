@@ -16,6 +16,15 @@
 
     public bool isVisible = true;
 
+    public Player(int x, int y, string name)
+    {
+        Name = name;
+        IsVisible = true;
+        Position = (x, y);
+        objectTile = '@';
+        objectColor = ConsoleColor.Yellow;
+        this.Draw();
+    }
     public Player(int x, int y)
     {
         IsVisible = true;
@@ -49,6 +58,12 @@
             case ConsoleKey.Escape:
                 Console.SetCursorPosition(0, 21);
                 Environment.Exit(0);
+                break;
+            case ConsoleKey.S:
+                //GameLoop.SaveGame();
+                break;
+            case ConsoleKey.L:
+                //GameLoop.GameLog();
                 break;
             default:
                 Draw();
@@ -213,6 +228,7 @@
         Console.Clear();
         Console.SetCursorPosition(33, 12);
         Console.WriteLine("It's a sad thing that your adventures have ended here!!");
+        Console.ReadKey();
         Environment.Exit(0);
     }
 }
