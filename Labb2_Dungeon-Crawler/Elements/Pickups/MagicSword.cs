@@ -13,6 +13,11 @@
         this.Draw();
     }
 
+    public Sword()
+    {
+
+    }
+
     public override void Update(List<LevelElements> elements)
     {
 

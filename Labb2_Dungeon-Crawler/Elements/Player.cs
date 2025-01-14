@@ -1,8 +1,11 @@
-﻿class Player : LevelElements
+﻿using MongoDB.Bson.Serialization.Attributes;
+
+class Player : LevelElements
 {
-    public string Name = "Adventurer";
+    [BsonElement("name")]
+    public string Name { get; set; } = "Adventurer";
     public int maxHealth = 100;
-    public int currentHealth = 100;
+    public int currentHealth { get; set; } = 100;
 
     public int damageDices = 2;
     public int dmgDiceSides = 6;
@@ -60,7 +63,7 @@
                 Environment.Exit(0);
                 break;
             case ConsoleKey.S:
-                //GameLoop.SaveGame();
+                GameLoop.SaveGame(elements);
                 break;
             case ConsoleKey.L:
                 //GameLoop.GameLog();

@@ -1,4 +1,6 @@
-﻿class LevelData
+﻿using Labb2_Dungeon_Crawler.DBModel;
+
+class LevelData
 {
     private List<LevelElements> _elements = new List<LevelElements>();
 
@@ -69,7 +71,43 @@
             Console.WriteLine("Invalid Custom Map selected.");
             Console.WriteLine("Map does not exist.");
             Console.WriteLine();
-            Console.WriteLine("Press any key to return to exit.");
+            Console.WriteLine("Press any key to exit.");
+            Console.ReadKey();
+        }
+    }
+
+    public static void LoadGame()
+    {
+        try
+        {
+            using (var db = new SaveGameContext())
+            {
+                var saveGame = db.SaveGames.OrderByDescending(s => s.SaveDate).FirstOrDefault();
+                if (saveGame != null)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Save game loaded.");
+                    Console.WriteLine();
+                    Console.WriteLine("Press any key to continue.");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine("No save game found.");
+                    Console.WriteLine();
+                    Console.WriteLine("Press any key to continue.");
+                    Console.ReadKey();
+                }
+            }
+        }
+        catch (Exception ArgumentException)
+        {
+            Console.Clear();
+            Console.WriteLine("Unable to load save game.");
+            Console.WriteLine("Database corrupted, save game does not exist or unable to load for other reason.");
+            Console.WriteLine();
+            Console.WriteLine("Press any key to exit.");
             Console.ReadKey();
         }
     }

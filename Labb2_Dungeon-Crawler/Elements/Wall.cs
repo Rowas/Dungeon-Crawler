@@ -8,4 +8,9 @@
         objectColor = ConsoleColor.Black;
         this.DrawWall();
     }
+
+    public Wall()
+    {
+
+    }
 }

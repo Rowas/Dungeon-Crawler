@@ -27,6 +27,11 @@
         IsWarned = false;
     }
 
+    public Grue()
+    {
+
+    }
+
     public override void Update(List<LevelElements> elements)
     {
         if (GrueSpawned == true)

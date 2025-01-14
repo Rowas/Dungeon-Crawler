@@ -3,11 +3,18 @@
 //Branch of Dungeon Crawler game project that was Labb2 for C# .NET-developer edu program on ITHS fall 2024.
 //Adding database functionality to the game, allowing for saving of game state.
 
+using Labb2_Dungeon_Crawler.DBModel;
+
 internal class Program
 {
     private static void Main(string[] args)
     {
         string levelFile = "";
+
+        using (var db = new SaveGameContext())
+        {
+            db.Database.EnsureCreated();
+        }
 
         levelFile = MainMenu(levelFile);
         string[] values = new string[2];
@@ -16,7 +23,14 @@ internal class Program
         var playerName = values[0];
         Console.Clear();
         GameLoop start = new GameLoop();
-        start.StartUp(levelFile, playerName);
+        if (levelFile != "GameLoaded")
+        {
+            start.StartUp(levelFile, playerName);
+        }
+        else
+        {
+            //not implemented yet
+        }
         start.GameRunning();
     }
 
@@ -44,7 +58,8 @@ internal class Program
                 levelFile = NewGame(levelFile);
                 break;
             case "2":
-                LoadGame();
+                LevelData.LoadGame();
+                return levelFile = "GameLoaded";
                 break;
             case "3":
                 break;
@@ -70,6 +85,9 @@ internal class Program
         }
         Console.WriteLine();
         Console.Clear();
+
+        //GameLoop.SaveGame(playerName);
+
         CenterText("Ah, " + playerName + ". I greet you. ");
         CenterText("I hope that your quest will be a fortuitous one.");
         CenterText("But... That is something that time will tell, is it not?");
@@ -98,11 +116,6 @@ internal class Program
         }
         levelFile = playerName + "+" + levelFile;
         return levelFile;
-    }
-
-    public static void LoadGame()
-    {
-        //Not implemented yet.
     }
 
     public static string LevelPicker()
@@ -175,7 +188,7 @@ internal class Program
         CenterText("After having created a custom map, place it in .\\Levels\\ as a txt-file and reload the program.");
     }
 
-    private static void CenterText(String text)
+    public static void CenterText(String text)
     {
         Console.Write(new string(' ', (Console.WindowWidth - text.Length) / 2));
         Console.WriteLine(text);

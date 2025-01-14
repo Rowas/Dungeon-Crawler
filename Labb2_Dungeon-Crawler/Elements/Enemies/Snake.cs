@@ -19,6 +19,11 @@
         this.Draw();
     }
 
+    public Snake()
+    {
+
+    }
+
     public override void Update(List<LevelElements> elements)
     {
 

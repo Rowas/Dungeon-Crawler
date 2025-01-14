@@ -19,6 +19,11 @@
         this.Draw();
     }
 
+    public Guard()
+    {
+
+    }
+
     public override void Update(List<LevelElements> elements)
     {
 

@@ -1,4 +1,6 @@
-﻿class GameLoop
+﻿using Labb2_Dungeon_Crawler.DBModel;
+
+class GameLoop
 {
     private int turnCounter = 1;
     string? name { get; set; }
@@ -349,12 +351,105 @@
         item.IsDead = true;
         item.Die(elements);
     }
-    public static void SaveGame()
+    public static void SaveGame(List<LevelElements> elements)
     {
-        //not implemented
+        Console.Clear();
+        Program.CenterText("Saving Game.");
+        Console.WriteLine();
+
+        //foreach (var element in from LevelElements element in elements
+        //                        where element is Guard
+        //                        let guard = (Guard)element
+        //                        select guard)
+        //{
+        //    element.xPos = element.Position.Item1;
+        //    element.yPos = element.Position.Item2;
+        //    using (var db = new SaveGameContext())
+        //    {
+        //        db.SaveGames.Add(new SaveGame { Guard = element });
+
+        //        //var currentPlayer = db.SaveGames.FirstOrDefault();
+
+        //        //Console.WriteLine(currentPlayer);
+
+        //        //db.SaveGames.Add(new SaveGame { Location.x =   });
+        //        db.SaveChanges();
+        //    }
+        //}
+
+        foreach (var element in from LevelElements element in elements select element)
+        {
+            element.xPos = element.Position.Item1;
+            element.yPos = element.Position.Item2;
+            using (var db = new SaveGameContext())
+            {
+                switch (element)
+                {
+                    case Wall:
+                        Wall wall = (Wall)element;
+                        db.SaveGames.Add(new SaveGame { Wall = wall });
+                        break;
+
+                    case Enemy:
+                        Enemy enemy = (Enemy)element;
+                        switch (enemy)
+                        {
+                            case Boss:
+                                db.SaveGames.Add(new SaveGame { Boss = (Boss)enemy });
+                                break;
+                            case Grue:
+                                db.SaveGames.Add(new SaveGame { Grue = (Grue)enemy });
+                                break;
+                            case Guard:
+                                db.SaveGames.Add(new SaveGame { Guard = (Guard)enemy });
+                                break;
+                            case Rat:
+                                db.SaveGames.Add(new SaveGame { Rat = (Rat)enemy });
+                                break;
+                            case Snake:
+                                db.SaveGames.Add(new SaveGame { Snake = (Snake)enemy });
+                                break;
+                        }
+                        break;
+
+                    case Equipment:
+                        Equipment equipment = (Equipment)element;
+                        switch (equipment)
+                        {
+                            case Armor:
+                                db.SaveGames.Add(new SaveGame { Armor = (Armor)equipment });
+                                break;
+                            case Sword:
+                                db.SaveGames.Add(new SaveGame { Sword = (Sword)equipment });
+                                break;
+                        }
+                        break;
+
+                    case Items:
+                        Items item = (Items)element;
+                        switch (item)
+                        {
+                            case Food:
+                                db.SaveGames.Add(new SaveGame { Food = (Food)item });
+                                break;
+                            case Potion:
+                                db.SaveGames.Add(new SaveGame { Potion = (Potion)item });
+                                break;
+                        }
+                        break;
+                    case Player:
+                        Player player = (Player)element;
+                        db.SaveGames.Add(new SaveGame { Player = player });
+                        break;
+                }
+                db.SaveChanges();
+            }
+        }
     }
+
     public static void GameLog()
     {
         //not implemented
+        //, element.Position.Item2
     }
 }

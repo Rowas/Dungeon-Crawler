@@ -17,6 +17,10 @@
         IsDead = false;
         this.Draw();
     }
+    public Boss()
+    {
+
+    }
 
     public override void Update(List<LevelElements> elements)
     {

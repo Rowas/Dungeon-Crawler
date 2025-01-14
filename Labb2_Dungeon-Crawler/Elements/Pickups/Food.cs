@@ -10,6 +10,10 @@
         IsDead = false;
         this.Draw();
     }
+    public Food()
+    {
+
+    }
 
     public override void Update(List<LevelElements> elements)
     {

@@ -11,6 +11,11 @@
         this.Draw();
     }
 
+    public Potion()
+    {
+
+    }
+
     public override void Update(List<LevelElements> elements)
     {
 

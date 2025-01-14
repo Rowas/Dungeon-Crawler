@@ -18,6 +18,11 @@
         this.Draw();
     }
 
+    public Rat()
+    {
+
+    }
+
     public override void Update(List<LevelElements> elements)
     {
 

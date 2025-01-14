@@ -1,14 +1,32 @@
-﻿abstract class Enemy : LevelElements
+﻿using MongoDB.Bson.Serialization.Attributes;
+
+abstract class Enemy : LevelElements
 {
     public string Name { get; set; }
+
+    [BsonIgnore]
     public int MaxHealth { get; set; }
     public int CurrentHealth { get; set; }
+
+    [BsonIgnore]
     public int DamageDices { get; set; }
+
+    [BsonIgnore]
     public int dmgDiceSides { get; set; }
+
+    [BsonIgnore]
     public int dmgDiceModifier { get; set; }
+
+    [BsonIgnore]
     public int DefenseDice { get; set; }
+
+    [BsonIgnore]
     public int defDiceSides { get; set; }
+
+    [BsonIgnore]
     public int defDiceModifier { get; set; }
+
+    [BsonIgnore]
     public bool IsDead { get; set; }
 
     public (int, string, int, string) Combat()

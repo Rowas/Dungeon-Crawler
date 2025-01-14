@@ -13,6 +13,11 @@
         this.Draw();
     }
 
+    public Armor()
+    {
+
+    }
+
     public override void Update(List<LevelElements> elements)
     {
 
