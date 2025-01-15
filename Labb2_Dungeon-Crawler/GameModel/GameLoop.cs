@@ -1,11 +1,16 @@
 ﻿using Labb2_Dungeon_Crawler.DBModel;
+using MongoDB.Driver.Linq;
 
 class GameLoop
 {
-    private int turnCounter = 1;
+    public static int turnCounter { get; set; } = 1;
     string? name { get; set; }
     public int CurrentHP { get; private set; }
     public int MaxHP { get; private set; }
+
+    public static Dictionary<int, string> combatLog = new Dictionary<int, string>();
+    public static SortedDictionary<int, string> combatLog2 = new SortedDictionary<int, string>();
+    public static int logPosition { get; set; } = 1;
 
     static int NewHP = 100;
 
@@ -25,16 +30,18 @@ class GameLoop
 
         Directory.SetCurrentDirectory(".\\Levels\\");
 
-        Level.Load(levelFile, playerName);
+        if (levelFile != "GameLoaded")
+        {
+            Level.Load(levelFile, playerName);
+        }
+        else
+        {
+            Level.LoadGame();
+        }
     }
 
     public void GameRunning()
     {
-        Console.CursorVisible = false;
-        Console.SetCursorPosition(0, 20);
-        Console.WriteLine("Use arrow keys to move, space to wait, and escape to exit.");
-        Console.WriteLine("Press \"L\" to open the combat log.");
-        Console.WriteLine("Press \"S\" to save your game.");
 
         foreach (var player in from LevelElements element in Level.Elements
                                where element is Player
@@ -99,9 +106,8 @@ class GameLoop
                 }
             }
 
-            Console.ResetColor();
-            Console.SetCursorPosition(0, 0);
-            Console.Write($"Player: {name} | HP: {CurrentHP} / {MaxHP}  Turn: {turnCounter++}         ");
+            PrintUI();
+
             while (Console.KeyAvailable == false)
             {
                 Thread.Sleep(16);
@@ -137,8 +143,22 @@ class GameLoop
         } while (checkKey.Key != ConsoleKey.Escape);
     }
 
+    public void PrintUI()
+    {
+        Console.ResetColor();
+        Console.SetCursorPosition(0, 0);
+        Console.Write($"Player: {name} | HP: {CurrentHP} / {MaxHP}  Turn: {turnCounter++}         ");
+
+        Console.CursorVisible = false;
+        Console.SetCursorPosition(0, 20);
+        Console.WriteLine("Use arrow keys to move, space to wait, and escape to exit.");
+        Console.WriteLine("Press \"L\" to open the combat log.");
+        Console.WriteLine("Press \"S\" to save your game.");
+    }
+
     public static void Encounter(Player player, Enemy enemy, char F, List<LevelElements> elements)
     {
+
         var (firstActor, secondActor) = DetermineActors(player, enemy, F);
 
         var playerCombat = player.Combat();
@@ -198,8 +218,10 @@ class GameLoop
     {
         Console.SetCursorPosition(0, 2);
         Console.ForegroundColor = firstActor == "Adventurer" ? ConsoleColor.Green : ConsoleColor.Red;
-        Console.WriteLine($"{secondActor} encountered.".PadRight(55));
-        Console.WriteLine("".PadRight(55));
+        combatLog.Add(logPosition++, $"{secondActor} encountered.".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
+        combatLog.Add(logPosition++, "".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
 
         PrintAttackResult(firstActor, secondActor, playerCombat, enemyCombat, playerDamage, enemyDamage);
 
@@ -218,9 +240,12 @@ class GameLoop
                                           (int, string, int, string) enemyCombat,
                                           int playerDamage, int enemyDamage)
     {
-        Console.WriteLine($"{firstActor} rolled {(firstActor == "Adventurer" ? playerCombat.Item2 : enemyCombat.Item2)} to attack, result: {(firstActor == "Adventurer" ? playerCombat.Item1 : enemyCombat.Item1)}.".PadRight(55));
-        Console.WriteLine($"{secondActor} defended using {(firstActor == "Adventurer" ? enemyCombat.Item4 : playerCombat.Item4)}, result: {(firstActor == "Adventurer" ? enemyCombat.Item3 : playerCombat.Item3)}.".PadRight(55));
-        Console.WriteLine($"Damage done by {firstActor} to {secondActor} is: {(firstActor == "Adventurer" ? playerDamage : enemyDamage)}.".PadRight(55));
+        combatLog.Add(logPosition++, $"{firstActor} rolled {(firstActor == "Adventurer" ? playerCombat.Item2 : enemyCombat.Item2)} to attack, result: {(firstActor == "Adventurer" ? playerCombat.Item1 : enemyCombat.Item1)}.".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
+        combatLog.Add(logPosition++, $"{secondActor} defended using {(firstActor == "Adventurer" ? enemyCombat.Item4 : playerCombat.Item4)}, result: {(firstActor == "Adventurer" ? enemyCombat.Item3 : playerCombat.Item3)}.".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
+        combatLog.Add(logPosition++, $"Damage done by {firstActor} to {secondActor} is: {(firstActor == "Adventurer" ? playerDamage : enemyDamage)}.".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
     }
 
     private static void HandleAdventurerCombat((int, string, int, string) playerCombat,
@@ -261,11 +286,16 @@ class GameLoop
                                            int damage, Player player, Enemy enemy,
                                            List<LevelElements> elements)
     {
-        Console.WriteLine("".PadRight(55));
+        combatLog.Add(logPosition++, "".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
         Console.ForegroundColor = secondActor == "Adventurer" ? ConsoleColor.Green : ConsoleColor.Red;
-        Console.WriteLine($"Counter attack by {secondActor}, {attackCombat.Item2} with result: {attackCombat.Item1}.".PadRight(55));
-        Console.WriteLine($"{secondActor} defended with {defenseCombat.Item4}, result: {defenseCombat.Item3}.".PadRight(55));
-        Console.WriteLine($"Counter attack by {secondActor} against {player.Name} did {damage}.".PadRight(55));
+        combatLog.Add(logPosition++, $"Counter attack by {secondActor}, {attackCombat.Item2} with result: {attackCombat.Item1}.".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
+        combatLog.Add(logPosition++, $"{secondActor} defended with {defenseCombat.Item4}, result: {defenseCombat.Item3}.".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
+        combatLog.Add(logPosition++, $"Counter attack by {secondActor} against {player.Name} did {damage}.".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
+
         if (player.IsDead)
         {
             player.GameOver();
@@ -279,14 +309,17 @@ class GameLoop
     private static void PrintEnemySlain(string actor, List<LevelElements> elements, Enemy enemy, bool isCounter)
     {
         Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("".PadRight(55));
-        Console.WriteLine($"{actor} has been slain.".PadRight(55));
+        combatLog.Add(logPosition++, "".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
+        combatLog.Add(logPosition++, $"{actor} has been slain.".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
         if (!isCounter)
         {
             for (int i = 9; i < 13; i++)
             {
                 Console.SetCursorPosition(0, i);
-                Console.Write(" ".PadRight(55));
+                combatLog.Add(logPosition++, "".PadRight(55));
+                Console.WriteLine(combatLog.LastOrDefault().Value);
             }
         }
         Console.ResetColor();
@@ -296,15 +329,18 @@ class GameLoop
     public static void EquipmentPickup(Player player, Equipment equipment, List<LevelElements> elements)
     {
         Console.SetCursorPosition(0, 14);
-        Console.WriteLine($"The {equipment.Name} have been acquired.".PadRight(55));
+        combatLog.Add(logPosition++, $"The {equipment.Name} have been acquired.".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
         switch (equipment.Name)
         {
             case "Magic Sword":
-                Console.WriteLine("Attack have been increased to 2D10+2.".PadRight(55));
+                combatLog.Add(logPosition++, "Attack have been increased to 2D10+2.".PadRight(55));
+                Console.WriteLine(combatLog.LastOrDefault().Value);
                 UpdatingStats(player, equipment.DamageDices, equipment.DmgDiceSides, equipment.DmgDiceModifier, isAttack: true);
                 break;
             case "Magic Armor":
-                Console.WriteLine("Defense have been increased to 2D8+2.".PadRight(55));
+                combatLog.Add(logPosition++, "Defense have been increased to 2D8+2.".PadRight(55));
+                Console.WriteLine(combatLog.LastOrDefault().Value);
                 UpdatingStats(player, equipment.DefenseDice, equipment.DefDiceSides, equipment.DefDiceModifier, isAttack: false);
                 break;
         }
@@ -315,13 +351,13 @@ class GameLoop
         {
             if (isAttack)
             {
-                player.damageDices = dices;
+                player.dmgDices = dices;
                 player.dmgDiceSides = sides;
                 player.dmgDiceModifier = modifier;
             }
             else
             {
-                player.defenseDices = dices;
+                player.defDices = dices;
                 player.defDiceSides = sides;
                 player.defDiceModifier = modifier;
             }
@@ -330,7 +366,8 @@ class GameLoop
     public static void ItemPickup(Player player, Items item, List<LevelElements> elements)
     {
         Console.SetCursorPosition(0, 17);
-        Console.WriteLine($"{item.Name} acquired, HP restored with {item.HealthRestore}.".PadRight(55));
+        combatLog.Add(logPosition++, $"{item.Name} acquired, HP restored with {item.HealthRestore}.".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
 
         switch (item.Name)
         {
@@ -351,101 +388,88 @@ class GameLoop
         item.IsDead = true;
         item.Die(elements);
     }
-    public static void SaveGame(List<LevelElements> elements)
+    public static void GameSave(List<LevelElements> elements, string name, int turn)
     {
+        LevelData level = new LevelData();
         Console.Clear();
         Program.CenterText("Saving Game.");
         Console.WriteLine();
 
-        //foreach (var element in from LevelElements element in elements
-        //                        where element is Guard
-        //                        let guard = (Guard)element
-        //                        select guard)
-        //{
-        //    element.xPos = element.Position.Item1;
-        //    element.yPos = element.Position.Item2;
-        //    using (var db = new SaveGameContext())
-        //    {
-        //        db.SaveGames.Add(new SaveGame { Guard = element });
-
-        //        //var currentPlayer = db.SaveGames.FirstOrDefault();
-
-        //        //Console.WriteLine(currentPlayer);
-
-        //        //db.SaveGames.Add(new SaveGame { Location.x =   });
-        //        db.SaveChanges();
-        //    }
-        //}
-
-        foreach (var element in from LevelElements element in elements select element)
+        using (var db = new SaveGameContext())
         {
-            element.xPos = element.Position.Item1;
-            element.yPos = element.Position.Item2;
-            using (var db = new SaveGameContext())
+            var id = new MongoDB.Bson.ObjectId($"{LevelElements.SaveGameName}");
+            var currentSave = db.SaveGames.FirstOrDefault(s => s.Id == id);
+
+            var saveName = LevelElements.SaveGameName;
+
+            if (saveName == currentSave.Id.ToString())
             {
+                db.SaveGames.Remove(currentSave);
+            }
+
+            var gameState = new GameState();
+
+            foreach (var element in elements)
+            {
+                element.xPos = element.Position.Item1;
+                element.yPos = element.Position.Item2;
+
                 switch (element)
                 {
-                    case Wall:
-                        Wall wall = (Wall)element;
-                        db.SaveGames.Add(new SaveGame { Wall = wall });
+                    case Wall wall:
+                        gameState.Walls.Add(wall);
                         break;
-
-                    case Enemy:
-                        Enemy enemy = (Enemy)element;
-                        switch (enemy)
-                        {
-                            case Boss:
-                                db.SaveGames.Add(new SaveGame { Boss = (Boss)enemy });
-                                break;
-                            case Grue:
-                                db.SaveGames.Add(new SaveGame { Grue = (Grue)enemy });
-                                break;
-                            case Guard:
-                                db.SaveGames.Add(new SaveGame { Guard = (Guard)enemy });
-                                break;
-                            case Rat:
-                                db.SaveGames.Add(new SaveGame { Rat = (Rat)enemy });
-                                break;
-                            case Snake:
-                                db.SaveGames.Add(new SaveGame { Snake = (Snake)enemy });
-                                break;
-                        }
+                    case Boss boss:
+                        gameState.Bosses.Add(boss);
                         break;
-
-                    case Equipment:
-                        Equipment equipment = (Equipment)element;
-                        switch (equipment)
-                        {
-                            case Armor:
-                                db.SaveGames.Add(new SaveGame { Armor = (Armor)equipment });
-                                break;
-                            case Sword:
-                                db.SaveGames.Add(new SaveGame { Sword = (Sword)equipment });
-                                break;
-                        }
+                    case Grue grue:
+                        gameState.Grues.Add(grue);
                         break;
-
-                    case Items:
-                        Items item = (Items)element;
-                        switch (item)
-                        {
-                            case Food:
-                                db.SaveGames.Add(new SaveGame { Food = (Food)item });
-                                break;
-                            case Potion:
-                                db.SaveGames.Add(new SaveGame { Potion = (Potion)item });
-                                break;
-                        }
+                    case Guard guard:
+                        gameState.Guards.Add(guard);
                         break;
-                    case Player:
-                        Player player = (Player)element;
-                        db.SaveGames.Add(new SaveGame { Player = player });
+                    case Rat rat:
+                        gameState.Rats.Add(rat);
+                        break;
+                    case Snake snake:
+                        gameState.Snakes.Add(snake);
+                        break;
+                    case Armor armor:
+                        gameState.Armors.Add(armor);
+                        break;
+                    case Sword sword:
+                        gameState.Swords.Add(sword);
+                        break;
+                    case Food food:
+                        gameState.Foods.Add(food);
+                        break;
+                    case Potion potion:
+                        gameState.Potions.Add(potion);
+                        break;
+                    case Player player:
+                        gameState.Player = player;
                         break;
                 }
-                db.SaveChanges();
             }
+
+            gameState.CurrentTurn = turn;
+
+            var saveGame = new GameSave { PlayerName = name, gameState = gameState };
+            db.SaveGames.Add(saveGame);
+            db.SaveChanges();
+
+            LevelElements.SaveGameName = db.SaveGames.FirstOrDefault().Id.ToString();
+
+            Console.WriteLine();
+            Program.CenterText("Game saved");
+            Program.CenterText("Press any key to continue.");
+            Console.ReadKey();
+            Console.Clear();
         }
+
+        level.DrawGameState(elements);
     }
+
 
     public static void GameLog()
     {

@@ -4,16 +4,17 @@ class Player : LevelElements
 {
     [BsonElement("name")]
     public string Name { get; set; } = "Adventurer";
+
     public int maxHealth = 100;
     public int currentHealth { get; set; } = 100;
 
-    public int damageDices = 2;
-    public int dmgDiceSides = 6;
-    public int dmgDiceModifier = 1;
+    public int dmgDices { get; set; } = 2;
+    public int dmgDiceSides { get; set; } = 6;
+    public int dmgDiceModifier { get; set; } = 1;
 
-    public int defenseDices = 1;
-    public int defDiceSides = 8;
-    public int defDiceModifier = 0;
+    public int defDices { get; set; } = 1;
+    public int defDiceSides { get; set; } = 8;
+    public int defDiceModifier { get; set; } = 0;
 
     public bool IsDead = false;
 
@@ -63,7 +64,7 @@ class Player : LevelElements
                 Environment.Exit(0);
                 break;
             case ConsoleKey.S:
-                GameLoop.SaveGame(elements);
+                GameLoop.GameSave(elements, Name, GameLoop.turnCounter);
                 break;
             case ConsoleKey.L:
                 //GameLoop.GameLog();
@@ -208,7 +209,7 @@ class Player : LevelElements
 
     public (int, string) Attack()
     {
-        Dice playerDamage = new Dice(damageDices, dmgDiceSides, dmgDiceModifier);
+        Dice playerDamage = new Dice(dmgDices, dmgDiceSides, dmgDiceModifier);
         int pDmg = playerDamage.Throw();
         string pDmgDice = playerDamage.ToString();
 
@@ -217,7 +218,7 @@ class Player : LevelElements
 
     public (int, string) Defend()
     {
-        Dice playerDefense = new Dice(defenseDices, defDiceSides, defDiceModifier);
+        Dice playerDefense = new Dice(defDices, defDiceSides, defDiceModifier);
         int pDef = playerDefense.Throw();
         string pDefDice = playerDefense.ToString();
 

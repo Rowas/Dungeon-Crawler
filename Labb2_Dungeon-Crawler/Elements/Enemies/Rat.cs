@@ -8,10 +8,10 @@
         Name = "Rat";
         MaxHealth = 20;
         CurrentHealth = 20;
-        DamageDices = 1;
+        DmgDice = 1;
         dmgDiceSides = 6;
         dmgDiceModifier = 0;
-        DefenseDice = 2;
+        DefDice = 2;
         defDiceSides = 4;
         defDiceModifier = 1;
         IsDead = false;

@@ -8,10 +8,10 @@
         Name = "Snake";
         MaxHealth = 35;
         CurrentHealth = 35;
-        DamageDices = 2;
+        DmgDice = 2;
         dmgDiceSides = 4;
         dmgDiceModifier = 1;
-        DefenseDice = 2;
+        DefDice = 2;
         defDiceSides = 6;
         defDiceModifier = -1;
         IsDead = false;

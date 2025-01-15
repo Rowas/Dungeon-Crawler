@@ -7,23 +7,11 @@ abstract class Enemy : LevelElements
     [BsonIgnore]
     public int MaxHealth { get; set; }
     public int CurrentHealth { get; set; }
-
-    [BsonIgnore]
-    public int DamageDices { get; set; }
-
-    [BsonIgnore]
+    public int DmgDice { get; set; }
     public int dmgDiceSides { get; set; }
-
-    [BsonIgnore]
     public int dmgDiceModifier { get; set; }
-
-    [BsonIgnore]
-    public int DefenseDice { get; set; }
-
-    [BsonIgnore]
+    public int DefDice { get; set; }
     public int defDiceSides { get; set; }
-
-    [BsonIgnore]
     public int defDiceModifier { get; set; }
 
     [BsonIgnore]
@@ -39,7 +27,7 @@ abstract class Enemy : LevelElements
 
     public (int, string) Attack()
     {
-        Dice enemyDamage = new Dice(DamageDices, dmgDiceSides, dmgDiceModifier);
+        Dice enemyDamage = new Dice(DmgDice, dmgDiceSides, dmgDiceModifier);
 
         int eDmg = enemyDamage.Throw();
 
@@ -50,7 +38,7 @@ abstract class Enemy : LevelElements
 
     public (int, string) Defend()
     {
-        Dice enemyDefend = new Dice(DefenseDice, defDiceSides, defDiceModifier);
+        Dice enemyDefend = new Dice(DefDice, defDiceSides, defDiceModifier);
 
         int eDef = enemyDefend.Throw();
 

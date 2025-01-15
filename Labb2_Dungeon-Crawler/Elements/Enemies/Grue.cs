@@ -15,10 +15,10 @@
         Name = "Grue";
         MaxHealth = 250;
         CurrentHealth = 250;
-        DamageDices = 4;
+        DmgDice = 4;
         dmgDiceSides = 20;
         dmgDiceModifier = 6;
-        DefenseDice = 4;
+        DefDice = 4;
         defDiceSides = 6;
         defDiceModifier = 3;
         IsDead = false;

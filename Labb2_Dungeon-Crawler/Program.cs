@@ -19,8 +19,8 @@ internal class Program
         levelFile = MainMenu(levelFile);
         string[] values = new string[2];
         values = levelFile.Split('+');
-        levelFile = values[1];
         var playerName = values[0];
+        levelFile = values[1];
         Console.Clear();
         GameLoop start = new GameLoop();
         if (levelFile != "GameLoaded")
@@ -29,8 +29,9 @@ internal class Program
         }
         else
         {
-            //not implemented yet
+            start.StartUp(levelFile, playerName);
         }
+
         start.GameRunning();
     }
 
@@ -58,8 +59,7 @@ internal class Program
                 levelFile = NewGame(levelFile);
                 break;
             case "2":
-                LevelData.LoadGame();
-                return levelFile = "GameLoaded";
+                levelFile = "Adventurer+GameLoaded";
                 break;
             case "3":
                 break;

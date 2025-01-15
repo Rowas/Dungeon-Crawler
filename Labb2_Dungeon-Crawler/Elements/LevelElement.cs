@@ -4,6 +4,7 @@ abstract class LevelElements
 {
     [BsonIgnore]
     public (int, int) Position { get; set; }
+    public static string SaveGameName { get; set; } = "";
     public int xPos { get; set; }
     public int yPos { get; set; }
     public char objectTile { get; set; }
