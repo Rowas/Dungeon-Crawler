@@ -8,37 +8,33 @@ using Labb2_Dungeon_Crawler.GeneralMethods;
 
 internal class Program
 {
+    public static string levelFile = "";
     private static void Main(string[] args)
     {
-
-        string levelFile = "";
 
         using (var db = new SaveGameContext())
         {
             db.Database.EnsureCreated();
         }
-
-        levelFile = MainMenu(levelFile);
+        while (levelFile == "")
+        {
+            levelFile = MainMenu(levelFile);
+        }
         string[] values = new string[2];
         values = levelFile.Split('+');
         var playerName = values[0];
         levelFile = values[1];
-        Console.Clear();
-        GameLoop start = new GameLoop();
-        if (levelFile != "GameLoaded")
-        {
-            start.StartUp(levelFile, playerName);
-        }
-        else
-        {
-            start.StartUp(levelFile, playerName);
-        }
 
+        ClearConsole.ConsoleClear();
+        GameLoop start = new GameLoop();
+
+        start.StartUp(levelFile, playerName);
         start.GameRunning();
     }
 
     public static string MainMenu(string levelFile)
     {
+        string menuChoice;
         Console.Clear();
         TextCenter.CenterText("Main Menu");
         Console.WriteLine();
@@ -50,10 +46,11 @@ internal class Program
 
         TextCenter.CenterText("1. Start a new game. (default)");
         TextCenter.CenterText("2. Load a saved game.");
+        TextCenter.CenterText("3. View highscores.");
         Console.WriteLine();
         TextCenter.CenterText("0. Exit the game.");
         Console.SetCursorPosition(Console.WindowWidth / 2, 12);
-        string menuChoice = Console.ReadLine();
+        menuChoice = Console.ReadLine();
 
         switch (menuChoice)
         {
@@ -64,6 +61,7 @@ internal class Program
                 levelFile = "Adventurer+GameLoaded";
                 break;
             case "3":
+                PrintHighScore();
                 break;
             case "0":
                 Environment.Exit(0);
@@ -185,5 +183,21 @@ internal class Program
         TextCenter.CenterText("B = Boss monster");
         Console.WriteLine();
         TextCenter.CenterText("After having created a custom map, place it in .\\Levels\\ as a txt-file and reload the program.");
+    }
+
+    public static void PrintHighScore()
+    {
+        using (var db = new SaveGameContext())
+        {
+            var highscores = db.Highscores.OrderByDescending(s => s.Score).ToList();
+            Console.Clear();
+            TextCenter.CenterText("Highscores");
+            Console.WriteLine();
+            foreach (var highscore in highscores)
+            {
+                TextCenter.CenterText("Player: " + highscore.PlayerName + " | Map: " + highscore.MapName + " | Score: " + highscore.Score + " | Date: " + highscore.SaveDate);
+            }
+        }
+        Console.ReadKey();
     }
 }

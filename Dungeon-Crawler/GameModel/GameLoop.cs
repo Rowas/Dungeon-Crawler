@@ -10,6 +10,9 @@ class GameLoop
     string? name { get; set; }
     public int CurrentHP { get; private set; }
     public int MaxHP { get; private set; }
+    public Player currentPlayer { get; set; }
+    public bool swordAquired { get; set; } = false;
+    public bool armorAquired { get; set; } = false;
 
     public static Dictionary<int, string> combatLog = new Dictionary<int, string>();
     public static int logPosition { get; set; } = 1;
@@ -28,7 +31,6 @@ class GameLoop
         Console.CursorTop = 0;
         Console.CursorLeft = 0;
 
-        MapName = levelFile;
         name = playerName;
 
         Directory.SetCurrentDirectory(".\\Levels\\");
@@ -41,6 +43,8 @@ class GameLoop
         {
             Level.LoadGame();
         }
+
+        MapName = Program.levelFile;
     }
 
     public void GameRunning()
@@ -52,6 +56,8 @@ class GameLoop
                                select player)
         {
             player.Exploration(Level.Elements);
+            currentPlayer = player;
+            PrintUI(currentPlayer);
         }
         foreach (var grue in from LevelElements element in Level.Elements
                              where element is Grue
@@ -99,6 +105,7 @@ class GameLoop
                                    let player = (Player)element
                                    select player)
             {
+                currentPlayer = player;
                 player.Exploration(Level.Elements);
                 MaxHP = player.maxHealth;
                 CurrentHP = player.currentHealth;
@@ -108,8 +115,6 @@ class GameLoop
                     CurrentHP = player.maxHealth;
                 }
             }
-
-            PrintUI();
 
             while (Console.KeyAvailable == false)
             {
@@ -123,6 +128,7 @@ class GameLoop
                 {
                     case Player:
                         Player player = (Player)element;
+                        currentPlayer = player;
                         player.Movement(checkKey, Level.Elements);
                         break;
                     case Enemy:
@@ -143,14 +149,21 @@ class GameLoop
                         break;
                 }
             }
+
+            PrintUI(currentPlayer);
+
         } while (checkKey.Key != ConsoleKey.Escape);
     }
 
-    public void PrintUI()
+    public void PrintUI(Player player)
     {
+        Dice defDice = new Dice(player.defDices, player.defDiceSides, player.defDiceModifier);
+        Dice dmgDice = new Dice(player.dmgDices, player.dmgDiceSides, player.dmgDiceModifier);
         Console.ResetColor();
         Console.SetCursorPosition(0, 0);
-        Console.Write($"Player: {name} | HP: {CurrentHP} / {MaxHP}  Turn: {turnCounter}         ");
+        Console.Write($"Player: {name} | HP: {CurrentHP} / {MaxHP}  Turn: {turnCounter}             ");
+        Console.WriteLine($"Current Damage: {dmgDice} | Current Defense: {defDice}");
+        Console.Write($"Items aquired: Magic Sword: {swordAquired} | Magic Armor: {armorAquired}");
 
         Console.CursorVisible = false;
         Console.SetCursorPosition(0, 20);
@@ -220,15 +233,15 @@ class GameLoop
                                      List<LevelElements> elements)
     {
         Console.SetCursorPosition(0, 2);
-        Console.ForegroundColor = firstActor == "Adventurer" ? ConsoleColor.Green : ConsoleColor.Red;
+        Console.ForegroundColor = firstActor == player.Name ? ConsoleColor.Green : ConsoleColor.Red;
         combatLog.Add(logPosition++, $"{secondActor} encountered.".PadRight(55));
         Console.WriteLine(combatLog.LastOrDefault().Value);
         combatLog.Add(logPosition++, "".PadRight(55));
         Console.WriteLine(combatLog.LastOrDefault().Value);
 
-        PrintAttackResult(firstActor, secondActor, playerCombat, enemyCombat, playerDamage, enemyDamage);
+        PrintAttackResult(firstActor, secondActor, playerCombat, enemyCombat, playerDamage, enemyDamage, player);
 
-        if (firstActor == "Adventurer")
+        if (firstActor == player.Name)
         {
             HandleAdventurerCombat(playerCombat, enemyCombat, playerDamage, enemyDamage, player, enemy, elements);
         }
@@ -241,13 +254,13 @@ class GameLoop
     private static void PrintAttackResult(string firstActor, string secondActor,
                                           (int, string, int, string) playerCombat,
                                           (int, string, int, string) enemyCombat,
-                                          int playerDamage, int enemyDamage)
+                                          int playerDamage, int enemyDamage, Player player)
     {
-        combatLog.Add(logPosition++, $"{firstActor} rolled {(firstActor == "Adventurer" ? playerCombat.Item2 : enemyCombat.Item2)} to attack, result: {(firstActor == "Adventurer" ? playerCombat.Item1 : enemyCombat.Item1)}.".PadRight(55));
+        combatLog.Add(logPosition++, $"{firstActor} rolled {(firstActor == player.Name ? playerCombat.Item2 : enemyCombat.Item2)} to attack, result: {(firstActor == "Adventurer" ? playerCombat.Item1 : enemyCombat.Item1)}.".PadRight(55));
         Console.WriteLine(combatLog.LastOrDefault().Value);
-        combatLog.Add(logPosition++, $"{secondActor} defended using {(firstActor == "Adventurer" ? enemyCombat.Item4 : playerCombat.Item4)}, result: {(firstActor == "Adventurer" ? enemyCombat.Item3 : playerCombat.Item3)}.".PadRight(55));
+        combatLog.Add(logPosition++, $"{secondActor} defended using {(firstActor == player.Name ? enemyCombat.Item4 : playerCombat.Item4)}, result: {(firstActor == "Adventurer" ? enemyCombat.Item3 : playerCombat.Item3)}.".PadRight(55));
         Console.WriteLine(combatLog.LastOrDefault().Value);
-        combatLog.Add(logPosition++, $"Damage done by {firstActor} to {secondActor} is: {(firstActor == "Adventurer" ? playerDamage : enemyDamage)}.".PadRight(55));
+        combatLog.Add(logPosition++, $"Damage done by {firstActor} to {secondActor} is: {(firstActor == player.Name ? playerDamage : enemyDamage)}.".PadRight(55));
         Console.WriteLine(combatLog.LastOrDefault().Value);
     }
 
@@ -263,7 +276,7 @@ class GameLoop
         }
         else
         {
-            PrintCounterAttack(enemy.Name, enemyCombat, playerCombat, enemyDamage, player, enemy, elements);
+            PrintCounterAttack(enemy.Name, player.Name, enemyCombat, playerCombat, enemyDamage, player, enemy, elements);
         }
     }
 
@@ -279,11 +292,11 @@ class GameLoop
         }
         else
         {
-            PrintCounterAttack(player.Name, playerCombat, enemyCombat, playerDamage, player, enemy, elements);
+            PrintCounterAttack(player.Name, enemy.Name, playerCombat, enemyCombat, playerDamage, player, enemy, elements);
         }
     }
 
-    private static void PrintCounterAttack(string secondActor,
+    private static void PrintCounterAttack(string secondActor, string firstActor,
                                            (int, string, int, string) attackCombat,
                                            (int, string, int, string) defenseCombat,
                                            int damage, Player player, Enemy enemy,
@@ -291,12 +304,12 @@ class GameLoop
     {
         combatLog.Add(logPosition++, "".PadRight(55));
         Console.WriteLine(combatLog.LastOrDefault().Value);
-        Console.ForegroundColor = secondActor == "Adventurer" ? ConsoleColor.Green : ConsoleColor.Red;
+        Console.ForegroundColor = secondActor == player.Name ? ConsoleColor.Green : ConsoleColor.Red;
         combatLog.Add(logPosition++, $"Counter attack by {secondActor}, {attackCombat.Item2} with result: {attackCombat.Item1}.".PadRight(55));
         Console.WriteLine(combatLog.LastOrDefault().Value);
-        combatLog.Add(logPosition++, $"{secondActor} defended with {defenseCombat.Item4}, result: {defenseCombat.Item3}.".PadRight(55));
+        combatLog.Add(logPosition++, $"{firstActor} defended with {defenseCombat.Item4}, result: {defenseCombat.Item3}.".PadRight(55));
         Console.WriteLine(combatLog.LastOrDefault().Value);
-        combatLog.Add(logPosition++, $"Counter attack by {secondActor} against {player.Name} did {damage}.".PadRight(55));
+        combatLog.Add(logPosition++, $"Counter attack by {secondActor} against {firstActor} did {damage}.".PadRight(55));
         Console.WriteLine(combatLog.LastOrDefault().Value);
 
         if (player.IsDead)
@@ -469,7 +482,7 @@ class GameLoop
 
             gameState.CurrentTurn = turn;
 
-            var saveGame = new GameSave { PlayerName = name, gameState = gameState };
+            var saveGame = new GameSave { PlayerName = name, gameState = gameState, MapName = Program.levelFile };
             db.SaveGames.Add(saveGame);
             db.SaveChanges();
 

@@ -90,6 +90,7 @@ class LevelData
                 if (saveGame != null)
                 {
                     LevelElements.SaveGameName = saveGame.Id.ToString();
+                    Program.levelFile = saveGame.MapName.ToString();
                     gameState = LoadGameState(saveGame.gameState);
                     Console.Clear();
                     TextCenter.CenterText("Save game loaded.");
@@ -144,7 +145,7 @@ class LevelData
     {
         GameLoop gameLoop = new GameLoop();
 
-        gameLoop.PrintUI();
+        Player? player = null;
 
         foreach (var element in elements)
         {
@@ -153,6 +154,7 @@ class LevelData
             switch (element)
             {
                 case Player:
+                    player = (Player)element;
                     element.IsVisible = true;
                     element.DrawPlayer();
                     break;
@@ -164,6 +166,8 @@ class LevelData
                     break;
             }
         }
+
+        gameLoop.PrintUI(player);
 
         if (GameLoop.combatLog.Count() > 4)
         {
