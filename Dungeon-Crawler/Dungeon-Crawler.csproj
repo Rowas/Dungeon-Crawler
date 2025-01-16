@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
-    <RootNamespace>Labb2_Dungeon_Crawler</RootNamespace>
+    <RootNamespace>Dungeon_Crawler</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -18,6 +18,10 @@
     <None Update="Levels\TestMap.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MongoDB.EntityFrameworkCore" Version="8.2.1" />
   </ItemGroup>
 
 </Project>

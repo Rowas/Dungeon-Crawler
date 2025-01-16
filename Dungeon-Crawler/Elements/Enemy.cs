@@ -1,14 +1,20 @@
-﻿abstract class Enemy : LevelElements
+﻿using MongoDB.Bson.Serialization.Attributes;
+
+abstract class Enemy : LevelElements
 {
     public string Name { get; set; }
+
+    [BsonIgnore]
     public int MaxHealth { get; set; }
     public int CurrentHealth { get; set; }
-    public int DamageDices { get; set; }
+    public int DmgDice { get; set; }
     public int dmgDiceSides { get; set; }
     public int dmgDiceModifier { get; set; }
-    public int DefenseDice { get; set; }
+    public int DefDice { get; set; }
     public int defDiceSides { get; set; }
     public int defDiceModifier { get; set; }
+
+    [BsonIgnore]
     public bool IsDead { get; set; }
 
     public (int, string, int, string) Combat()
@@ -21,7 +27,7 @@
 
     public (int, string) Attack()
     {
-        Dice enemyDamage = new Dice(DamageDices, dmgDiceSides, dmgDiceModifier);
+        Dice enemyDamage = new Dice(DmgDice, dmgDiceSides, dmgDiceModifier);
 
         int eDmg = enemyDamage.Throw();
 
@@ -32,7 +38,7 @@
 
     public (int, string) Defend()
     {
-        Dice enemyDefend = new Dice(DefenseDice, defDiceSides, defDiceModifier);
+        Dice enemyDefend = new Dice(DefDice, defDiceSides, defDiceModifier);
 
         int eDef = enemyDefend.Throw();
 

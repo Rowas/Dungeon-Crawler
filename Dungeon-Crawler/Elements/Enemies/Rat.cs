@@ -6,16 +6,22 @@
         objectTile = 'R';
         objectColor = ConsoleColor.Red;
         Name = "Rat";
+        PointModifier = 1;
         MaxHealth = 20;
         CurrentHealth = 20;
-        DamageDices = 1;
+        DmgDice = 1;
         dmgDiceSides = 6;
         dmgDiceModifier = 0;
-        DefenseDice = 2;
+        DefDice = 2;
         defDiceSides = 4;
         defDiceModifier = 1;
         IsDead = false;
         this.Draw();
+    }
+
+    public Rat()
+    {
+
     }
 
     public override void Update(List<LevelElements> elements)

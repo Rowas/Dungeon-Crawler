@@ -1,14 +1,21 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using System.Xml.Linq;
+﻿using Labb2_Dungeon_Crawler.DBModel;
+using Labb2_Dungeon_Crawler.GeneralMethods;
+using MongoDB.Bson;
+using MongoDB.Driver.Linq;
 
 class GameLoop
 {
-    private int turnCounter = 1;
-    private string Name = "Adventurer";
-
+    public static string MapName { get; set; }
+    public static int turnCounter { get; set; } = 1;
+    string? name { get; set; }
     public int CurrentHP { get; private set; }
     public int MaxHP { get; private set; }
+    public Player currentPlayer { get; set; }
+    public bool swordAquired { get; set; } = false;
+    public bool armorAquired { get; set; } = false;
+
+    public static Dictionary<int, string> combatLog = new Dictionary<int, string>();
+    public static int logPosition { get; set; } = 1;
 
     static int NewHP = 100;
 
@@ -18,22 +25,30 @@ class GameLoop
 
     public LevelData Level { get { return _level; } }
 
-    public void StartUp(string levelFile)
+    public void StartUp(string levelFile, string playerName)
     {
         Console.CursorVisible = false;
         Console.CursorTop = 0;
         Console.CursorLeft = 0;
 
+        name = playerName;
+
         Directory.SetCurrentDirectory(".\\Levels\\");
 
-        Level.Load(levelFile);
+        if (levelFile != "GameLoaded")
+        {
+            Level.Load(levelFile, playerName);
+        }
+        else
+        {
+            Level.LoadGame();
+        }
+
+        MapName = Program.levelFile;
     }
 
     public void GameRunning()
     {
-        Console.CursorVisible = false;
-        Console.SetCursorPosition(0, 20);
-        Console.WriteLine("Use arrow keys to move, space to wait, and escape to exit.");
 
         foreach (var player in from LevelElements element in Level.Elements
                                where element is Player
@@ -41,6 +56,8 @@ class GameLoop
                                select player)
         {
             player.Exploration(Level.Elements);
+            currentPlayer = player;
+            PrintUI(currentPlayer);
         }
         foreach (var grue in from LevelElements element in Level.Elements
                              where element is Grue
@@ -88,6 +105,7 @@ class GameLoop
                                    let player = (Player)element
                                    select player)
             {
+                currentPlayer = player;
                 player.Exploration(Level.Elements);
                 MaxHP = player.maxHealth;
                 CurrentHP = player.currentHealth;
@@ -98,9 +116,6 @@ class GameLoop
                 }
             }
 
-            Console.ResetColor();
-            Console.SetCursorPosition(0, 0);
-            Console.Write($"Player: {Name} | HP: {CurrentHP} / {MaxHP}  Turn: {turnCounter++}         ");
             while (Console.KeyAvailable == false)
             {
                 Thread.Sleep(16);
@@ -113,6 +128,7 @@ class GameLoop
                 {
                     case Player:
                         Player player = (Player)element;
+                        currentPlayer = player;
                         player.Movement(checkKey, Level.Elements);
                         break;
                     case Enemy:
@@ -133,11 +149,32 @@ class GameLoop
                         break;
                 }
             }
+
+            PrintUI(currentPlayer);
+
         } while (checkKey.Key != ConsoleKey.Escape);
+    }
+
+    public void PrintUI(Player player)
+    {
+        Dice defDice = new Dice(player.defDices, player.defDiceSides, player.defDiceModifier);
+        Dice dmgDice = new Dice(player.dmgDices, player.dmgDiceSides, player.dmgDiceModifier);
+        Console.ResetColor();
+        Console.SetCursorPosition(0, 0);
+        Console.Write($"Player: {name} | HP: {CurrentHP} / {MaxHP}  Turn: {turnCounter}             ");
+        Console.WriteLine($"Current Damage: {dmgDice} | Current Defense: {defDice}");
+        Console.Write($"Items aquired: Magic Sword: {swordAquired} | Magic Armor: {armorAquired}");
+
+        Console.CursorVisible = false;
+        Console.SetCursorPosition(0, 20);
+        Console.WriteLine("Use arrow keys to move, space to wait, and escape to exit.");
+        Console.WriteLine("Press \"L\" to open the combat log.");
+        Console.WriteLine("Press \"S\" to save your game.");
     }
 
     public static void Encounter(Player player, Enemy enemy, char F, List<LevelElements> elements)
     {
+
         var (firstActor, secondActor) = DetermineActors(player, enemy, F);
 
         var playerCombat = player.Combat();
@@ -196,13 +233,15 @@ class GameLoop
                                      List<LevelElements> elements)
     {
         Console.SetCursorPosition(0, 2);
-        Console.ForegroundColor = firstActor == "Adventurer" ? ConsoleColor.Green : ConsoleColor.Red;
-        Console.WriteLine($"{secondActor} encountered.".PadRight(55));
-        Console.WriteLine("".PadRight(55));
+        Console.ForegroundColor = firstActor == player.Name ? ConsoleColor.Green : ConsoleColor.Red;
+        combatLog.Add(logPosition++, $"{secondActor} encountered.".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
+        combatLog.Add(logPosition++, "".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
 
-        PrintAttackResult(firstActor, secondActor, playerCombat, enemyCombat, playerDamage, enemyDamage);
+        PrintAttackResult(firstActor, secondActor, playerCombat, enemyCombat, playerDamage, enemyDamage, player);
 
-        if (firstActor == "Adventurer")
+        if (firstActor == player.Name)
         {
             HandleAdventurerCombat(playerCombat, enemyCombat, playerDamage, enemyDamage, player, enemy, elements);
         }
@@ -215,11 +254,14 @@ class GameLoop
     private static void PrintAttackResult(string firstActor, string secondActor,
                                           (int, string, int, string) playerCombat,
                                           (int, string, int, string) enemyCombat,
-                                          int playerDamage, int enemyDamage)
+                                          int playerDamage, int enemyDamage, Player player)
     {
-        Console.WriteLine($"{firstActor} rolled {(firstActor == "Adventurer" ? playerCombat.Item2 : enemyCombat.Item2)} to attack, result: {(firstActor == "Adventurer" ? playerCombat.Item1 : enemyCombat.Item1)}.".PadRight(55));
-        Console.WriteLine($"{secondActor} defended using {(firstActor == "Adventurer" ? enemyCombat.Item4 : playerCombat.Item4)}, result: {(firstActor == "Adventurer" ? enemyCombat.Item3 : playerCombat.Item3)}.".PadRight(55));
-        Console.WriteLine($"Damage done by {firstActor} to {secondActor} is: {(firstActor == "Adventurer" ? playerDamage : enemyDamage)}.".PadRight(55));
+        combatLog.Add(logPosition++, $"{firstActor} rolled {(firstActor == player.Name ? playerCombat.Item2 : enemyCombat.Item2)} to attack, result: {(firstActor == "Adventurer" ? playerCombat.Item1 : enemyCombat.Item1)}.".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
+        combatLog.Add(logPosition++, $"{secondActor} defended using {(firstActor == player.Name ? enemyCombat.Item4 : playerCombat.Item4)}, result: {(firstActor == "Adventurer" ? enemyCombat.Item3 : playerCombat.Item3)}.".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
+        combatLog.Add(logPosition++, $"Damage done by {firstActor} to {secondActor} is: {(firstActor == player.Name ? playerDamage : enemyDamage)}.".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
     }
 
     private static void HandleAdventurerCombat((int, string, int, string) playerCombat,
@@ -234,7 +276,7 @@ class GameLoop
         }
         else
         {
-            PrintCounterAttack(enemy.Name, enemyCombat, playerCombat, enemyDamage, player, enemy, elements);
+            PrintCounterAttack(enemy.Name, player.Name, enemyCombat, playerCombat, enemyDamage, player, enemy, elements);
         }
     }
 
@@ -250,27 +292,33 @@ class GameLoop
         }
         else
         {
-            PrintCounterAttack(player.Name, playerCombat, enemyCombat, playerDamage, player, enemy, elements);
+            PrintCounterAttack(player.Name, enemy.Name, playerCombat, enemyCombat, playerDamage, player, enemy, elements);
         }
     }
 
-    private static void PrintCounterAttack(string secondActor,
+    private static void PrintCounterAttack(string secondActor, string firstActor,
                                            (int, string, int, string) attackCombat,
                                            (int, string, int, string) defenseCombat,
                                            int damage, Player player, Enemy enemy,
                                            List<LevelElements> elements)
     {
-        Console.WriteLine("".PadRight(55));
-        Console.ForegroundColor = secondActor == "Adventurer" ? ConsoleColor.Green : ConsoleColor.Red;
-        Console.WriteLine($"Counter attack by {secondActor}, {attackCombat.Item2} with result: {attackCombat.Item1}.".PadRight(55));
-        Console.WriteLine($"{secondActor} defended with {defenseCombat.Item4}, result: {defenseCombat.Item3}.".PadRight(55));
-        Console.WriteLine($"Counter attack by {secondActor} against {player.Name} did {damage}.".PadRight(55));
+        combatLog.Add(logPosition++, "".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
+        Console.ForegroundColor = secondActor == player.Name ? ConsoleColor.Green : ConsoleColor.Red;
+        combatLog.Add(logPosition++, $"Counter attack by {secondActor}, {attackCombat.Item2} with result: {attackCombat.Item1}.".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
+        combatLog.Add(logPosition++, $"{firstActor} defended with {defenseCombat.Item4}, result: {defenseCombat.Item3}.".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
+        combatLog.Add(logPosition++, $"Counter attack by {secondActor} against {firstActor} did {damage}.".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
+
         if (player.IsDead)
         {
             player.GameOver();
         }
         if (enemy.IsDead)
         {
+            Player.CollectedPointMods = Player.CollectedPointMods + enemy.PointModifier;
             PrintEnemySlain(enemy.Name, elements, enemy, isCounter: true);
         }
     }
@@ -278,32 +326,41 @@ class GameLoop
     private static void PrintEnemySlain(string actor, List<LevelElements> elements, Enemy enemy, bool isCounter)
     {
         Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("".PadRight(55));
-        Console.WriteLine($"{actor} has been slain.".PadRight(55));
+        combatLog.Add(logPosition++, "".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
+        combatLog.Add(logPosition++, $"{actor} has been slain.".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
         if (!isCounter)
         {
             for (int i = 9; i < 13; i++)
             {
                 Console.SetCursorPosition(0, i);
-                Console.Write(" ".PadRight(55));
+                combatLog.Add(logPosition++, "".PadRight(55));
+                Console.WriteLine(combatLog.LastOrDefault().Value);
             }
         }
         Console.ResetColor();
+        Player.CollectedPointMods = Player.CollectedPointMods + enemy.PointModifier;
         enemy.Die(elements);
     }
 
     public static void EquipmentPickup(Player player, Equipment equipment, List<LevelElements> elements)
     {
         Console.SetCursorPosition(0, 14);
-        Console.WriteLine($"The {equipment.Name} have been acquired.".PadRight(55));
+        combatLog.Add(logPosition++, $"The {equipment.Name} have been acquired.".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
         switch (equipment.Name)
         {
             case "Magic Sword":
-                Console.WriteLine("Attack have been increased to 2D10+2.".PadRight(55));
+                combatLog.Add(logPosition++, "Attack have been increased to 2D10+2.".PadRight(55));
+                Console.WriteLine(combatLog.LastOrDefault().Value);
+                Player.CollectedPointMods = Player.CollectedPointMods + equipment.PointModifier;
                 UpdatingStats(player, equipment.DamageDices, equipment.DmgDiceSides, equipment.DmgDiceModifier, isAttack: true);
                 break;
             case "Magic Armor":
-                Console.WriteLine("Defense have been increased to 2D8+2.".PadRight(55));
+                combatLog.Add(logPosition++, "Defense have been increased to 2D8+2.".PadRight(55));
+                Console.WriteLine(combatLog.LastOrDefault().Value);
+                Player.CollectedPointMods = Player.CollectedPointMods + equipment.PointModifier;
                 UpdatingStats(player, equipment.DefenseDice, equipment.DefDiceSides, equipment.DefDiceModifier, isAttack: false);
                 break;
         }
@@ -314,13 +371,13 @@ class GameLoop
         {
             if (isAttack)
             {
-                player.damageDices = dices;
+                player.dmgDices = dices;
                 player.dmgDiceSides = sides;
                 player.dmgDiceModifier = modifier;
             }
             else
             {
-                player.defenseDices = dices;
+                player.defDices = dices;
                 player.defDiceSides = sides;
                 player.defDiceModifier = modifier;
             }
@@ -329,25 +386,131 @@ class GameLoop
     public static void ItemPickup(Player player, Items item, List<LevelElements> elements)
     {
         Console.SetCursorPosition(0, 17);
-        Console.WriteLine($"{item.Name} acquired, HP restored with {item.HealthRestore}.".PadRight(55));
+        combatLog.Add(logPosition++, $"{item.Name} acquired, HP restored with {item.HealthRestore}.".PadRight(55));
+        Console.WriteLine(combatLog.LastOrDefault().Value);
 
         switch (item.Name)
         {
             case "Food":
                 {
                     player.currentHealth = player.currentHealth + item.HealthRestore;
+                    Player.CollectedPointMods = Player.CollectedPointMods + item.PointModifier;
                     break;
                 }
             case "Potion":
                 {
                     player.currentHealth = player.currentHealth + item.HealthRestore;
+                    Player.CollectedPointMods = Player.CollectedPointMods + item.PointModifier;
                     break;
                 }
         }
 
         NewHP = player.currentHealth > player.maxHealth ? player.maxHealth : player.currentHealth;
-        
+
         item.IsDead = true;
         item.Die(elements);
+    }
+    public static void GameSave(List<LevelElements> elements, string name, int turn)
+    {
+        LevelData level = new LevelData();
+        Console.Clear();
+        TextCenter.CenterText("Saving Game.");
+        Console.WriteLine();
+
+        using (var db = new SaveGameContext())
+        {
+            ObjectId id = new ObjectId();
+
+            if (LevelElements.SaveGameName != "0")
+            {
+                id = new MongoDB.Bson.ObjectId($"{LevelElements.SaveGameName}");
+            }
+
+            var currentSave = db.SaveGames.FirstOrDefault(s => s.Id == id);
+
+            var saveName = LevelElements.SaveGameName;
+
+            if (currentSave != null && saveName == currentSave.Id.ToString())
+            {
+                db.SaveGames.Remove(currentSave);
+            }
+
+            var gameState = new GameState();
+
+            foreach (var element in elements)
+            {
+                element.xPos = element.Position.Item1;
+                element.yPos = element.Position.Item2;
+
+                switch (element)
+                {
+                    case Wall wall:
+                        gameState.Walls.Add(wall);
+                        break;
+                    case Boss boss:
+                        gameState.Bosses.Add(boss);
+                        break;
+                    case Grue grue:
+                        gameState.Grues.Add(grue);
+                        break;
+                    case Guard guard:
+                        gameState.Guards.Add(guard);
+                        break;
+                    case Rat rat:
+                        gameState.Rats.Add(rat);
+                        break;
+                    case Snake snake:
+                        gameState.Snakes.Add(snake);
+                        break;
+                    case Armor armor:
+                        gameState.Armors.Add(armor);
+                        break;
+                    case Sword sword:
+                        gameState.Swords.Add(sword);
+                        break;
+                    case Food food:
+                        gameState.Foods.Add(food);
+                        break;
+                    case Potion potion:
+                        gameState.Potions.Add(potion);
+                        break;
+                    case Player player:
+                        gameState.Player = player;
+                        break;
+                }
+            }
+
+            gameState.CurrentTurn = turn;
+
+            var saveGame = new GameSave { PlayerName = name, gameState = gameState, MapName = Program.levelFile };
+            db.SaveGames.Add(saveGame);
+            db.SaveChanges();
+
+            LevelElements.SaveGameName = db.SaveGames.FirstOrDefault().Id.ToString();
+
+            Console.WriteLine();
+            TextCenter.CenterText("Game saved");
+            TextCenter.CenterText("Press any key to continue.");
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        level.DrawGameState(elements);
+    }
+
+
+    public static void GameLog()
+    {
+        Console.Clear();
+        TextCenter.CenterText("Combat Log");
+        var output = combatLog.Take(25).OrderBy(x => x.Key).ToList();
+        foreach (var log in output)
+        {
+            TextCenter.CenterText(log.Value);
+        }
+        Console.ReadKey();
+        ClearConsole.ConsoleClear();
+        LevelData level = new LevelData();
+        level.DrawGameState(level.Elements);
     }
 }

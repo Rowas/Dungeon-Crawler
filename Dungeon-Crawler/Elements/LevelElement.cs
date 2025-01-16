@@ -1,6 +1,13 @@
-﻿abstract class LevelElements
+﻿using MongoDB.Bson.Serialization.Attributes;
+
+abstract class LevelElements
 {
+    [BsonIgnore]
     public (int, int) Position { get; set; }
+    public static string SaveGameName { get; set; } = "0";
+    public double PointModifier { get; set; }
+    public int xPos { get; set; }
+    public int yPos { get; set; }
     public char objectTile { get; set; }
     public ConsoleColor objectColor { get; set; }
     public bool IsVisible { get; set; } = false;

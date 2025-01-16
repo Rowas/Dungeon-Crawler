@@ -1,21 +1,38 @@
-﻿class Player : LevelElements
+﻿using Labb2_Dungeon_Crawler.DBModel;
+using Labb2_Dungeon_Crawler.GeneralMethods;
+using MongoDB.Bson.Serialization.Attributes;
+
+class Player : LevelElements
 {
-    public string Name = "Adventurer";
+    [BsonElement("name")]
+    public string Name { get; set; } = "Adventurer";
+
     public int maxHealth = 100;
-    public int currentHealth = 100;
+    public int currentHealth { get; set; } = 100;
+    public static double CollectedPointMods { get; set; }
+    public static double FinalScore { get; set; }
 
-    public int damageDices = 2;
-    public int dmgDiceSides = 6;
-    public int dmgDiceModifier = 1;
+    public int dmgDices { get; set; } = 2;
+    public int dmgDiceSides { get; set; } = 6;
+    public int dmgDiceModifier { get; set; } = 1;
 
-    public int defenseDices = 1;
-    public int defDiceSides = 8;
-    public int defDiceModifier = 0;
+    public int defDices { get; set; } = 1;
+    public int defDiceSides { get; set; } = 8;
+    public int defDiceModifier { get; set; } = 0;
 
     public bool IsDead = false;
 
     public bool isVisible = true;
 
+    public Player(int x, int y, string name)
+    {
+        Name = name;
+        IsVisible = true;
+        Position = (x, y);
+        objectTile = '@';
+        objectColor = ConsoleColor.Yellow;
+        this.Draw();
+    }
     public Player(int x, int y)
     {
         IsVisible = true;
@@ -36,21 +53,32 @@
         {
             case ConsoleKey.RightArrow:
                 TakeStep(1, 'H', elements);
+                GameLoop.turnCounter++;
                 break;
             case ConsoleKey.LeftArrow:
                 TakeStep(-1, 'H', elements);
+                GameLoop.turnCounter++;
                 break;
             case ConsoleKey.UpArrow:
                 TakeStep(-1, 'V', elements);
+                GameLoop.turnCounter++;
                 break;
             case ConsoleKey.DownArrow:
                 TakeStep(1, 'V', elements);
+                GameLoop.turnCounter++;
                 break;
             case ConsoleKey.Escape:
                 Console.SetCursorPosition(0, 21);
                 Environment.Exit(0);
                 break;
+            case ConsoleKey.S:
+                GameLoop.GameSave(elements, Name, GameLoop.turnCounter);
+                break;
+            case ConsoleKey.L:
+                GameLoop.GameLog();
+                break;
             default:
+                GameLoop.turnCounter++;
                 Draw();
                 break;
         }
@@ -190,7 +218,7 @@
 
     public (int, string) Attack()
     {
-        Dice playerDamage = new Dice(damageDices, dmgDiceSides, dmgDiceModifier);
+        Dice playerDamage = new Dice(dmgDices, dmgDiceSides, dmgDiceModifier);
         int pDmg = playerDamage.Throw();
         string pDmgDice = playerDamage.ToString();
 
@@ -199,7 +227,7 @@
 
     public (int, string) Defend()
     {
-        Dice playerDefense = new Dice(defenseDices, defDiceSides, defDiceModifier);
+        Dice playerDefense = new Dice(defDices, defDiceSides, defDiceModifier);
         int pDef = playerDefense.Throw();
         string pDefDice = playerDefense.ToString();
 
@@ -211,8 +239,40 @@
         this.objectTile = ' ';
         Draw();
         Console.Clear();
-        Console.SetCursorPosition(33, 12);
-        Console.WriteLine("It's a sad thing that your adventures have ended here!!");
+        Console.SetCursorPosition(0, 12);
+        TextCenter.CenterText("It's a sad thing that your adventures have ended here!!");
+        TextCenter.CenterText(Name + " has died!!");
+        TextCenter.CenterText("Your score was: " + Math.Round(ScoreCalc()));
+        SaveScore();
+        Console.ReadKey();
         Environment.Exit(0);
+    }
+
+    public double ScoreCalc()
+    {
+        double score;
+        double turnMod;
+        double collectedPoints;
+        double turns = GameLoop.turnCounter;
+        turnMod = turns / 250;
+        collectedPoints = CollectedPointMods * 100;
+        score = collectedPoints / turnMod;
+        if (score <= 0) { score = 0; }
+        FinalScore = score;
+        return score;
+    }
+
+    public void SaveScore()
+    {
+        using (var db = new SaveGameContext())
+        {
+            db.Highscores.Add(new Highscore
+            {
+                PlayerName = Name,
+                MapName = GameLoop.MapName,
+                Score = ScoreCalc()
+            });
+            db.SaveChanges();
+        }
     }
 }

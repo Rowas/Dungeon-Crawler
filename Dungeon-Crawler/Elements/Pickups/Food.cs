@@ -1,16 +1,19 @@
-﻿class Armor : Equipment
+﻿class Food : Items
 {
-    public Armor(int x, int y)
+    public Food(int x, int y)
     {
         Position = (x, y);
-        objectTile = 'A';
-        objectColor = ConsoleColor.DarkCyan;
-        Name = "Magic Armor";
-        DefenseDice = 2;
-        DefDiceSides = 8;
-        DefDiceModifier = 2;
+        objectTile = 'F';
+        objectColor = ConsoleColor.White;
+        Name = "Food";
+        PointModifier = -1;
+        HealthRestore = 25;
         IsDead = false;
         this.Draw();
+    }
+    public Food()
+    {
+
     }
 
     public override void Update(List<LevelElements> elements)

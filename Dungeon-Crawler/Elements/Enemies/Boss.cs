@@ -6,16 +6,21 @@
         objectTile = 'B';
         objectColor = ConsoleColor.DarkRed;
         Name = "Boss";
+        PointModifier = 6;
         MaxHealth = 75;
         CurrentHealth = 75;
-        DamageDices = 4;
+        DmgDice = 4;
         dmgDiceSides = 4;
         dmgDiceModifier = 0;
-        DefenseDice = 2;
+        DefDice = 2;
         defDiceSides = 8;
         defDiceModifier = -1;
         IsDead = false;
         this.Draw();
+    }
+    public Boss()
+    {
+
     }
 
     public override void Update(List<LevelElements> elements)

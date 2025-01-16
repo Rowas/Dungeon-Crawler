@@ -6,17 +6,23 @@
         objectTile = 'S';
         objectColor = ConsoleColor.Green;
         Name = "Snake";
+        PointModifier = 2;
         MaxHealth = 35;
         CurrentHealth = 35;
-        DamageDices = 2;
+        DmgDice = 2;
         dmgDiceSides = 4;
         dmgDiceModifier = 1;
-        DefenseDice = 2;
+        DefDice = 2;
         defDiceSides = 6;
         defDiceModifier = -1;
         IsDead = false;
         IsVisible = false;
         this.Draw();
+    }
+
+    public Snake()
+    {
+
     }
 
     public override void Update(List<LevelElements> elements)
