@@ -3,8 +3,8 @@
 //Branch of Dungeon Crawler game project that was Labb2 for C# .NET-developer edu program on ITHS fall 2024.
 //Adding database functionality to the game, allowing for saving of game state.
 
-using Labb2_Dungeon_Crawler.DBModel;
-using Labb2_Dungeon_Crawler.GeneralMethods;
+using Dungeon_Crawler.DBModel;
+using Dungeon_Crawler.GeneralMethods;
 
 internal class Program
 {

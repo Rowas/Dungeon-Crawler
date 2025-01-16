@@ -1,4 +1,4 @@
-﻿namespace Labb2_Dungeon_Crawler.GeneralMethods
+﻿namespace Dungeon_Crawler.GeneralMethods
 {
     internal class ClearConsole
     {

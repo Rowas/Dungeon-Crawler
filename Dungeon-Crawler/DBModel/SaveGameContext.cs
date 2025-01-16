@@ -2,7 +2,7 @@
 using MongoDB.Bson;
 using MongoDB.EntityFrameworkCore;
 
-namespace Labb2_Dungeon_Crawler.DBModel
+namespace Dungeon_Crawler.DBModel
 {
     internal class SaveGameContext : DbContext
     {

@@ -1,5 +1,5 @@
-﻿using Labb2_Dungeon_Crawler.DBModel;
-using Labb2_Dungeon_Crawler.GeneralMethods;
+﻿using Dungeon_Crawler.DBModel;
+using Dungeon_Crawler.GeneralMethods;
 using MongoDB.Bson;
 using MongoDB.Driver.Linq;
 
