@@ -13,6 +13,7 @@
         objectTile = 'g';
         objectColor = ConsoleColor.Magenta;
         Name = "Grue";
+        PointModifier = 42;
         MaxHealth = 250;
         CurrentHealth = 250;
         DmgDice = 4;

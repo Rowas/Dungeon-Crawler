@@ -6,6 +6,7 @@
         objectTile = 'B';
         objectColor = ConsoleColor.DarkRed;
         Name = "Boss";
+        PointModifier = 6;
         MaxHealth = 75;
         CurrentHealth = 75;
         DmgDice = 4;

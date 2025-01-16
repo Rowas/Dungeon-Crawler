@@ -6,6 +6,7 @@
         objectTile = 'A';
         objectColor = ConsoleColor.DarkCyan;
         Name = "Magic Armor";
+        PointModifier = -1;
         DefenseDice = 2;
         DefDiceSides = 8;
         DefDiceModifier = 2;

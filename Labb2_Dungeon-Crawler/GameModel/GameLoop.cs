@@ -1,15 +1,17 @@
 ﻿using Labb2_Dungeon_Crawler.DBModel;
+using Labb2_Dungeon_Crawler.GeneralMethods;
+using MongoDB.Bson;
 using MongoDB.Driver.Linq;
 
 class GameLoop
 {
+    public static string MapName { get; set; }
     public static int turnCounter { get; set; } = 1;
     string? name { get; set; }
     public int CurrentHP { get; private set; }
     public int MaxHP { get; private set; }
 
     public static Dictionary<int, string> combatLog = new Dictionary<int, string>();
-    public static SortedDictionary<int, string> combatLog2 = new SortedDictionary<int, string>();
     public static int logPosition { get; set; } = 1;
 
     static int NewHP = 100;
@@ -26,6 +28,7 @@ class GameLoop
         Console.CursorTop = 0;
         Console.CursorLeft = 0;
 
+        MapName = levelFile;
         name = playerName;
 
         Directory.SetCurrentDirectory(".\\Levels\\");
@@ -147,7 +150,7 @@ class GameLoop
     {
         Console.ResetColor();
         Console.SetCursorPosition(0, 0);
-        Console.Write($"Player: {name} | HP: {CurrentHP} / {MaxHP}  Turn: {turnCounter++}         ");
+        Console.Write($"Player: {name} | HP: {CurrentHP} / {MaxHP}  Turn: {turnCounter}         ");
 
         Console.CursorVisible = false;
         Console.SetCursorPosition(0, 20);
@@ -302,6 +305,7 @@ class GameLoop
         }
         if (enemy.IsDead)
         {
+            Player.CollectedPointMods = Player.CollectedPointMods + enemy.PointModifier;
             PrintEnemySlain(enemy.Name, elements, enemy, isCounter: true);
         }
     }
@@ -323,6 +327,7 @@ class GameLoop
             }
         }
         Console.ResetColor();
+        Player.CollectedPointMods = Player.CollectedPointMods + enemy.PointModifier;
         enemy.Die(elements);
     }
 
@@ -336,11 +341,13 @@ class GameLoop
             case "Magic Sword":
                 combatLog.Add(logPosition++, "Attack have been increased to 2D10+2.".PadRight(55));
                 Console.WriteLine(combatLog.LastOrDefault().Value);
+                Player.CollectedPointMods = Player.CollectedPointMods + equipment.PointModifier;
                 UpdatingStats(player, equipment.DamageDices, equipment.DmgDiceSides, equipment.DmgDiceModifier, isAttack: true);
                 break;
             case "Magic Armor":
                 combatLog.Add(logPosition++, "Defense have been increased to 2D8+2.".PadRight(55));
                 Console.WriteLine(combatLog.LastOrDefault().Value);
+                Player.CollectedPointMods = Player.CollectedPointMods + equipment.PointModifier;
                 UpdatingStats(player, equipment.DefenseDice, equipment.DefDiceSides, equipment.DefDiceModifier, isAttack: false);
                 break;
         }
@@ -374,11 +381,13 @@ class GameLoop
             case "Food":
                 {
                     player.currentHealth = player.currentHealth + item.HealthRestore;
+                    Player.CollectedPointMods = Player.CollectedPointMods + item.PointModifier;
                     break;
                 }
             case "Potion":
                 {
                     player.currentHealth = player.currentHealth + item.HealthRestore;
+                    Player.CollectedPointMods = Player.CollectedPointMods + item.PointModifier;
                     break;
                 }
         }
@@ -392,17 +401,23 @@ class GameLoop
     {
         LevelData level = new LevelData();
         Console.Clear();
-        Program.CenterText("Saving Game.");
+        TextCenter.CenterText("Saving Game.");
         Console.WriteLine();
 
         using (var db = new SaveGameContext())
         {
-            var id = new MongoDB.Bson.ObjectId($"{LevelElements.SaveGameName}");
+            ObjectId id = new ObjectId();
+
+            if (LevelElements.SaveGameName != "0")
+            {
+                id = new MongoDB.Bson.ObjectId($"{LevelElements.SaveGameName}");
+            }
+
             var currentSave = db.SaveGames.FirstOrDefault(s => s.Id == id);
 
             var saveName = LevelElements.SaveGameName;
 
-            if (saveName == currentSave.Id.ToString())
+            if (currentSave != null && saveName == currentSave.Id.ToString())
             {
                 db.SaveGames.Remove(currentSave);
             }
@@ -461,8 +476,8 @@ class GameLoop
             LevelElements.SaveGameName = db.SaveGames.FirstOrDefault().Id.ToString();
 
             Console.WriteLine();
-            Program.CenterText("Game saved");
-            Program.CenterText("Press any key to continue.");
+            TextCenter.CenterText("Game saved");
+            TextCenter.CenterText("Press any key to continue.");
             Console.ReadKey();
             Console.Clear();
         }
@@ -473,7 +488,16 @@ class GameLoop
 
     public static void GameLog()
     {
-        //not implemented
-        //, element.Position.Item2
+        Console.Clear();
+        TextCenter.CenterText("Combat Log");
+        var output = combatLog.Take(25).OrderBy(x => x.Key).ToList();
+        foreach (var log in output)
+        {
+            TextCenter.CenterText(log.Value);
+        }
+        Console.ReadKey();
+        ClearConsole.ConsoleClear();
+        LevelData level = new LevelData();
+        level.DrawGameState(level.Elements);
     }
 }

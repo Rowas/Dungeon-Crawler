@@ -1,4 +1,5 @@
 ﻿using Labb2_Dungeon_Crawler.DBModel;
+using Labb2_Dungeon_Crawler.GeneralMethods;
 
 class LevelData
 {
@@ -68,10 +69,10 @@ class LevelData
         catch (Exception ArgumentException)
         {
             Console.Clear();
-            Console.WriteLine("Invalid Custom Map selected.");
-            Console.WriteLine("Map does not exist.");
+            TextCenter.CenterText("Invalid Custom Map selected.");
+            TextCenter.CenterText("Map does not exist.");
             Console.WriteLine();
-            Console.WriteLine("Press any key to exit.");
+            TextCenter.CenterText("Press any key to exit.");
             Console.ReadKey();
         }
     }
@@ -91,9 +92,9 @@ class LevelData
                     LevelElements.SaveGameName = saveGame.Id.ToString();
                     gameState = LoadGameState(saveGame.gameState);
                     Console.Clear();
-                    Console.WriteLine("Save game loaded.");
+                    TextCenter.CenterText("Save game loaded.");
                     Console.WriteLine();
-                    Console.WriteLine("Press any key to continue.");
+                    TextCenter.CenterText("Press any key to continue.");
                     Console.ReadKey();
                     Console.Clear();
                     DrawGameState(gameState);
@@ -102,9 +103,9 @@ class LevelData
                 else
                 {
                     Console.Clear();
-                    Console.WriteLine("No save game found.");
+                    TextCenter.CenterText("No save game found.");
                     Console.WriteLine();
-                    Console.WriteLine("Press any key to exit.");
+                    TextCenter.CenterText("Press any key to exit.");
                     Console.ReadKey();
                     Environment.Exit(0);
                 }
@@ -113,10 +114,10 @@ class LevelData
         catch (Exception ex)
         {
             Console.Clear();
-            Console.WriteLine("Unable to load save game.");
-            Console.WriteLine("Database corrupted, save game does not exist or unable to load for other reason.");
+            TextCenter.CenterText("Unable to load save game.");
+            TextCenter.CenterText("Database corrupted, save game does not exist or save game is from a different version.");
             Console.WriteLine();
-            Console.WriteLine("Press any key to exit.");
+            TextCenter.CenterText("Press any key to exit.");
             Console.ReadKey();
             Environment.Exit(0);
         }
@@ -163,5 +164,23 @@ class LevelData
                     break;
             }
         }
+
+        if (GameLoop.combatLog.Count() > 4)
+        {
+            Console.ResetColor();
+            Console.SetCursorPosition(0, 2);
+            var print = GameLoop.combatLog.Values.Reverse().Take(9).ToList();
+            print.Reverse();
+            int x = 0;
+            foreach (var line in print)
+            {
+                if (x < 4) { Console.ForegroundColor = ConsoleColor.Green; }
+                else { Console.ForegroundColor = ConsoleColor.Red; }
+                Console.WriteLine(line);
+                x++;
+            }
+            Console.ResetColor();
+        }
+
     }
 }

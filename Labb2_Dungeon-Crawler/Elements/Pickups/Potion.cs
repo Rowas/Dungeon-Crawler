@@ -6,6 +6,7 @@
         objectTile = 'P';
         objectColor = ConsoleColor.DarkGreen;
         Name = "Potion";
+        PointModifier = -2;
         HealthRestore = 50;
         IsDead = false;
         this.Draw();

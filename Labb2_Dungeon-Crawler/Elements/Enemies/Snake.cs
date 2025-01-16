@@ -6,6 +6,7 @@
         objectTile = 'S';
         objectColor = ConsoleColor.Green;
         Name = "Snake";
+        PointModifier = 2;
         MaxHealth = 35;
         CurrentHealth = 35;
         DmgDice = 2;

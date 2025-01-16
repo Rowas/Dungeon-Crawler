@@ -6,6 +6,7 @@
         objectTile = 'W';
         objectColor = ConsoleColor.DarkYellow;
         Name = "Magic Sword";
+        PointModifier = -1;
         DamageDices = 2;
         DmgDiceSides = 10;
         DmgDiceModifier = 2;

@@ -6,6 +6,7 @@
         objectTile = 'R';
         objectColor = ConsoleColor.Red;
         Name = "Rat";
+        PointModifier = 1;
         MaxHealth = 20;
         CurrentHealth = 20;
         DmgDice = 1;

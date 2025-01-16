@@ -6,6 +6,7 @@
         objectTile = 'F';
         objectColor = ConsoleColor.White;
         Name = "Food";
+        PointModifier = -1;
         HealthRestore = 25;
         IsDead = false;
         this.Draw();

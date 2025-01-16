@@ -7,6 +7,7 @@ namespace Labb2_Dungeon_Crawler.DBModel
     internal class SaveGameContext : DbContext
     {
         public DbSet<GameSave> SaveGames { get; set; }
+        public DbSet<Highscore> Highscores { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -45,4 +46,13 @@ namespace Labb2_Dungeon_Crawler.DBModel
         public List<Grue> Grues { get; set; } = new List<Grue>();
     }
 
+    [Collection("Highscore")]
+    class Highscore
+    {
+        public ObjectId Id { get; set; }
+        public string PlayerName { get; set; }
+        public string MapName { get; set; }
+        public DateTime SaveDate { get; set; } = DateTime.Now;
+        public double Score { get; set; }
+    }
 }

@@ -6,6 +6,7 @@
         objectTile = 'G';
         objectColor = ConsoleColor.Magenta;
         Name = "Guard";
+        PointModifier = 2;
         MaxHealth = 50;
         CurrentHealth = 50;
         DmgDice = 2;

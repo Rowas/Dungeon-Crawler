@@ -1,4 +1,6 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using Labb2_Dungeon_Crawler.DBModel;
+using Labb2_Dungeon_Crawler.GeneralMethods;
+using MongoDB.Bson.Serialization.Attributes;
 
 class Player : LevelElements
 {
@@ -7,6 +9,8 @@ class Player : LevelElements
 
     public int maxHealth = 100;
     public int currentHealth { get; set; } = 100;
+    public static double CollectedPointMods { get; set; }
+    public static double FinalScore { get; set; }
 
     public int dmgDices { get; set; } = 2;
     public int dmgDiceSides { get; set; } = 6;
@@ -49,15 +53,19 @@ class Player : LevelElements
         {
             case ConsoleKey.RightArrow:
                 TakeStep(1, 'H', elements);
+                GameLoop.turnCounter++;
                 break;
             case ConsoleKey.LeftArrow:
                 TakeStep(-1, 'H', elements);
+                GameLoop.turnCounter++;
                 break;
             case ConsoleKey.UpArrow:
                 TakeStep(-1, 'V', elements);
+                GameLoop.turnCounter++;
                 break;
             case ConsoleKey.DownArrow:
                 TakeStep(1, 'V', elements);
+                GameLoop.turnCounter++;
                 break;
             case ConsoleKey.Escape:
                 Console.SetCursorPosition(0, 21);
@@ -67,9 +75,10 @@ class Player : LevelElements
                 GameLoop.GameSave(elements, Name, GameLoop.turnCounter);
                 break;
             case ConsoleKey.L:
-                //GameLoop.GameLog();
+                GameLoop.GameLog();
                 break;
             default:
+                GameLoop.turnCounter++;
                 Draw();
                 break;
         }
@@ -230,9 +239,40 @@ class Player : LevelElements
         this.objectTile = ' ';
         Draw();
         Console.Clear();
-        Console.SetCursorPosition(33, 12);
-        Console.WriteLine("It's a sad thing that your adventures have ended here!!");
+        Console.SetCursorPosition(0, 12);
+        TextCenter.CenterText("It's a sad thing that your adventures have ended here!!");
+        TextCenter.CenterText(Name + " has died!!");
+        TextCenter.CenterText("Your score was: " + Math.Round(ScoreCalc()));
+        SaveScore();
         Console.ReadKey();
         Environment.Exit(0);
+    }
+
+    public double ScoreCalc()
+    {
+        double score;
+        double turnMod;
+        double collectedPoints;
+        double turns = GameLoop.turnCounter;
+        turnMod = turns / 250;
+        collectedPoints = CollectedPointMods * 100;
+        score = collectedPoints / turnMod;
+        if (score <= 0) { score = 0; }
+        FinalScore = score;
+        return score;
+    }
+
+    public void SaveScore()
+    {
+        using (var db = new SaveGameContext())
+        {
+            db.Highscores.Add(new Highscore
+            {
+                PlayerName = Name,
+                MapName = GameLoop.MapName,
+                Score = ScoreCalc()
+            });
+            db.SaveChanges();
+        }
     }
 }
