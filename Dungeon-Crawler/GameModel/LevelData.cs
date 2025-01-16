@@ -74,6 +74,7 @@ class LevelData
             Console.WriteLine();
             TextCenter.CenterText("Press any key to exit.");
             Console.ReadKey();
+            Environment.Exit(0);
         }
     }
 
@@ -146,11 +147,17 @@ class LevelData
         GameLoop gameLoop = new GameLoop();
 
         Player? player = null;
+        Armor? armor = null;
+        Sword? sword = null;
+        Food? food = null;
+        Potion? potion = null;
 
         foreach (var element in elements)
         {
-            element.Position = (element.xPos, element.yPos);
-
+            if (element.Position == (0, 0))
+            {
+                element.Position = (element.xPos, element.yPos);
+            }
             switch (element)
             {
                 case Player:
@@ -167,19 +174,69 @@ class LevelData
             }
         }
 
-        gameLoop.PrintUI(player);
+        //gameLoop.PrintUI(player);
 
-        if (GameLoop.combatLog.Count() > 4)
+        if (GameLoop.combatLog.Count() > 0)
         {
+            List<string> print = new List<string>();
             Console.ResetColor();
-            Console.SetCursorPosition(0, 2);
-            var print = GameLoop.combatLog.Values.Reverse().Take(9).ToList();
+            Console.SetCursorPosition(0, 3);
+            if (GameLoop.combatLog.Values.Reverse().FirstOrDefault().Contains("Rat") == true && GameLoop.combatLog.Values.Reverse().FirstOrDefault().Contains("slain") == true)
+            {
+                print = GameLoop.combatLog.Values.Reverse().Take(11).ToList();
+            }
+            else if (GameLoop.combatLog.Values.Reverse().FirstOrDefault().Contains("increased") == true)
+            {
+                print = GameLoop.combatLog.Values.Reverse().Take(2).ToList();
+            }
+            else
+            {
+                print = GameLoop.combatLog.Values.Reverse().Take(9).ToList();
+            }
             print.Reverse();
             int x = 0;
+            bool playerEncounter = false;
             foreach (var line in print)
             {
-                if (x < 4) { Console.ForegroundColor = ConsoleColor.Green; }
-                else { Console.ForegroundColor = ConsoleColor.Red; }
+                if (line.Contains(player.Name + " encountered"))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    playerEncounter = true;
+                }
+                else if (x < 5 && playerEncounter == false)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                else if (x > 4 && playerEncounter == true)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                }
+                if (line.Contains("slain"))
+                {
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                }
+                if (line.Contains("Magic Sword") == true)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    Console.SetCursorPosition(0, 19);
+                }
+                if (line.Contains("Magic Armor") == true)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    Console.SetCursorPosition(0, 21);
+                }
+
+                if (line.Contains("HP restored"))
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.SetCursorPosition(0, 18);
+                    Console.WriteLine(line);
+                    break;
+                }
                 Console.WriteLine(line);
                 x++;
             }

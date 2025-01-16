@@ -11,7 +11,7 @@ internal class Program
     public static string levelFile = "";
     private static void Main(string[] args)
     {
-
+        Console.ResetColor();
         using (var db = new SaveGameContext())
         {
             db.Database.EnsureCreated();
@@ -36,20 +36,22 @@ internal class Program
     {
         string menuChoice;
         Console.Clear();
+        Console.ForegroundColor = ConsoleColor.DarkRed;
         TextCenter.CenterText("Main Menu");
+        Console.ResetColor();
         Console.WriteLine();
         TextCenter.CenterText("Welcome, Adventurer.");
         TextCenter.CenterText("You have entered a dark place.");
         TextCenter.CenterText("Let's hope you survive...");
         Console.WriteLine();
         TextCenter.CenterText("Pick an option: ");
-
+        Console.WriteLine();
         TextCenter.CenterText("1. Start a new game. (default)");
         TextCenter.CenterText("2. Load a saved game.");
         TextCenter.CenterText("3. View highscores.");
         Console.WriteLine();
         TextCenter.CenterText("0. Exit the game.");
-        Console.SetCursorPosition(Console.WindowWidth / 2, 12);
+        Console.SetCursorPosition(Console.WindowWidth / 2, 13);
         menuChoice = Console.ReadLine();
 
         switch (menuChoice)

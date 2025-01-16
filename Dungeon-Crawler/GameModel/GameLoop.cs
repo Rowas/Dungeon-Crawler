@@ -8,8 +8,8 @@ class GameLoop
     public static string MapName { get; set; }
     public static int turnCounter { get; set; } = 1;
     string? name { get; set; }
-    public int CurrentHP { get; private set; }
-    public int MaxHP { get; private set; }
+    public int CurrentHP { get; private set; } = 100;
+    public int MaxHP { get; private set; } = 100;
     public Player currentPlayer { get; set; }
     public bool swordAquired { get; set; } = false;
     public bool armorAquired { get; set; } = false;
@@ -152,6 +152,8 @@ class GameLoop
 
             PrintUI(currentPlayer);
 
+            Level.DrawGameState(Level.Elements);
+
         } while (checkKey.Key != ConsoleKey.Escape);
     }
 
@@ -161,12 +163,13 @@ class GameLoop
         Dice dmgDice = new Dice(player.dmgDices, player.dmgDiceSides, player.dmgDiceModifier);
         Console.ResetColor();
         Console.SetCursorPosition(0, 0);
-        Console.Write($"Player: {name} | HP: {CurrentHP} / {MaxHP}  Turn: {turnCounter}             ");
+        Console.Write($"Player: {name} | HP: {CurrentHP} / {MaxHP}  Turn: {turnCounter}         ");
         Console.WriteLine($"Current Damage: {dmgDice} | Current Defense: {defDice}");
-        Console.Write($"Items aquired: Magic Sword: {swordAquired} | Magic Armor: {armorAquired}");
+        Console.Write($"Items aquired: Magic Sword: {swordAquired} | Magic Armor: {armorAquired}  ");
+        Console.WriteLine($"Current Map: {MapName} | Current Score: {Player.CollectedPointMods * 100}");
 
         Console.CursorVisible = false;
-        Console.SetCursorPosition(0, 20);
+        Console.SetCursorPosition(0, 24);
         Console.WriteLine("Use arrow keys to move, space to wait, and escape to exit.");
         Console.WriteLine("Press \"L\" to open the combat log.");
         Console.WriteLine("Press \"S\" to save your game.");
@@ -232,12 +235,8 @@ class GameLoop
                                      Enemy enemy,
                                      List<LevelElements> elements)
     {
-        Console.SetCursorPosition(0, 2);
-        Console.ForegroundColor = firstActor == player.Name ? ConsoleColor.Green : ConsoleColor.Red;
         combatLog.Add(logPosition++, $"{secondActor} encountered.".PadRight(55));
-        Console.WriteLine(combatLog.LastOrDefault().Value);
         combatLog.Add(logPosition++, "".PadRight(55));
-        Console.WriteLine(combatLog.LastOrDefault().Value);
 
         PrintAttackResult(firstActor, secondActor, playerCombat, enemyCombat, playerDamage, enemyDamage, player);
 
@@ -257,11 +256,8 @@ class GameLoop
                                           int playerDamage, int enemyDamage, Player player)
     {
         combatLog.Add(logPosition++, $"{firstActor} rolled {(firstActor == player.Name ? playerCombat.Item2 : enemyCombat.Item2)} to attack, result: {(firstActor == "Adventurer" ? playerCombat.Item1 : enemyCombat.Item1)}.".PadRight(55));
-        Console.WriteLine(combatLog.LastOrDefault().Value);
         combatLog.Add(logPosition++, $"{secondActor} defended using {(firstActor == player.Name ? enemyCombat.Item4 : playerCombat.Item4)}, result: {(firstActor == "Adventurer" ? enemyCombat.Item3 : playerCombat.Item3)}.".PadRight(55));
-        Console.WriteLine(combatLog.LastOrDefault().Value);
         combatLog.Add(logPosition++, $"Damage done by {firstActor} to {secondActor} is: {(firstActor == player.Name ? playerDamage : enemyDamage)}.".PadRight(55));
-        Console.WriteLine(combatLog.LastOrDefault().Value);
     }
 
     private static void HandleAdventurerCombat((int, string, int, string) playerCombat,
@@ -303,14 +299,9 @@ class GameLoop
                                            List<LevelElements> elements)
     {
         combatLog.Add(logPosition++, "".PadRight(55));
-        Console.WriteLine(combatLog.LastOrDefault().Value);
-        Console.ForegroundColor = secondActor == player.Name ? ConsoleColor.Green : ConsoleColor.Red;
         combatLog.Add(logPosition++, $"Counter attack by {secondActor}, {attackCombat.Item2} with result: {attackCombat.Item1}.".PadRight(55));
-        Console.WriteLine(combatLog.LastOrDefault().Value);
         combatLog.Add(logPosition++, $"{firstActor} defended with {defenseCombat.Item4}, result: {defenseCombat.Item3}.".PadRight(55));
-        Console.WriteLine(combatLog.LastOrDefault().Value);
         combatLog.Add(logPosition++, $"Counter attack by {secondActor} against {firstActor} did {damage}.".PadRight(55));
-        Console.WriteLine(combatLog.LastOrDefault().Value);
 
         if (player.IsDead)
         {
@@ -325,18 +316,13 @@ class GameLoop
 
     private static void PrintEnemySlain(string actor, List<LevelElements> elements, Enemy enemy, bool isCounter)
     {
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        combatLog.Add(logPosition++, "".PadRight(55));
-        Console.WriteLine(combatLog.LastOrDefault().Value);
+        combatLog.Add(logPosition++, " ".PadRight(55));
         combatLog.Add(logPosition++, $"{actor} has been slain.".PadRight(55));
-        Console.WriteLine(combatLog.LastOrDefault().Value);
         if (!isCounter)
         {
-            for (int i = 9; i < 13; i++)
+            for (int i = 0; i < 2; i++)
             {
-                Console.SetCursorPosition(0, i);
                 combatLog.Add(logPosition++, "".PadRight(55));
-                Console.WriteLine(combatLog.LastOrDefault().Value);
             }
         }
         Console.ResetColor();
@@ -346,20 +332,16 @@ class GameLoop
 
     public static void EquipmentPickup(Player player, Equipment equipment, List<LevelElements> elements)
     {
-        Console.SetCursorPosition(0, 14);
         combatLog.Add(logPosition++, $"The {equipment.Name} have been acquired.".PadRight(55));
-        Console.WriteLine(combatLog.LastOrDefault().Value);
         switch (equipment.Name)
         {
             case "Magic Sword":
                 combatLog.Add(logPosition++, "Attack have been increased to 2D10+2.".PadRight(55));
-                Console.WriteLine(combatLog.LastOrDefault().Value);
                 Player.CollectedPointMods = Player.CollectedPointMods + equipment.PointModifier;
                 UpdatingStats(player, equipment.DamageDices, equipment.DmgDiceSides, equipment.DmgDiceModifier, isAttack: true);
                 break;
             case "Magic Armor":
                 combatLog.Add(logPosition++, "Defense have been increased to 2D8+2.".PadRight(55));
-                Console.WriteLine(combatLog.LastOrDefault().Value);
                 Player.CollectedPointMods = Player.CollectedPointMods + equipment.PointModifier;
                 UpdatingStats(player, equipment.DefenseDice, equipment.DefDiceSides, equipment.DefDiceModifier, isAttack: false);
                 break;
@@ -385,9 +367,7 @@ class GameLoop
     }
     public static void ItemPickup(Player player, Items item, List<LevelElements> elements)
     {
-        Console.SetCursorPosition(0, 17);
         combatLog.Add(logPosition++, $"{item.Name} acquired, HP restored with {item.HealthRestore}.".PadRight(55));
-        Console.WriteLine(combatLog.LastOrDefault().Value);
 
         switch (item.Name)
         {
