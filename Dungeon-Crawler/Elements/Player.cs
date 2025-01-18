@@ -11,7 +11,8 @@ class Player : LevelElements
     public int currentHealth { get; set; } = 100;
     public static double CollectedPointMods { get; set; }
     public static double FinalScore { get; set; }
-
+    public bool? swordAquired { get; set; } = false;
+    public bool? armorAquired { get; set; } = false;
     public int dmgDices { get; set; } = 2;
     public int dmgDiceSides { get; set; } = 6;
     public int dmgDiceModifier { get; set; } = 1;

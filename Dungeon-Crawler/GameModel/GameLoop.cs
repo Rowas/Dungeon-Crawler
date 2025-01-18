@@ -11,8 +11,6 @@ class GameLoop
     public int CurrentHP { get; private set; } = 100;
     public int MaxHP { get; private set; } = 100;
     public Player currentPlayer { get; set; }
-    public bool swordAquired { get; set; } = false;
-    public bool armorAquired { get; set; } = false;
 
     public static Dictionary<int, string> combatLog = new Dictionary<int, string>();
     public static int logPosition { get; set; } = 1;
@@ -152,21 +150,21 @@ class GameLoop
 
             PrintUI(currentPlayer);
 
-            Level.DrawGameState(Level.Elements);
+            DrawGameState(Level.Elements);
 
         } while (checkKey.Key != ConsoleKey.Escape);
     }
 
-    public void PrintUI(Player player)
+    public static void PrintUI(Player player)
     {
         Dice defDice = new Dice(player.defDices, player.defDiceSides, player.defDiceModifier);
         Dice dmgDice = new Dice(player.dmgDices, player.dmgDiceSides, player.dmgDiceModifier);
         Console.ResetColor();
         Console.SetCursorPosition(0, 0);
-        Console.Write($"Player: {name} | HP: {CurrentHP} / {MaxHP}  Turn: {turnCounter}         ");
+        Console.Write($"Player: {player.Name} | HP: {player.currentHealth} / {player.maxHealth}  Turn: {turnCounter}         ");
         Console.WriteLine($"Current Damage: {dmgDice} | Current Defense: {defDice}");
-        Console.Write($"Items aquired: Magic Sword: {swordAquired} | Magic Armor: {armorAquired}  ");
-        Console.WriteLine($"Current Map: {MapName} | Current Score: {Player.CollectedPointMods * 100}");
+        Console.Write($"Items aquired: Magic Sword: {player.swordAquired} | Magic Armor: {player.armorAquired}  ");
+        Console.WriteLine($"Current Map: {MapName} | Current Score: {Player.CollectedPointMods * 100}".PadRight(50));
 
         Console.CursorVisible = false;
         Console.SetCursorPosition(0, 24);
@@ -248,6 +246,8 @@ class GameLoop
         {
             HandleEnemyCombat(playerCombat, enemyCombat, playerDamage, enemyDamage, player, enemy, elements);
         }
+
+        GameLoop.DrawGameState(elements);
     }
 
     private static void PrintAttackResult(string firstActor, string secondActor,
@@ -339,11 +339,13 @@ class GameLoop
                 combatLog.Add(logPosition++, "Attack have been increased to 2D10+2.".PadRight(55));
                 Player.CollectedPointMods = Player.CollectedPointMods + equipment.PointModifier;
                 UpdatingStats(player, equipment.DamageDices, equipment.DmgDiceSides, equipment.DmgDiceModifier, isAttack: true);
+                player.swordAquired = true;
                 break;
             case "Magic Armor":
                 combatLog.Add(logPosition++, "Defense have been increased to 2D8+2.".PadRight(55));
                 Player.CollectedPointMods = Player.CollectedPointMods + equipment.PointModifier;
                 UpdatingStats(player, equipment.DefenseDice, equipment.DefDiceSides, equipment.DefDiceModifier, isAttack: false);
+                player.armorAquired = true;
                 break;
         }
         equipment.IsDead = true;
@@ -475,7 +477,7 @@ class GameLoop
             Console.Clear();
         }
 
-        level.DrawGameState(elements);
+        GameLoop.DrawGameState(elements);
     }
 
 
@@ -491,6 +493,109 @@ class GameLoop
         Console.ReadKey();
         ClearConsole.ConsoleClear();
         LevelData level = new LevelData();
-        level.DrawGameState(level.Elements);
+        DrawGameState(level.Elements);
+    }
+
+    public static void DrawGameState(List<LevelElements> elements)
+    {
+
+        Player? player = null;
+
+        foreach (var element in elements)
+        {
+            if (element.Position == (0, 0))
+            {
+                element.Position = (element.xPos, element.yPos);
+            }
+            switch (element)
+            {
+                case Player:
+                    player = (Player)element;
+                    element.IsVisible = true;
+                    element.DrawPlayer();
+                    break;
+                case Wall:
+                    element.DrawWall();
+                    break;
+                default:
+                    element.Draw();
+                    break;
+            }
+        }
+
+        DrawCombatLog(player);
+        PrintUI(player);
+    }
+
+    public static void DrawCombatLog(Player? player)
+    {
+
+        if (GameLoop.combatLog.Count() > 0)
+        {
+            List<string> print = new List<string>();
+            Console.ResetColor();
+            Console.SetCursorPosition(0, 3);
+            if (GameLoop.combatLog.Values.Reverse().FirstOrDefault().Contains("Rat") == true && GameLoop.combatLog.Values.Reverse().FirstOrDefault().Contains("slain") == true)
+            {
+                print = GameLoop.combatLog.Values.Reverse().Take(11).ToList();
+            }
+            else if (GameLoop.combatLog.Values.Reverse().FirstOrDefault().Contains("increased") == true)
+            {
+                print = GameLoop.combatLog.Values.Reverse().Take(2).ToList();
+            }
+            else
+            {
+                print = GameLoop.combatLog.Values.Reverse().Take(9).ToList();
+            }
+            print.Reverse();
+            int x = 0;
+            bool playerEncounter = false;
+            foreach (var line in print)
+            {
+                if (line.Contains(player.Name + " encountered"))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    playerEncounter = true;
+                }
+                else if (x < 5 && playerEncounter == false)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                else if (x > 4 && playerEncounter == true)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                }
+                if (line.Contains("slain"))
+                {
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                }
+                if (line.Contains("Magic Sword") == true)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    Console.SetCursorPosition(0, 19);
+                }
+                if (line.Contains("Magic Armor") == true)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    Console.SetCursorPosition(0, 21);
+                }
+
+                if (line.Contains("HP restored"))
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.SetCursorPosition(0, 18);
+                    Console.WriteLine(line);
+                    break;
+                }
+                Console.WriteLine(line);
+                x++;
+            }
+            Console.ResetColor();
+        }
+
     }
 }
