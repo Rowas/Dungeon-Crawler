@@ -77,7 +77,7 @@ namespace Dungeon_Crawler.DBModel
 
                 gameState.CurrentTurn = turn;
 
-                var saveGame = new SaveGame { PlayerName = name, gameState = gameState, MapName = Program.levelFile };
+                var saveGame = new GameSave { PlayerName = name, gameState = gameState, MapName = Program.levelFile };
                 db.SaveGames.Add(saveGame);
                 db.SaveChanges();
 

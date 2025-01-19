@@ -73,7 +73,7 @@ class Player : LevelElements
                 Environment.Exit(0);
                 break;
             case ConsoleKey.S:
-                GameLoop.GameSave(elements, Name, GameLoop.turnCounter);
+                SaveGame.SavingGame(elements, Name, GameLoop.turnCounter);
                 break;
             case ConsoleKey.L:
                 GameLoop.GameLog(elements);
