@@ -2,6 +2,23 @@
 {
     internal class UIMethods
     {
+        public static void PrintUI(Player player)
+        {
+            Dice defDice = new Dice(player.defDices, player.defDiceSides, player.defDiceModifier);
+            Dice dmgDice = new Dice(player.dmgDices, player.dmgDiceSides, player.dmgDiceModifier);
+            Console.ResetColor();
+            Console.SetCursorPosition(0, 0);
+            Console.Write($"Player: {player.Name} | HP: {player.currentHealth} / {player.maxHealth}  Turn: {GameLoop.turnCounter}         ");
+            Console.WriteLine($"Current Damage: {dmgDice} | Current Defense: {defDice}");
+            Console.Write($"Items aquired: Magic Sword: {player.swordAquired} | Magic Armor: {player.armorAquired}  ");
+            Console.WriteLine($"Current Map: {GameLoop.MapName} | Current Score: {Player.CollectedPointMods * 100}".PadRight(50));
+
+            Console.CursorVisible = false;
+            Console.SetCursorPosition(0, 24);
+            Console.WriteLine("Use arrow keys to move, space to wait, and escape to exit.");
+            Console.WriteLine("Press \"L\" to open the combat log.");
+            Console.WriteLine("Press \"S\" to save your game.");
+        }
 
         public static void DrawCombatLog(Player? player, Dictionary<int, string> combatLog)
         {

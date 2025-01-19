@@ -1,4 +1,6 @@
-﻿class Rat : Enemy
+﻿using Dungeon_Crawler.GeneralMethods;
+
+class Rat : Enemy
 {
     public Rat(int x, int y)
     {
@@ -86,7 +88,7 @@
                                     where element is Player
                                     select element)
             {
-                GameLoop.Encounter((Player)element, this, 'E', elements);
+                CombatMethods.Encounter((Player)element, this, 'E', elements);
                 return 0;
             }
 

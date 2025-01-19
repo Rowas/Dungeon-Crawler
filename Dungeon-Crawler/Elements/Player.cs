@@ -48,7 +48,7 @@ class Player : LevelElements
 
     }
 
-    public void Movement(ConsoleKeyInfo checkKey, List<LevelElements> elements)
+    public void Movement(ConsoleKeyInfo checkKey, List<LevelElements> elements, Dictionary<int, string> combatLog)
     {
         switch (checkKey.Key)
         {
@@ -74,9 +74,10 @@ class Player : LevelElements
                 break;
             case ConsoleKey.S:
                 SaveGame.SavingGame(elements, Name, GameLoop.turnCounter);
+                GameLoop.DrawGameState(elements, combatLog);
                 break;
             case ConsoleKey.L:
-                GameLoop.GameLog(elements);
+                GameLoop.GameLog(elements, combatLog);
                 break;
             default:
                 GameLoop.turnCounter++;
@@ -178,25 +179,25 @@ class Player : LevelElements
                 switch (element)
                 {
                     case Rat:
-                        GameLoop.Encounter(this, (Rat)element, 'P', elements);
+                        CombatMethods.Encounter(this, (Rat)element, 'P', elements);
                         break;
                     case Snake:
-                        GameLoop.Encounter(this, (Snake)element, 'P', elements);
+                        CombatMethods.Encounter(this, (Snake)element, 'P', elements);
                         break;
                     case Boss:
-                        GameLoop.Encounter(this, (Boss)element, 'P', elements);
+                        CombatMethods.Encounter(this, (Boss)element, 'P', elements);
                         break;
                     case Guard:
-                        GameLoop.Encounter(this, (Guard)element, 'P', elements);
+                        CombatMethods.Encounter(this, (Guard)element, 'P', elements);
                         break;
                     case Grue:
-                        GameLoop.Encounter(this, (Grue)element, 'P', elements);
+                        CombatMethods.Encounter(this, (Grue)element, 'P', elements);
                         break;
                     case Equipment:
-                        GameLoop.EquipmentPickup(this, (Equipment)element, elements);
+                        CombatMethods.EquipmentPickup(this, (Equipment)element, elements);
                         return d;
                     case Items:
-                        GameLoop.ItemPickup(this, (Items)element, elements);
+                        CombatMethods.ItemPickup(this, (Items)element, elements);
                         return d;
                 }
             }

@@ -89,8 +89,6 @@ namespace Dungeon_Crawler.DBModel
                 Console.ReadKey();
                 Console.Clear();
             }
-
-            GameLoop.DrawGameState(elements);
         }
     }
 }

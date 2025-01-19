@@ -99,7 +99,6 @@ class LevelData
                     TextCenter.CenterText("Press any key to continue.");
                     Console.ReadKey();
                     Console.Clear();
-                    GameLoop.DrawGameState(gameState);
                     GameLoop.turnCounter = saveGame.gameState.CurrentTurn;
                 }
                 else
