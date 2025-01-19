@@ -15,7 +15,7 @@ class GameLoop
     public static Dictionary<int, string> combatLog = new Dictionary<int, string>();
     public static int logPosition { get; set; } = 1;
 
-    static int NewHP = 100;
+    public static int NewHP = 100;
 
     public ConsoleKeyInfo checkKey;
 
