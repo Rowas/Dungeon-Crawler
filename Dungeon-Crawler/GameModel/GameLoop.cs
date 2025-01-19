@@ -319,13 +319,6 @@ class GameLoop
     {
         combatLog.Add(logPosition++, " ".PadRight(55));
         combatLog.Add(logPosition++, $"{actor} has been slain.".PadRight(55));
-        //if (!isCounter)
-        //{
-        //    for (int i = 0; i < 2; i++)
-        //    {
-        //        combatLog.Add(logPosition++, "".PadRight(55));
-        //    }
-        //}
         Console.ResetColor();
         Player.CollectedPointMods = Player.CollectedPointMods + enemy.PointModifier;
         enemy.Die(elements);
@@ -570,26 +563,33 @@ class GameLoop
 
         if (GameLoop.combatLog.Count() > 0)
         {
+            List<string> output = new List<string>();
+            Console.ResetColor();
+            Console.SetCursorPosition(0, 3);
 
             int n1 = combatLog.Count;
             int n2 = n1 - 9;
 
-            List<string> print = new List<string>();
-            Console.ResetColor();
+            for (int i = 4; i < 24; i++)
+            {
+                Console.WriteLine(" ".PadRight(55));
+            }
+
             Console.SetCursorPosition(0, 3);
 
-            var output = combatLog.Where(s => s.Key >= n2 && s.Key <= n1).Select(s => s.Value).ToList();
-            var spotCheck = combatLog.Values.Reverse().Take(1).ToArray();
-            var combatCheck = combatLog.Values.Take(2).ToArray();
+            var spotCheck = combatLog.Values.Reverse().Take(1).ToList();
+            var combatCheck = combatLog.Values.Reverse().Take(2).ToArray();
 
-            if (combatCheck[0].Contains("encountered") || combatCheck[1].Contains("encountered"))
+            if (combatCheck[0].Contains("Counter attack") || combatCheck[0].Contains("slain"))
             {
-                n2 = n1 - 9;
-                spotCheck = combatLog.Where(s => s.Key >= n2 && s.Key <= n1).Select(s => s.Value).ToArray();
+                spotCheck = combatLog.Where(s => s.Key >= n2 && s.Key <= n1).Select(s => s.Value).ToList();
+                if (combatCheck[0].Contains("slain"))
+                {
+                    spotCheck.RemoveRange(0, 2);
+                }
                 if (spotCheck[1].Contains($"{player.Name}"))
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    spotCheck.Reverse();
                     for (int i = 0; i < 6; i++)
                     {
                         Console.WriteLine(spotCheck[i]);
@@ -599,7 +599,6 @@ class GameLoop
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    spotCheck.Reverse();
                     for (int i = 0; i < 6; i++)
                     {
                         Console.WriteLine(spotCheck[i]);
@@ -608,7 +607,25 @@ class GameLoop
                 }
                 n2 = n1 - 3;
                 output = combatLog.Where(s => s.Key >= n2 && s.Key <= n1).Select(s => s.Value).ToList();
-                spotCheck = combatLog.Values.Reverse().Take(1).ToArray();
+                spotCheck = combatLog.Values.Reverse().Take(1).ToList();
+
+                if (spotCheck[0].Contains("slain"))
+                {
+                    n2 = n1 - 1;
+                    output = combatLog.Where(s => s.Key >= n2 && s.Key <= n1).Select(s => s.Value).ToList();
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    foreach (var log in output)
+                    {
+                        Console.WriteLine(log);
+                    }
+                }
+                else
+                {
+                    foreach (var log in output)
+                    {
+                        Console.WriteLine(log);
+                    }
+                }
             }
 
             if (spotCheck[0].Contains("Food ") || spotCheck[0].Contains("Potion "))
@@ -616,6 +633,10 @@ class GameLoop
                 n2 = n1 - 1;
                 output = combatLog.Where(s => s.Key >= n2 && s.Key <= n1).Select(s => s.Value).ToList();
                 Console.ForegroundColor = ConsoleColor.Yellow;
+                foreach (var log in output)
+                {
+                    Console.WriteLine(log);
+                }
             }
 
             if (spotCheck[0].Contains("Attack ") || spotCheck[0].Contains("Defense "))
@@ -623,82 +644,11 @@ class GameLoop
                 n2 = n1 - 1;
                 output = combatLog.Where(s => s.Key >= n2 && s.Key <= n1).Select(s => s.Value).ToList();
                 Console.ForegroundColor = ConsoleColor.DarkCyan;
+                foreach (var log in output)
+                {
+                    Console.WriteLine(log);
+                }
             }
-
-            if (spotCheck[0].Contains("slain"))
-            {
-                n2 = n1 - 1;
-                output = combatLog.Where(s => s.Key >= n2 && s.Key <= n1).Select(s => s.Value).ToList();
-                Console.ForegroundColor = ConsoleColor.Cyan;
-            }
-
-            foreach (var log in output)
-            {
-                Console.WriteLine(log);
-            }
-
-            //if (GameLoop.combatLog.Values.Reverse().FirstOrDefault().Contains("Rat") == true && GameLoop.combatLog.Values.Reverse().FirstOrDefault().Contains("slain") == true)
-            //{
-            //    print = GameLoop.combatLog.Values.Reverse().Take(11).ToList();
-            //}
-            //else
-            //{
-            //    print = GameLoop.combatLog.Values.Reverse().Take(9).ToList();
-            //}
-            //print.Reverse();
-            //int x = 0;
-            //bool playerEncounter = false;
-            //foreach (var line in print)
-            //{
-            //    if (line.Contains(player.Name + " encountered"))
-            //    {
-            //        Console.ForegroundColor = ConsoleColor.Red;
-            //        playerEncounter = true;
-            //    }
-            //    else if (x < 5 && playerEncounter == false)
-            //    {
-            //        Console.ForegroundColor = ConsoleColor.Green;
-            //    }
-            //    else if (x > 4 && playerEncounter == true)
-            //    {
-            //        Console.ForegroundColor = ConsoleColor.Green;
-            //    }
-            //    else
-            //    {
-            //        Console.ForegroundColor = ConsoleColor.Red;
-            //    }
-            //    if (line.Contains("slain"))
-            //    {
-            //        Console.ForegroundColor = ConsoleColor.Cyan;
-            //    }
-            //    if (line.Contains("Magic Sword") == true)
-            //    {
-            //        Console.ForegroundColor = ConsoleColor.DarkCyan;
-            //        Console.SetCursorPosition(0, 19);
-            //    }
-            //    if (line.Contains("Magic Armor") == true)
-            //    {
-            //        Console.ForegroundColor = ConsoleColor.DarkCyan;
-            //        Console.SetCursorPosition(0, 21);
-            //    }
-            //    if (line.Contains("increased") == true)
-            //    {
-            //        Console.ForegroundColor = ConsoleColor.DarkCyan;
-            //    }
-
-            //    if (line.Contains("HP restored"))
-            //    {
-            //        Console.ForegroundColor = ConsoleColor.Yellow;
-            //        Console.SetCursorPosition(0, 18);
-            //        Console.WriteLine(line);
-            //        break;
-            //    }
-            //    Console.WriteLine(line);
-            //    x++;
-            //}
-            //Console.ResetColor();
-
         }
-
     }
 }
