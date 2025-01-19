@@ -76,7 +76,7 @@ class Player : LevelElements
                 GameLoop.GameSave(elements, Name, GameLoop.turnCounter);
                 break;
             case ConsoleKey.L:
-                GameLoop.GameLog();
+                GameLoop.GameLog(elements);
                 break;
             default:
                 GameLoop.turnCounter++;
