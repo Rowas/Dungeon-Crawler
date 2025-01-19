@@ -585,7 +585,14 @@ class GameLoop
                 spotCheck = combatLog.Where(s => s.Key >= n2 && s.Key <= n1).Select(s => s.Value).ToList();
                 if (combatCheck[0].Contains("slain"))
                 {
-                    spotCheck.RemoveRange(0, 2);
+                    if (spotCheck[1].Contains("Rat"))
+                    {
+                        spotCheck = combatLog.Where(s => s.Key >= n2 - 2 && s.Key <= n1).Select(s => s.Value).ToList();
+                    }
+                    else
+                    {
+                        spotCheck.RemoveRange(0, 2);
+                    }
                 }
                 if (spotCheck[1].Contains($"{player.Name}"))
                 {
@@ -609,13 +616,25 @@ class GameLoop
                 output = combatLog.Where(s => s.Key >= n2 && s.Key <= n1).Select(s => s.Value).ToList();
                 spotCheck = combatLog.Values.Reverse().Take(1).ToList();
 
-                if (spotCheck[0].Contains("slain"))
+                if (spotCheck[0].Contains("slain") && spotCheck[0].Contains("Rat") == false)
                 {
                     n2 = n1 - 1;
                     output = combatLog.Where(s => s.Key >= n2 && s.Key <= n1).Select(s => s.Value).ToList();
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     foreach (var log in output)
                     {
+                        Console.WriteLine(log);
+                    }
+                }
+                else if (spotCheck[0].Contains("slain") && spotCheck[0].Contains("Rat"))
+                {
+                    output = combatLog.Where(s => s.Key >= n2 - 2 && s.Key <= n1).Select(s => s.Value).ToList();
+                    foreach (var log in output)
+                    {
+                        if (log.Contains("slain"))
+                        {
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                        }
                         Console.WriteLine(log);
                     }
                 }
