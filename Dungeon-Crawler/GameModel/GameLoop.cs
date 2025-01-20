@@ -1,4 +1,5 @@
-﻿using Dungeon_Crawler.GeneralMethods;
+﻿using Dungeon_Crawler.DBModel;
+using Dungeon_Crawler.GeneralMethods;
 using MongoDB.Driver.Linq;
 
 class GameLoop
@@ -21,7 +22,7 @@ class GameLoop
 
     public LevelData Level { get { return _level; } }
 
-    public void StartUp(string levelFile, string playerName)
+    public void StartUp(string levelFile, string playerName, string selectedGame)
     {
         Console.CursorVisible = false;
         Console.CursorTop = 0;
@@ -37,7 +38,7 @@ class GameLoop
         }
         else
         {
-            Level.LoadGame();
+            GameLoad.LoadGame(Level.Elements, selectedGame);
         }
 
         MapName = Program.levelFile;

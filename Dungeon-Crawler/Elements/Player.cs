@@ -268,6 +268,15 @@ class Player : LevelElements
     {
         using (var db = new SaveGameContext())
         {
+            var id = new MongoDB.Bson.ObjectId($"{LevelElements.SaveGameName}");
+            var logId = new MongoDB.Bson.ObjectId($"{LevelElements.CombatLogName}");
+
+            var deadSave = db.SaveGames.FirstOrDefault(s => s.Id == id);
+            var deadLog = db.CombatLogs.FirstOrDefault(s => s.Id == logId);
+
+            db.SaveGames.Remove(deadSave);
+            db.CombatLogs.Remove(deadLog);
+
             db.Highscores.Add(new Highscore
             {
                 PlayerName = Name,

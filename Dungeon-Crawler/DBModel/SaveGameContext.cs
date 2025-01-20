@@ -6,6 +6,7 @@ namespace Dungeon_Crawler.DBModel
     {
         public DbSet<GameSave> SaveGames { get; set; }
         public DbSet<Highscore> Highscores { get; set; }
+        public DbSet<CombatLog> CombatLogs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

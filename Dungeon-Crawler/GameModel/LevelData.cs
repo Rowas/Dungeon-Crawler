@@ -1,5 +1,4 @@
-﻿using Dungeon_Crawler.DBModel;
-using Dungeon_Crawler.GeneralMethods;
+﻿using Dungeon_Crawler.GeneralMethods;
 
 class LevelData
 {
@@ -76,68 +75,5 @@ class LevelData
             Console.ReadKey();
             Environment.Exit(0);
         }
-    }
-
-    public void LoadGame()
-    {
-
-        List<LevelElements> gameState = new List<LevelElements>();
-
-        try
-        {
-            using (var db = new SaveGameContext())
-            {
-                var saveGame = db.SaveGames.OrderByDescending(s => s.SaveDate).FirstOrDefault();
-                if (saveGame != null)
-                {
-                    LevelElements.SaveGameName = saveGame.Id.ToString();
-                    Program.levelFile = saveGame.MapName.ToString();
-                    gameState = LoadGameState(saveGame.gameState);
-                    Console.Clear();
-                    TextCenter.CenterText("Save game loaded.");
-                    Console.WriteLine();
-                    TextCenter.CenterText("Press any key to continue.");
-                    Console.ReadKey();
-                    Console.Clear();
-                    GameLoop.turnCounter = saveGame.gameState.CurrentTurn;
-                }
-                else
-                {
-                    Console.Clear();
-                    TextCenter.CenterText("No save game found.");
-                    Console.WriteLine();
-                    TextCenter.CenterText("Press any key to exit.");
-                    Console.ReadKey();
-                    Environment.Exit(0);
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.Clear();
-            TextCenter.CenterText("Unable to load save game.");
-            TextCenter.CenterText("Database corrupted, save game does not exist or save game is from a different version.");
-            Console.WriteLine();
-            TextCenter.CenterText("Press any key to exit.");
-            Console.ReadKey();
-            Environment.Exit(0);
-        }
-    }
-
-    public List<LevelElements> LoadGameState(GameState gameState)
-    {
-
-        Elements.Add(gameState.Player);
-        Elements.AddRange(gameState.Walls);
-        Elements.AddRange(gameState.Bosses);
-        Elements.AddRange(gameState.Guards);
-        Elements.AddRange(gameState.Rats);
-        Elements.AddRange(gameState.Snakes);
-        Elements.AddRange(gameState.Armors);
-        Elements.AddRange(gameState.Swords);
-        Elements.AddRange(gameState.Foods);
-        Elements.AddRange(gameState.Potions);
-        Elements.AddRange(gameState.Grues);
-        return Elements;
     }
 }

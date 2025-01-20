@@ -15,19 +15,24 @@ namespace Dungeon_Crawler.DBModel
             using (var db = new SaveGameContext())
             {
                 ObjectId id = new ObjectId();
+                ObjectId logId = new ObjectId();
 
                 if (LevelElements.SaveGameName != "0")
                 {
                     id = new MongoDB.Bson.ObjectId($"{LevelElements.SaveGameName}");
+                    logId = new MongoDB.Bson.ObjectId($"{LevelElements.CombatLogName}");
                 }
 
                 var currentSave = db.SaveGames.FirstOrDefault(s => s.Id == id);
+                var currentLog = db.CombatLogs.FirstOrDefault(s => s.Id == logId);
 
                 var saveName = LevelElements.SaveGameName;
+
 
                 if (currentSave != null && saveName == currentSave.Id.ToString())
                 {
                     db.SaveGames.Remove(currentSave);
+                    db.CombatLogs.Remove(currentLog);
                 }
 
                 var gameState = new GameState();
@@ -75,13 +80,28 @@ namespace Dungeon_Crawler.DBModel
                     }
                 }
 
+                var logMsg = new LogMessage();
+
+                foreach (var log in GameLoop.combatLog)
+                {
+                    logMsg.Message.Add(log.Value);
+                    logMsg.Key.Add(log.Key);
+                }
+
+                var savedLog = new CombatLog { Id = logId, PlayerName = name, MapName = Program.levelFile, SavedCombatLog = logMsg };
+
                 gameState.CurrentTurn = turn;
 
-                var saveGame = new GameSave { PlayerName = name, gameState = gameState, MapName = Program.levelFile };
-                db.SaveGames.Add(saveGame);
+                db.CombatLogs.Update(savedLog);
                 db.SaveChanges();
 
-                LevelElements.SaveGameName = db.SaveGames.FirstOrDefault().Id.ToString();
+                var saveGame = new GameSave { PlayerName = name, GameState = gameState, MapName = Program.levelFile, CombatLogs = savedLog.Id.ToString() };
+
+                db.SaveGames.Update(saveGame);
+                db.SaveChanges();
+
+                LevelElements.SaveGameName = db.SaveGames.OrderBy(t => t.SaveDate).FirstOrDefault(s => s.PlayerName == name).Id.ToString();
+                LevelElements.CombatLogName = db.CombatLogs.OrderBy(t => t.SaveDate).FirstOrDefault(s => s.PlayerName == name).Id.ToString();
 
                 Console.WriteLine();
                 TextCenter.CenterText("Game saved");

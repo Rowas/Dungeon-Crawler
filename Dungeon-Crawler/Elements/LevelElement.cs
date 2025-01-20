@@ -5,6 +5,8 @@ abstract class LevelElements
     [BsonIgnore]
     public (int, int) Position { get; set; }
     public static string SaveGameName { get; set; } = "0";
+    [BsonIgnore]
+    public static string CombatLogName { get; set; } = "1";
     public double PointModifier { get; set; }
     public int xPos { get; set; }
     public int yPos { get; set; }

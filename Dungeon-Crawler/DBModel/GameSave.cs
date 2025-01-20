@@ -10,7 +10,8 @@ namespace Dungeon_Crawler.DBModel
         public DateTime SaveDate { get; set; } = DateTime.Now;
         public string MapName { get; set; }
         public string PlayerName { get; set; }
-        public GameState gameState { get; set; }
+        public GameState GameState { get; set; }
+        public string CombatLogs { get; set; }
 
     }
 }
