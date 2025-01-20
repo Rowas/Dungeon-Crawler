@@ -37,7 +37,7 @@ namespace Dungeon_Crawler.DBModel
 
             return selectedGame;
         }
-        public static void LoadGame(List<LevelElements> elements, string selectedGame)
+        async public static void LoadGame(List<LevelElements> elements, string selectedGame)
         {
             GameLoad loading = new GameLoad();
             try
@@ -88,7 +88,7 @@ namespace Dungeon_Crawler.DBModel
             }
         }
 
-        public void LoadGameState(GameState gameState, List<LevelElements> elements)
+        async public void LoadGameState(GameState gameState, List<LevelElements> elements)
         {
 
             elements.Add(gameState.Player);
@@ -104,7 +104,7 @@ namespace Dungeon_Crawler.DBModel
             elements.AddRange(gameState.Grues);
         }
 
-        public void LoadCombatLog(LogMessage logMessage)
+        async public void LoadCombatLog(LogMessage logMessage)
         {
             for (int i = 0; i < logMessage.Key.Count; i++)
             {

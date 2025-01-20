@@ -5,7 +5,7 @@ namespace Dungeon_Crawler.DBModel
 {
     internal class SaveGame
     {
-        public static void SavingGame(List<LevelElements> elements, string name, int turn)
+        async public static void SavingGame(List<LevelElements> elements, string name, int turn)
         {
             LevelData level = new LevelData();
             Console.Clear();
