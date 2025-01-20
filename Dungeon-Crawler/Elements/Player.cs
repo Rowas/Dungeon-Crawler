@@ -48,7 +48,7 @@ class Player : LevelElements
 
     }
 
-    public void Movement(ConsoleKeyInfo checkKey, List<LevelElements> elements, Dictionary<int, string> combatLog)
+    public async Task Movement(ConsoleKeyInfo checkKey, List<LevelElements> elements, Dictionary<int, string> combatLog)
     {
         switch (checkKey.Key)
         {
@@ -73,7 +73,16 @@ class Player : LevelElements
                 Environment.Exit(0);
                 break;
             case ConsoleKey.S:
-                SaveGame.SavingGame(elements, Name, GameLoop.turnCounter);
+                SaveGame saving = new SaveGame();
+                Console.Clear();
+                TextCenter.CenterText("Saving Game.");
+                Console.WriteLine();
+                await saving.SavingGame(elements, Name, GameLoop.turnCounter);
+                Console.WriteLine();
+                TextCenter.CenterText("Game saved");
+                TextCenter.CenterText("Press any key to continue.");
+                Console.ReadKey();
+                Console.Clear();
                 GameLoop.DrawGameState(elements, combatLog);
                 break;
             case ConsoleKey.L:

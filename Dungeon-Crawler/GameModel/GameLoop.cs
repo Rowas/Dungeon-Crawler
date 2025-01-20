@@ -94,6 +94,13 @@ class GameLoop
                     }
                 }
             }
+            if (turnCounter % 50 == 0)
+            {
+                SaveGame saving = new SaveGame();
+                saving.SavingGame(Level.Elements, currentPlayer.Name, turnCounter);
+                Console.SetCursorPosition(0, 28);
+                Console.Write("Saving Done");
+            }
             foreach (var player in from LevelElements element in Level.Elements
                                    where element is Player
                                    let player = (Player)element
