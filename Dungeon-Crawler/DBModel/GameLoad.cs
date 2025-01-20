@@ -24,8 +24,7 @@ namespace Dungeon_Crawler.DBModel
                 foreach (var game in gameList)
                 {
                     TextCenter.CenterText($"{i}: {game.PlayerName} | {game.MapName} | {game.SaveDate} ");
-                    possibleSelections.Add(i.ToString(), game.PlayerName);
-                    possibleGames.Add(i.ToString(), game.SaveDate.ToString());
+                    possibleSelections.Add(i.ToString(), game.Id.ToString());
                     i++;
                 }
             }
@@ -45,8 +44,12 @@ namespace Dungeon_Crawler.DBModel
             {
                 using (var db = new SaveGameContext())
                 {
-                    var saveGame = db.SaveGames.OrderByDescending(s => s.SaveDate).Where(id => id.PlayerName == selectedGame).FirstOrDefault();
-                    var logMessages = db.CombatLogs.OrderByDescending(l => l.SaveDate).Where(id => id.PlayerName == selectedGame).FirstOrDefault();
+                    var loadId = new MongoDB.Bson.ObjectId($"{selectedGame}");
+                    var saveGame = db.SaveGames.Find(loadId);
+
+                    var logId = new MongoDB.Bson.ObjectId(saveGame.CombatLogs);
+                    var logMessages = db.CombatLogs.Find(logId);
+
                     if (saveGame != null)
                     {
                         LevelElements.SaveGameName = saveGame.Id.ToString();
