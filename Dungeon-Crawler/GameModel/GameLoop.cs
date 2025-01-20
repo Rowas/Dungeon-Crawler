@@ -6,7 +6,6 @@ class GameLoop
 {
     public static string MapName { get; set; }
     public static int turnCounter { get; set; } = 1;
-    string? name { get; set; }
     public int CurrentHP { get; private set; } = 100;
     public int MaxHP { get; private set; } = 100;
     public Player currentPlayer { get; set; }
@@ -22,13 +21,11 @@ class GameLoop
 
     public LevelData Level { get { return _level; } }
 
-    public void StartUp(string levelFile, string playerName, string selectedGame)
+    public void StartUp(string levelFile, string playerName)
     {
         Console.CursorVisible = false;
         Console.CursorTop = 0;
         Console.CursorLeft = 0;
-
-        name = playerName;
 
         Directory.SetCurrentDirectory(".\\Levels\\");
 
@@ -38,7 +35,7 @@ class GameLoop
         }
         else
         {
-            GameLoad.LoadGame(Level.Elements, selectedGame);
+            GameLoad.LoadGame(Level.Elements, playerName);
         }
 
         MapName = Program.levelFile;

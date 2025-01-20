@@ -29,7 +29,7 @@ internal class Program
         ClearConsole.ConsoleClear();
         GameLoop start = new GameLoop();
 
-        start.StartUp(levelFile, playerName, selectedGame);
+        start.StartUp(levelFile, playerName);
         start.GameRunning();
     }
 
@@ -61,8 +61,7 @@ internal class Program
                 levelFile = NewGame(levelFile);
                 break;
             case "2":
-                selectedGame = GameLoad.SelectLoadGame();
-                levelFile = "Adventurer+GameLoaded";
+                levelFile = $"{GameLoad.SelectLoadGame()}+GameLoaded";
                 break;
             case "3":
                 PrintHighScore();

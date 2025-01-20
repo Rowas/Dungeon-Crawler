@@ -9,6 +9,7 @@ namespace Dungeon_Crawler.DBModel
         {
             string selectedGame = "";
             var possibleSelections = new Dictionary<string, string>();
+            var possibleGames = new Dictionary<string, string>();
             using (var db = new SaveGameContext())
             {
                 ClearConsole.ConsoleClear();
@@ -22,8 +23,9 @@ namespace Dungeon_Crawler.DBModel
                 int i = 1;
                 foreach (var game in gameList)
                 {
-                    TextCenter.CenterText($"{i}: {game.PlayerName}");
+                    TextCenter.CenterText($"{i}: {game.PlayerName} | {game.MapName} | {game.SaveDate} ");
                     possibleSelections.Add(i.ToString(), game.PlayerName);
+                    possibleGames.Add(i.ToString(), game.SaveDate.ToString());
                     i++;
                 }
             }
