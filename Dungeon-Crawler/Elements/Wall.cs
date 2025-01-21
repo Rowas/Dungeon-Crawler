@@ -4,8 +4,8 @@
     {
         IsVisible = false;
         Position = (x, y);
-        objectTile = '#';
-        objectColor = ConsoleColor.Black;
+        ObjectTile = '#';
+        ObjectColor = ConsoleColor.Black;
         this.DrawWall();
     }
 

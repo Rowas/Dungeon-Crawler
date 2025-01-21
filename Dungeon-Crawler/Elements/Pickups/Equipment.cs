@@ -13,7 +13,7 @@
 
     public void Die(List<LevelElements> elements)
     {
-        this.objectTile = ' ';
+        this.ObjectTile = ' ';
         this.Draw();
         elements.Remove(this);
     }

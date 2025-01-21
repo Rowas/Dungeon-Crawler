@@ -2,21 +2,13 @@
 
 class LevelData
 {
-    private List<LevelElements> _elements = new List<LevelElements>();
-
-    public List<LevelElements> Elements
-    {
-        get
-        {
-            return _elements;
-        }
-    }
+    public List<LevelElements> Elements { get; } = [];
 
     public void Load(string filename, string playerName)
     {
         try
         {
-            using (StreamReader reader = new StreamReader(filename))
+            using (StreamReader reader = new(filename))
             {
                 string line;
                 int y = 0;
@@ -71,9 +63,8 @@ class LevelData
             TextCenter.CenterText("Invalid Custom Map selected.");
             TextCenter.CenterText("Map does not exist.");
             Console.WriteLine();
-            TextCenter.CenterText("Press any key to exit.");
+            TextCenter.CenterText("Press any key to return to the Main Menu.");
             Console.ReadKey();
-            Environment.Exit(0);
         }
     }
 }

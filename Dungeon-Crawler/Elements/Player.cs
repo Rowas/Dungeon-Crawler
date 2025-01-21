@@ -8,18 +8,18 @@ class Player : LevelElements
     public string Name { get; set; } = "Adventurer";
 
     public int maxHealth = 100;
-    public int currentHealth { get; set; } = 100;
+    public int CurrentHealth { get; set; } = 100;
     public static double CollectedPointMods { get; set; }
     public static double FinalScore { get; set; }
-    public bool? swordAquired { get; set; } = false;
-    public bool? armorAquired { get; set; } = false;
-    public int dmgDices { get; set; } = 2;
-    public int dmgDiceSides { get; set; } = 6;
-    public int dmgDiceModifier { get; set; } = 1;
+    public bool? SwordAquired { get; set; } = false;
+    public bool? ArmorAquired { get; set; } = false;
+    public int DmgDices { get; set; } = 2;
+    public int DmgDiceSides { get; set; } = 6;
+    public int DmgDiceModifier { get; set; } = 1;
 
-    public int defDices { get; set; } = 1;
-    public int defDiceSides { get; set; } = 8;
-    public int defDiceModifier { get; set; } = 0;
+    public int DefDices { get; set; } = 1;
+    public int DefDiceSides { get; set; } = 8;
+    public int DefDiceModifier { get; set; } = 0;
 
     public bool IsDead = false;
 
@@ -30,16 +30,16 @@ class Player : LevelElements
         Name = name;
         IsVisible = true;
         Position = (x, y);
-        objectTile = '@';
-        objectColor = ConsoleColor.Yellow;
+        ObjectTile = '@';
+        ObjectColor = ConsoleColor.Yellow;
         this.Draw();
     }
     public Player(int x, int y)
     {
         IsVisible = true;
         Position = (x, y);
-        objectTile = '@';
-        objectColor = ConsoleColor.Yellow;
+        ObjectTile = '@';
+        ObjectColor = ConsoleColor.Yellow;
         this.Draw();
     }
 
@@ -48,36 +48,34 @@ class Player : LevelElements
 
     }
 
-    public async Task Movement(ConsoleKeyInfo checkKey, List<LevelElements> elements, Dictionary<int, string> combatLog)
+    public async Task Movement(ConsoleKeyInfo checkKey, List<LevelElements> elements, Dictionary<int, string> combatLog, int logPosition, string levelFile)
     {
         switch (checkKey.Key)
         {
             case ConsoleKey.RightArrow:
-                TakeStep(1, 'H', elements);
-                GameLoop.turnCounter++;
+                TakeStep(1, 'H', elements, combatLog, logPosition);
+                GameLoop.TurnCounter++;
                 break;
             case ConsoleKey.LeftArrow:
-                TakeStep(-1, 'H', elements);
-                GameLoop.turnCounter++;
+                TakeStep(-1, 'H', elements, combatLog, logPosition);
+                GameLoop.TurnCounter++;
                 break;
             case ConsoleKey.UpArrow:
-                TakeStep(-1, 'V', elements);
-                GameLoop.turnCounter++;
+                TakeStep(-1, 'V', elements, combatLog, logPosition);
+                GameLoop.TurnCounter++;
                 break;
             case ConsoleKey.DownArrow:
-                TakeStep(1, 'V', elements);
-                GameLoop.turnCounter++;
+                TakeStep(1, 'V', elements, combatLog, logPosition);
+                GameLoop.TurnCounter++;
                 break;
             case ConsoleKey.Escape:
                 Console.SetCursorPosition(0, 21);
-                Environment.Exit(0);
                 break;
             case ConsoleKey.S:
-                SaveGame saving = new SaveGame();
+                SaveGame saving = new();
                 Console.Clear();
                 TextCenter.CenterText("Saving Game.");
-                Console.WriteLine();
-                await saving.SavingGame(elements, Name, GameLoop.turnCounter);
+                saving.SavingGame(elements, Name, GameLoop.TurnCounter, combatLog, levelFile);
                 Console.WriteLine();
                 TextCenter.CenterText("Game saved");
                 TextCenter.CenterText("Press any key to continue.");
@@ -89,7 +87,7 @@ class Player : LevelElements
                 GameLoop.GameLog(elements, combatLog);
                 break;
             default:
-                GameLoop.turnCounter++;
+                GameLoop.TurnCounter++;
                 Draw();
                 break;
         }
@@ -98,7 +96,7 @@ class Player : LevelElements
 
     public void Exploration(List<LevelElements> elements)
     {
-        Player player = new Player();
+        Player player = new();
         player.Position = this.Position;
         if (elements.Any(b => double.Hypot((b.Position.Item1 - player.Position.Item1), (b.Position.Item2 - player.Position.Item2)) <= 5) == true)
         {
@@ -148,12 +146,12 @@ class Player : LevelElements
         }
     }
 
-    public void TakeStep(int d, char direction, List<LevelElements> elements)
+    public void TakeStep(int d, char direction, List<LevelElements> elements, Dictionary<int, string> combatLog, int logPosition)
     {
         if (direction == 'H')
         {
 
-            d = TileCheck(d, direction, elements);
+            d = TileCheck(d, direction, elements, combatLog, logPosition);
             Console.SetCursorPosition(Position.Item1, Position.Item2);
             Position = (Position.Item1 + d, Position.Item2);
             DrawPlayer();
@@ -161,14 +159,15 @@ class Player : LevelElements
         }
         else
         {
-            d = TileCheck(d, direction, elements);
+            d = TileCheck(d, direction, elements, combatLog, logPosition);
             Console.SetCursorPosition(Position.Item1, Position.Item2);
             Position = (Position.Item1, Position.Item2 + d);
             DrawPlayer();
         }
     }
-    public int TileCheck(int d, char direction, List<LevelElements> elements)
+    public int TileCheck(int d, char direction, List<LevelElements> elements, Dictionary<int, string> combatLog, int logPosition)
     {
+        CombatMethods combat = new();
         int x = 0;
         int y = 0;
         switch (direction)
@@ -188,25 +187,25 @@ class Player : LevelElements
                 switch (element)
                 {
                     case Rat:
-                        CombatMethods.Encounter(this, (Rat)element, 'P', elements);
+                        combat.Encounter(this, (Rat)element, 'P', elements, combatLog, logPosition);
                         break;
                     case Snake:
-                        CombatMethods.Encounter(this, (Snake)element, 'P', elements);
+                        combat.Encounter(this, (Snake)element, 'P', elements, combatLog, logPosition);
                         break;
                     case Boss:
-                        CombatMethods.Encounter(this, (Boss)element, 'P', elements);
+                        combat.Encounter(this, (Boss)element, 'P', elements, combatLog, logPosition);
                         break;
                     case Guard:
-                        CombatMethods.Encounter(this, (Guard)element, 'P', elements);
+                        combat.Encounter(this, (Guard)element, 'P', elements, combatLog, logPosition);
                         break;
                     case Grue:
-                        CombatMethods.Encounter(this, (Grue)element, 'P', elements);
+                        combat.Encounter(this, (Grue)element, 'P', elements, combatLog, logPosition);
                         break;
                     case Equipment:
-                        CombatMethods.EquipmentPickup(this, (Equipment)element, elements);
+                        combat.EquipmentPickup(this, (Equipment)element, elements, combatLog, logPosition);
                         return d;
                     case Items:
-                        CombatMethods.ItemPickup(this, (Items)element, elements);
+                        combat.ItemPickup(this, (Items)element, elements, combatLog, logPosition);
                         return d;
                 }
             }
@@ -229,7 +228,7 @@ class Player : LevelElements
 
     public (int, string) Attack()
     {
-        Dice playerDamage = new Dice(dmgDices, dmgDiceSides, dmgDiceModifier);
+        Dice playerDamage = new(DmgDices, DmgDiceSides, DmgDiceModifier);
         int pDmg = playerDamage.Throw();
         string pDmgDice = playerDamage.ToString();
 
@@ -238,7 +237,7 @@ class Player : LevelElements
 
     public (int, string) Defend()
     {
-        Dice playerDefense = new Dice(defDices, defDiceSides, defDiceModifier);
+        Dice playerDefense = new(DefDices, DefDiceSides, DefDiceModifier);
         int pDef = playerDefense.Throw();
         string pDefDice = playerDefense.ToString();
 
@@ -247,7 +246,7 @@ class Player : LevelElements
 
     public void GameOver()
     {
-        this.objectTile = ' ';
+        this.ObjectTile = ' ';
         Draw();
         Console.Clear();
         Console.SetCursorPosition(0, 12);
@@ -264,7 +263,7 @@ class Player : LevelElements
         double score;
         double turnMod;
         double collectedPoints;
-        double turns = GameLoop.turnCounter;
+        double turns = GameLoop.TurnCounter;
         turnMod = turns / 250;
         collectedPoints = CollectedPointMods * 100;
         score = collectedPoints / turnMod;

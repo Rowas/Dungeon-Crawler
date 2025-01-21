@@ -7,16 +7,12 @@ namespace Dungeon_Crawler.DBModel
 
         public static string SelectLoadGame()
         {
-            string selectedGame = "";
+            string selectedGame = string.Empty;
             var possibleSelections = new Dictionary<string, string>();
             var possibleGames = new Dictionary<string, string>();
             using (var db = new SaveGameContext())
             {
-                ClearConsole.ConsoleClear();
-                TextCenter.CenterText("Please select the character to load:");
-                TextCenter.CenterText("(Leave blank to go back)");
-                Console.WriteLine();
-                List<string> savedGames = new List<string>();
+                List<string> savedGames = new();
 
                 var gameList = db.SaveGames.OrderByDescending(sg => sg.SaveDate).Distinct();
 
@@ -47,9 +43,8 @@ namespace Dungeon_Crawler.DBModel
 
             return selectedGame;
         }
-        async public static void LoadGame(List<LevelElements> elements, string selectedGame)
+        async public void LoadGame(List<LevelElements> elements, string selectedGame)
         {
-            GameLoad loading = new GameLoad();
             try
             {
                 using (var db = new SaveGameContext())
@@ -60,30 +55,19 @@ namespace Dungeon_Crawler.DBModel
                     var logId = new MongoDB.Bson.ObjectId(saveGame.CombatLogs);
                     var logMessages = db.CombatLogs.Find(logId);
 
-                    if (saveGame != null)
-                    {
-                        LevelElements.SaveGameName = saveGame.Id.ToString();
-                        LevelElements.CombatLogName = saveGame.CombatLogs.ToString();
-                        Program.levelFile = saveGame.MapName.ToString();
-                        loading.LoadGameState(saveGame.GameState, elements);
-                        loading.LoadCombatLog(logMessages.SavedCombatLog);
-                        Console.Clear();
-                        TextCenter.CenterText("Save game loaded.");
-                        Console.WriteLine();
-                        TextCenter.CenterText("Press any key to continue.");
-                        Console.ReadKey();
-                        Console.Clear();
-                        GameLoop.turnCounter = saveGame.GameState.CurrentTurn;
-                    }
-                    else
-                    {
-                        Console.Clear();
-                        TextCenter.CenterText("No save game found.");
-                        Console.WriteLine();
-                        TextCenter.CenterText("Press any key to exit.");
-                        Console.ReadKey();
-                        Environment.Exit(0);
-                    }
+
+                    LevelElements.SaveGameName = saveGame.Id.ToString();
+                    LevelElements.CombatLogName = saveGame.CombatLogs.ToString();
+                    GameLoop.MapName = saveGame.MapName.ToString();
+                    await LoadGameState(saveGame.GameState, elements);
+                    await LoadCombatLog(logMessages.SavedCombatLog);
+                    Console.Clear();
+                    TextCenter.CenterText("Save game loaded.");
+                    Console.WriteLine();
+                    TextCenter.CenterText("Press any key to continue.");
+                    Console.ReadKey();
+                    Console.Clear();
+                    GameLoop.TurnCounter = saveGame.GameState.CurrentTurn;
                 }
             }
             catch (Exception ex)
@@ -92,13 +76,12 @@ namespace Dungeon_Crawler.DBModel
                 TextCenter.CenterText("Unable to load save game.");
                 TextCenter.CenterText("Database corrupted, save game does not exist or save game is from a different version.");
                 Console.WriteLine();
-                TextCenter.CenterText("Press any key to exit.");
+                TextCenter.CenterText("Press any key to return to the Main Menu.");
                 Console.ReadKey();
-                Environment.Exit(0);
             }
         }
 
-        async public void LoadGameState(GameState gameState, List<LevelElements> elements)
+        async public Task LoadGameState(GameState gameState, List<LevelElements> elements)
         {
 
             elements.Add(gameState.Player);
@@ -114,12 +97,13 @@ namespace Dungeon_Crawler.DBModel
             elements.AddRange(gameState.Grues);
         }
 
-        async public void LoadCombatLog(LogMessage logMessage)
+        async public Task LoadCombatLog(LogMessage logMessage)
         {
+            GameLoop loop = new();
             for (int i = 0; i < logMessage.Key.Count; i++)
             {
-                GameLoop.combatLog.Add(logMessage.Key[i], logMessage.Message[i]);
-                GameLoop.logPosition++;
+                loop.combatLog.Add(logMessage.Key[i], logMessage.Message[i]);
+                loop.LogPosition++;
             }
         }
     }

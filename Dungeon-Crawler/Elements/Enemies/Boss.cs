@@ -3,18 +3,18 @@
     public Boss(int x, int y)
     {
         Position = (x, y);
-        objectTile = 'B';
-        objectColor = ConsoleColor.DarkRed;
+        ObjectTile = 'B';
+        ObjectColor = ConsoleColor.DarkRed;
         Name = "Boss";
         PointModifier = 6;
         MaxHealth = 75;
         CurrentHealth = 75;
         DmgDice = 4;
-        dmgDiceSides = 4;
-        dmgDiceModifier = 0;
+        DmgDiceSides = 4;
+        DmgDiceModifier = 0;
         DefDice = 2;
-        defDiceSides = 8;
-        defDiceModifier = -1;
+        DefDiceSides = 8;
+        DefDiceModifier = -1;
         IsDead = false;
         this.Draw();
     }
@@ -23,7 +23,7 @@
 
     }
 
-    public override void Update(List<LevelElements> elements)
+    public override void Update(List<LevelElements> elements, Dictionary<int, string> combatLog, int logPosition)
     {
 
         IsVisible = false;

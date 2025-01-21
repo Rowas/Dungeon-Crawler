@@ -3,8 +3,8 @@
     public Sword(int x, int y)
     {
         Position = (x, y);
-        objectTile = 'W';
-        objectColor = ConsoleColor.DarkYellow;
+        ObjectTile = 'W';
+        ObjectColor = ConsoleColor.DarkYellow;
         Name = "Magic Sword";
         PointModifier = -1;
         DamageDices = 2;

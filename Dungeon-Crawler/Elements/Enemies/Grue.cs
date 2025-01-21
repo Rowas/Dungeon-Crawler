@@ -10,18 +10,18 @@
             GrueSpawned = true;
         }
         Position = (x, y);
-        objectTile = 'g';
-        objectColor = ConsoleColor.Magenta;
+        ObjectTile = 'g';
+        ObjectColor = ConsoleColor.Magenta;
         Name = "Grue";
         PointModifier = 42;
         MaxHealth = 250;
         CurrentHealth = 250;
         DmgDice = 4;
-        dmgDiceSides = 20;
-        dmgDiceModifier = 6;
+        DmgDiceSides = 20;
+        DmgDiceModifier = 6;
         DefDice = 4;
-        defDiceSides = 6;
-        defDiceModifier = 3;
+        DefDiceSides = 6;
+        DefDiceModifier = 3;
         IsDead = false;
         IsVisible = false;
         this.Draw();
@@ -33,7 +33,7 @@
 
     }
 
-    public override void Update(List<LevelElements> elements)
+    public override void Update(List<LevelElements> elements, Dictionary<int, string> combatLog, int logPosition)
     {
         if (GrueSpawned == true)
         {
@@ -52,8 +52,10 @@
     {
         if (IsWarned == false)
         {
-            Console.SetCursorPosition(0, 20);
+            Console.SetCursorPosition(0, 27);
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("It's dark in here ... I hope I don't get eaten by a Grue...");
+            Console.ResetColor();
             IsWarned = true;
         }
     }

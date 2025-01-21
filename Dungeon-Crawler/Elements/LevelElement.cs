@@ -8,10 +8,10 @@ abstract class LevelElements
     [BsonIgnore]
     public static string CombatLogName { get; set; } = "1";
     public double PointModifier { get; set; }
-    public int xPos { get; set; }
-    public int yPos { get; set; }
-    public char objectTile { get; set; }
-    public ConsoleColor objectColor { get; set; }
+    public int XPos { get; set; }
+    public int YPos { get; set; }
+    public char ObjectTile { get; set; }
+    public ConsoleColor ObjectColor { get; set; }
     public bool IsVisible { get; set; } = false;
     public static bool GrueSpawned { get; set; }
     public void Draw()
@@ -22,8 +22,8 @@ abstract class LevelElements
                 Console.SetCursorPosition(Position.Item1, Position.Item2);
                 Console.Write(" ");
                 Console.SetCursorPosition(Position.Item1, Position.Item2);
-                Console.ForegroundColor = objectColor;
-                Console.Write(objectTile);
+                Console.ForegroundColor = ObjectColor;
+                Console.Write(ObjectTile);
                 Console.ResetColor();
                 break;
             default:
@@ -39,8 +39,8 @@ abstract class LevelElements
             case true:
                 Console.Write(" ");
                 Console.SetCursorPosition(Position.Item1, Position.Item2);
-                Console.ForegroundColor = objectColor;
-                Console.Write(objectTile);
+                Console.ForegroundColor = ObjectColor;
+                Console.Write(ObjectTile);
                 Console.ResetColor();
                 break;
             default:
@@ -54,9 +54,9 @@ abstract class LevelElements
         if (this.IsVisible == true)
         {
             Console.SetCursorPosition(Position.Item1, Position.Item2);
-            Console.ForegroundColor = (ConsoleColor)objectColor;
+            Console.ForegroundColor = (ConsoleColor)ObjectColor;
             Console.BackgroundColor = ConsoleColor.DarkGray;
-            Console.Write(objectTile);
+            Console.Write(ObjectTile);
             Console.ResetColor();
         }
     }

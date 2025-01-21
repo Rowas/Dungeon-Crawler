@@ -3,18 +3,18 @@
     public Guard(int x, int y)
     {
         Position = (x, y);
-        objectTile = 'G';
-        objectColor = ConsoleColor.Magenta;
+        ObjectTile = 'G';
+        ObjectColor = ConsoleColor.Magenta;
         Name = "Guard";
         PointModifier = 2;
         MaxHealth = 50;
         CurrentHealth = 50;
         DmgDice = 2;
-        dmgDiceSides = 6;
-        dmgDiceModifier = -1;
+        DmgDiceSides = 6;
+        DmgDiceModifier = -1;
         DefDice = 2;
-        defDiceSides = 4;
-        defDiceModifier = 0;
+        DefDiceSides = 4;
+        DefDiceModifier = 0;
         IsDead = false;
         IsVisible = false;
         this.Draw();
@@ -25,7 +25,7 @@
 
     }
 
-    public override void Update(List<LevelElements> elements)
+    public override void Update(List<LevelElements> elements, Dictionary<int, string> combatLog, int logPosition)
     {
 
         IsVisible = false;

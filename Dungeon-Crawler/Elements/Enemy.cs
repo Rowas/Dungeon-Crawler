@@ -8,11 +8,11 @@ abstract class Enemy : LevelElements
     public int MaxHealth { get; set; }
     public int CurrentHealth { get; set; }
     public int DmgDice { get; set; }
-    public int dmgDiceSides { get; set; }
-    public int dmgDiceModifier { get; set; }
+    public int DmgDiceSides { get; set; }
+    public int DmgDiceModifier { get; set; }
     public int DefDice { get; set; }
-    public int defDiceSides { get; set; }
-    public int defDiceModifier { get; set; }
+    public int DefDiceSides { get; set; }
+    public int DefDiceModifier { get; set; }
 
     [BsonIgnore]
     public bool IsDead { get; set; }
@@ -27,7 +27,7 @@ abstract class Enemy : LevelElements
 
     public (int, string) Attack()
     {
-        Dice enemyDamage = new Dice(DmgDice, dmgDiceSides, dmgDiceModifier);
+        Dice enemyDamage = new(DmgDice, DmgDiceSides, DmgDiceModifier);
 
         int eDmg = enemyDamage.Throw();
 
@@ -38,7 +38,7 @@ abstract class Enemy : LevelElements
 
     public (int, string) Defend()
     {
-        Dice enemyDefend = new Dice(DefDice, defDiceSides, defDiceModifier);
+        Dice enemyDefend = new(DefDice, DefDiceSides, DefDiceModifier);
 
         int eDef = enemyDefend.Throw();
 
@@ -48,7 +48,7 @@ abstract class Enemy : LevelElements
     }
     public void Die(List<LevelElements> elements)
     {
-        this.objectTile = ' ';
+        this.ObjectTile = ' ';
         this.Draw();
         elements.Remove(this);
         if (this is Boss)
@@ -62,5 +62,5 @@ abstract class Enemy : LevelElements
 
     }
 
-    abstract public void Update(List<LevelElements> elements);
+    abstract public void Update(List<LevelElements> elements, Dictionary<int, string> combatLog, int logPosition);
 }

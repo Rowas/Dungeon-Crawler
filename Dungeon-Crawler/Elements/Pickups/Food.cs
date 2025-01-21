@@ -3,8 +3,8 @@
     public Food(int x, int y)
     {
         Position = (x, y);
-        objectTile = 'F';
-        objectColor = ConsoleColor.White;
+        ObjectTile = 'F';
+        ObjectColor = ConsoleColor.White;
         Name = "Food";
         PointModifier = -1;
         HealthRestore = 25;

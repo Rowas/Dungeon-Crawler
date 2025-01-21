@@ -3,8 +3,8 @@
     public Potion(int x, int y)
     {
         Position = (x, y);
-        objectTile = 'P';
-        objectColor = ConsoleColor.DarkGreen;
+        ObjectTile = 'P';
+        ObjectColor = ConsoleColor.DarkGreen;
         Name = "Potion";
         PointModifier = -2;
         HealthRestore = 50;

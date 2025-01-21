@@ -5,44 +5,55 @@ using MongoDB.Driver.Linq;
 class GameLoop
 {
     public static string MapName { get; set; }
-    public static int turnCounter { get; set; } = 1;
+    public static int TurnCounter { get; set; } = 1;
     public int CurrentHP { get; private set; } = 100;
     public int MaxHP { get; private set; } = 100;
-    public Player currentPlayer { get; set; }
+    public Player CurrentPlayer { get; set; }
 
-    public static Dictionary<int, string> combatLog = new Dictionary<int, string>();
-    public static int logPosition { get; set; } = 1;
+    public Dictionary<int, string> combatLog = new();
+    public int LogPosition { get; set; } = 1;
 
     public static int NewHP = 100;
 
     public ConsoleKeyInfo checkKey;
 
-    private LevelData _level = new LevelData();
+    private LevelData _level = new();
+    private GameLoad _load = new();
 
     public LevelData Level { get { return _level; } }
+    public GameLoad Load { get { return _load; } }
 
-    public void StartUp(string levelFile, string playerName)
+    public void StartUp(string levelFile, string playerName, bool newGame)
     {
         Console.CursorVisible = false;
         Console.CursorTop = 0;
         Console.CursorLeft = 0;
+        MapName = levelFile;
+        ClearConsole.ConsoleClear();
 
-        Directory.SetCurrentDirectory(".\\Levels\\");
-
-        if (levelFile != "GameLoaded")
+        if (Directory.GetCurrentDirectory() == "D:\\Dev\\Source\\Repos\\Dungeon-Crawler\\Dungeon-Crawler\\bin\\Debug\\net8.0")
         {
+            Directory.SetCurrentDirectory(".\\Levels\\");
+        }
+
+        if (newGame == true)
+        {
+            MapName = levelFile;
             Level.Load(levelFile, playerName);
         }
         else
         {
-            GameLoad.LoadGame(Level.Elements, playerName);
+            Load.LoadGame(Level.Elements, levelFile);
         }
 
-        MapName = Program.levelFile;
     }
 
     public void GameRunning()
     {
+        if (Level.Elements.Count == 0)
+        {
+            return;
+        }
         DrawGameState(Level.Elements, combatLog);
 
         foreach (var player in from LevelElements element in Level.Elements
@@ -51,19 +62,19 @@ class GameLoop
                                select player)
         {
             player.Exploration(Level.Elements);
-            currentPlayer = player;
+            CurrentPlayer = player;
         }
         foreach (var grue in from LevelElements element in Level.Elements
                              where element is Grue
                              let grue = (Grue)element
                              select grue)
         {
-            grue.Update(Level.Elements.ToList());
+            grue.Update(Level.Elements.ToList(), combatLog, LogPosition);
         }
 
         do
         {
-            if (turnCounter > 150)
+            if (TurnCounter > 150)
             {
                 var rand = new Random();
                 if (rand.NextDouble() < 0.25)
@@ -77,7 +88,6 @@ class GameLoop
                         }
                         else
                         {
-                            Level.Elements.ToList();
                             if (rand.NextDouble() < 0.5)
                             {
                                 LevelElements.GrueSpawned = true;
@@ -94,10 +104,10 @@ class GameLoop
                     }
                 }
             }
-            if (turnCounter % 50 == 0)
+            if (TurnCounter % 50 == 0)
             {
-                SaveGame saving = new SaveGame();
-                saving.SavingGame(Level.Elements, currentPlayer.Name, turnCounter);
+                SaveGame saving = new();
+                saving.SavingGame(Level.Elements, CurrentPlayer.Name, TurnCounter, combatLog, MapName);
                 Console.SetCursorPosition(0, 28);
                 Console.Write("Saving Done");
             }
@@ -106,13 +116,13 @@ class GameLoop
                                    let player = (Player)element
                                    select player)
             {
-                currentPlayer = player;
+                CurrentPlayer = player;
                 player.Exploration(Level.Elements);
                 MaxHP = player.maxHealth;
-                CurrentHP = player.currentHealth;
+                CurrentHP = player.CurrentHealth;
                 if (CurrentHP > player.maxHealth)
                 {
-                    player.currentHealth = player.maxHealth;
+                    player.CurrentHealth = player.maxHealth;
                     CurrentHP = player.maxHealth;
                 }
             }
@@ -129,12 +139,12 @@ class GameLoop
                 {
                     case Player:
                         Player player = (Player)element;
-                        currentPlayer = player;
-                        player.Movement(checkKey, Level.Elements, combatLog);
+                        CurrentPlayer = player;
+                        player.Movement(checkKey, Level.Elements, combatLog, LogPosition, MapName);
                         break;
                     case Enemy:
                         Enemy enemy = (Enemy)element;
-                        enemy.Update(Level.Elements);
+                        enemy.Update(Level.Elements, combatLog, LogPosition);
                         break;
                     case Wall:
                         Wall wall = (Wall)element;
@@ -216,7 +226,7 @@ class GameLoop
         {
             if (element.Position == (0, 0))
             {
-                element.Position = (element.xPos, element.yPos);
+                element.Position = (element.XPos, element.YPos);
             }
             switch (element)
             {

@@ -5,18 +5,18 @@ class Rat : Enemy
     public Rat(int x, int y)
     {
         Position = (x, y);
-        objectTile = 'R';
-        objectColor = ConsoleColor.Red;
+        ObjectTile = 'R';
+        ObjectColor = ConsoleColor.Red;
         Name = "Rat";
         PointModifier = 1;
         MaxHealth = 20;
         CurrentHealth = 20;
         DmgDice = 1;
-        dmgDiceSides = 6;
-        dmgDiceModifier = 0;
+        DmgDiceSides = 6;
+        DmgDiceModifier = 0;
         DefDice = 2;
-        defDiceSides = 4;
-        defDiceModifier = 1;
+        DefDiceSides = 4;
+        DefDiceModifier = 1;
         IsDead = false;
         this.Draw();
     }
@@ -26,42 +26,41 @@ class Rat : Enemy
 
     }
 
-    public override void Update(List<LevelElements> elements)
+    public override void Update(List<LevelElements> elements, Dictionary<int, string> combatLog, int logPosition)
     {
-
         IsVisible = false;
 
         int rand = new Random().Next(1, 5);
         switch (rand)
         {
             case 1:
-                TakeStep(1, 'H', elements);
+                TakeStep(1, 'H', elements, combatLog, logPosition);
                 break;
             case 2:
-                TakeStep(-1, 'H', elements);
+                TakeStep(-1, 'H', elements, combatLog, logPosition);
                 break;
             case 3:
-                TakeStep(-1, 'V', elements);
+                TakeStep(-1, 'V', elements, combatLog, logPosition);
                 break;
             case 4:
-                TakeStep(1, 'V', elements);
+                TakeStep(1, 'V', elements, combatLog, logPosition);
                 break;
         }
         Console.ResetColor();
     }
 
-    public void TakeStep(int d, char direction, List<LevelElements> elements)
+    public void TakeStep(int d, char direction, List<LevelElements> elements, Dictionary<int, string> combatLog, int logPosition)
     {
         switch (direction)
         {
             case 'H':
-                d = TileCheck(d, direction, elements);
+                d = TileCheck(d, direction, elements, combatLog, logPosition);
                 Console.SetCursorPosition(Position.Item1, Position.Item2);
                 Position = (Position.Item1 + d, Position.Item2);
                 Draw();
                 break;
             default:
-                d = TileCheck(d, direction, elements);
+                d = TileCheck(d, direction, elements, combatLog, logPosition);
                 Console.SetCursorPosition(Position.Item1, Position.Item2);
                 Position = (Position.Item1, Position.Item2 + d);
                 Draw();
@@ -69,8 +68,9 @@ class Rat : Enemy
         }
     }
 
-    public int TileCheck(int d, char direction, List<LevelElements> elements)
+    public int TileCheck(int d, char direction, List<LevelElements> elements, Dictionary<int, string> combatLog, int logPosition)
     {
+        CombatMethods combat = new();
         int x = 0;
         int y = 0;
         switch (direction)
@@ -88,7 +88,7 @@ class Rat : Enemy
                                     where element is Player
                                     select element)
             {
-                CombatMethods.Encounter((Player)element, this, 'E', elements);
+                combat.Encounter((Player)element, this, 'E', elements, combatLog, logPosition);
                 return 0;
             }
 

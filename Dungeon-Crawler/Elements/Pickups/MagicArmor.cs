@@ -3,8 +3,8 @@
     public Armor(int x, int y)
     {
         Position = (x, y);
-        objectTile = 'A';
-        objectColor = ConsoleColor.DarkCyan;
+        ObjectTile = 'A';
+        ObjectColor = ConsoleColor.DarkCyan;
         Name = "Magic Armor";
         PointModifier = -1;
         DefenseDice = 2;

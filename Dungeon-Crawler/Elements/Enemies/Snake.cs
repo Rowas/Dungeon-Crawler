@@ -3,18 +3,18 @@
     public Snake(int x, int y)
     {
         Position = (x, y);
-        objectTile = 'S';
-        objectColor = ConsoleColor.Green;
+        ObjectTile = 'S';
+        ObjectColor = ConsoleColor.Green;
         Name = "Snake";
         PointModifier = 2;
         MaxHealth = 35;
         CurrentHealth = 35;
         DmgDice = 2;
-        dmgDiceSides = 4;
-        dmgDiceModifier = 1;
+        DmgDiceSides = 4;
+        DmgDiceModifier = 1;
         DefDice = 2;
-        defDiceSides = 6;
-        defDiceModifier = -1;
+        DefDiceSides = 6;
+        DefDiceModifier = -1;
         IsDead = false;
         IsVisible = false;
         this.Draw();
@@ -25,7 +25,7 @@
 
     }
 
-    public override void Update(List<LevelElements> elements)
+    public override void Update(List<LevelElements> elements, Dictionary<int, string> combatLog, int logPosition)
     {
 
         IsVisible = false;

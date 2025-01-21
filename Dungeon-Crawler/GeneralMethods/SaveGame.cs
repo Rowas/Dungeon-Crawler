@@ -4,16 +4,16 @@ namespace Dungeon_Crawler.DBModel
 {
     internal class SaveGame
     {
-        public async Task SavingGame(List<LevelElements> elements, string name, int turn)
+        public async Task SavingGame(List<LevelElements> elements, string name, int turn, Dictionary<int, string> combatLog, string levelFile)
         {
             try
             {
-                LevelData level = new LevelData();
+                LevelData level = new();
 
                 using (var db = new SaveGameContext())
                 {
-                    ObjectId id = new ObjectId();
-                    ObjectId logId = new ObjectId();
+                    ObjectId id = new();
+                    ObjectId logId = new();
 
                     if (LevelElements.SaveGameName != "0")
                     {
@@ -37,8 +37,8 @@ namespace Dungeon_Crawler.DBModel
 
                     foreach (var element in elements)
                     {
-                        element.xPos = element.Position.Item1;
-                        element.yPos = element.Position.Item2;
+                        element.XPos = element.Position.Item1;
+                        element.YPos = element.Position.Item2;
 
                         switch (element)
                         {
@@ -80,20 +80,20 @@ namespace Dungeon_Crawler.DBModel
 
                     var logMsg = new LogMessage();
 
-                    foreach (var log in GameLoop.combatLog)
+                    foreach (var log in combatLog)
                     {
                         logMsg.Message.Add(log.Value);
                         logMsg.Key.Add(log.Key);
                     }
 
-                    var savedLog = new CombatLog { Id = logId, PlayerName = name, MapName = Program.levelFile, SavedCombatLog = logMsg };
+                    var savedLog = new CombatLog { Id = logId, PlayerName = name, MapName = levelFile, SavedCombatLog = logMsg };
 
                     gameState.CurrentTurn = turn;
 
                     db.CombatLogs.Update(savedLog);
                     await db.SaveChangesAsync();
 
-                    var saveGame = new GameSave { PlayerName = name, GameState = gameState, MapName = Program.levelFile, CombatLogs = savedLog.Id.ToString() };
+                    var saveGame = new GameSave { PlayerName = name, GameState = gameState, MapName = levelFile, CombatLogs = savedLog.Id.ToString() };
 
                     db.SaveGames.Update(saveGame);
                     await db.SaveChangesAsync();
