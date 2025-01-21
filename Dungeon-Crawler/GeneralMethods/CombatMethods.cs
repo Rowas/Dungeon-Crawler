@@ -71,11 +71,11 @@
 
             if (firstActor == player.Name)
             {
-                HandleAdventurerCombat(playerCombat, enemyCombat, playerDamage, enemyDamage, player, enemy, elements, combatLog, logPosition);
+                HandleAdventurerCombat(playerCombat, enemyCombat, enemyDamage, player, enemy, elements, combatLog, logPosition);
             }
             else
             {
-                HandleEnemyCombat(playerCombat, enemyCombat, playerDamage, enemyDamage, player, enemy, elements, combatLog, logPosition);
+                HandleEnemyCombat(playerCombat, enemyCombat, playerDamage, player, enemy, elements, combatLog, logPosition);
             }
 
             GameLoop.DrawGameState(elements, combatLog);
@@ -97,7 +97,7 @@
 
         public void HandleAdventurerCombat((int, string, int, string) playerCombat,
                                                    (int, string, int, string) enemyCombat,
-                                                   int playerDamage, int enemyDamage,
+                                                   int enemyDamage,
                                                    Player player, Enemy enemy,
                                                    List<LevelElements> elements,
                                                    Dictionary<int, string> combatLog,
@@ -105,7 +105,7 @@
         {
             if (enemy.IsDead)
             {
-                PrintEnemySlain(enemy.Name, elements, enemy, isCounter: false, combatLog, logPosition);
+                PrintEnemySlain(enemy.Name, elements, enemy, combatLog, logPosition);
             }
             else
             {
@@ -115,7 +115,7 @@
 
         public void HandleEnemyCombat((int, string, int, string) playerCombat,
                                               (int, string, int, string) enemyCombat,
-                                              int playerDamage, int enemyDamage,
+                                              int playerDamage,
                                               Player player, Enemy enemy,
                                               List<LevelElements> elements, Dictionary<int, string> combatLog,
                                               int logPosition)
@@ -149,17 +149,17 @@
             }
             if (enemy.IsDead)
             {
-                Player.CollectedPointMods = Player.CollectedPointMods + enemy.PointModifier;
-                PrintEnemySlain(enemy.Name, elements, enemy, isCounter: true, combatLog, logPosition);
+                Player.CollectedPointMods += enemy.PointModifier;
+                PrintEnemySlain(enemy.Name, elements, enemy, combatLog, logPosition);
             }
         }
 
-        public void PrintEnemySlain(string actor, List<LevelElements> elements, Enemy enemy, bool isCounter, Dictionary<int, string> combatLog, int logPosition)
+        public void PrintEnemySlain(string actor, List<LevelElements> elements, Enemy enemy, Dictionary<int, string> combatLog, int logPosition)
         {
             combatLog.Add(logPosition++, " ".PadRight(55));
             combatLog.Add(logPosition++, $"{actor} has been slain.".PadRight(55));
             Console.ResetColor();
-            Player.CollectedPointMods = Player.CollectedPointMods + enemy.PointModifier;
+            Player.CollectedPointMods += enemy.PointModifier;
             enemy.Die(elements);
         }
 
@@ -171,13 +171,13 @@
             {
                 case "Magic Sword":
                     combatLog.Add(logPosition++, "Attack have been increased to 2D10+2.".PadRight(55));
-                    Player.CollectedPointMods = Player.CollectedPointMods + equipment.PointModifier;
+                    Player.CollectedPointMods += equipment.PointModifier;
                     UpdatingStats(player, equipment.DamageDices, equipment.DmgDiceSides, equipment.DmgDiceModifier, isAttack: true);
                     player.SwordAquired = true;
                     break;
                 case "Magic Armor":
                     combatLog.Add(logPosition++, "Defense have been increased to 2D8+2.".PadRight(55));
-                    Player.CollectedPointMods = Player.CollectedPointMods + equipment.PointModifier;
+                    Player.CollectedPointMods += equipment.PointModifier;
                     UpdatingStats(player, equipment.DefenseDice, equipment.DefDiceSides, equipment.DefDiceModifier, isAttack: false);
                     player.ArmorAquired = true;
                     break;
@@ -210,14 +210,14 @@
             {
                 case "Food":
                     {
-                        player.CurrentHealth = player.CurrentHealth + item.HealthRestore;
-                        Player.CollectedPointMods = Player.CollectedPointMods + item.PointModifier;
+                        player.CurrentHealth += item.HealthRestore;
+                        Player.CollectedPointMods += item.PointModifier;
                         break;
                     }
                 case "Potion":
                     {
-                        player.CurrentHealth = player.CurrentHealth + item.HealthRestore;
-                        Player.CollectedPointMods = Player.CollectedPointMods + item.PointModifier;
+                        player.CurrentHealth += item.HealthRestore;
+                        Player.CollectedPointMods += item.PointModifier;
                         break;
                     }
             }

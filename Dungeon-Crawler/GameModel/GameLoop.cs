@@ -10,7 +10,7 @@ class GameLoop
     public int MaxHP { get; private set; } = 100;
     public Player CurrentPlayer { get; set; }
 
-    public Dictionary<int, string> combatLog = new();
+    public Dictionary<int, string> combatLog = [];
     public int LogPosition { get; set; } = 1;
 
     public static int NewHP = 100;
@@ -38,7 +38,6 @@ class GameLoop
 
         if (newGame == true)
         {
-            MapName = levelFile;
             Level.Load(levelFile, playerName);
         }
         else
@@ -69,7 +68,7 @@ class GameLoop
                              let grue = (Grue)element
                              select grue)
         {
-            grue.Update(Level.Elements.ToList(), combatLog, LogPosition);
+            grue.Update([.. Level.Elements], combatLog, LogPosition);
         }
 
         do
@@ -245,6 +244,6 @@ class GameLoop
         }
 
         UIMethods.DrawCombatLog(player, combatLog);
-        UIMethods.PrintUI(player);
+        UIMethods.PrintUI(player, TurnCounter, MapName);
     }
 }

@@ -4,45 +4,6 @@ namespace Dungeon_Crawler.DBModel
 {
     internal class GameLoad
     {
-
-        public static string SelectLoadGame()
-        {
-            string selectedGame = string.Empty;
-            var possibleSelections = new Dictionary<string, string>();
-            var possibleGames = new Dictionary<string, string>();
-            using (var db = new SaveGameContext())
-            {
-                List<string> savedGames = new();
-
-                var gameList = db.SaveGames.OrderByDescending(sg => sg.SaveDate).Distinct();
-
-                int i = 1;
-                foreach (var game in gameList)
-                {
-                    TextCenter.CenterText($"{i}: {game.PlayerName} | {game.MapName} | {game.SaveDate} ");
-                    possibleSelections.Add(i.ToString(), game.Id.ToString());
-                    i++;
-                }
-            }
-            var currentLine = Console.GetCursorPosition().Top;
-            Console.SetCursorPosition(Console.WindowWidth / 2, currentLine);
-            var PlayerID = Console.ReadLine();
-
-            Console.WriteLine();
-
-            if (PlayerID == "")
-            {
-                TextCenter.CenterText("No savegame selected.");
-                TextCenter.CenterText("Press any key to return to main menu.");
-                Console.ReadKey();
-                return null;
-            }
-
-            selectedGame = possibleSelections[PlayerID];
-
-
-            return selectedGame;
-        }
         async public void LoadGame(List<LevelElements> elements, string selectedGame)
         {
             try

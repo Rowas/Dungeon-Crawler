@@ -10,8 +10,6 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        Program program = new();
-
         MainMenuLoops loops = new();
 
         Console.ResetColor();

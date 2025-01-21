@@ -96,8 +96,10 @@ class Player : LevelElements
 
     public void Exploration(List<LevelElements> elements)
     {
-        Player player = new();
-        player.Position = this.Position;
+        Player player = new()
+        {
+            Position = this.Position
+        };
         if (elements.Any(b => double.Hypot((b.Position.Item1 - player.Position.Item1), (b.Position.Item2 - player.Position.Item2)) <= 5) == true)
         {
             foreach (var element in from LevelElements element in elements
@@ -262,11 +264,8 @@ class Player : LevelElements
     {
         double score;
         double turnMod;
-        double collectedPoints;
-        double turns = GameLoop.TurnCounter;
-        turnMod = turns / 250;
-        collectedPoints = CollectedPointMods * 100;
-        score = collectedPoints / turnMod;
+        turnMod = GameLoop.TurnCounter / 250;
+        score = (CollectedPointMods * 100) / turnMod;
         if (score <= 0) { score = 0; }
         FinalScore = score;
         return score;

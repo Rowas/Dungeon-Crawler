@@ -57,7 +57,7 @@ class LevelData
                 }
             }
         }
-        catch (Exception ArgumentException)
+        catch (Exception ex)
         {
             Console.Clear();
             TextCenter.CenterText("Invalid Custom Map selected.");

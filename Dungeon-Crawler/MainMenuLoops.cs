@@ -74,7 +74,7 @@ namespace Dungeon_Crawler
 
         public void PreMadeMapSelect(string? playerName)
         {
-            string levelFile = string.Empty;
+            string levelFile;
             string? menuSelect = string.Empty;
             bool newGame = true;
 
@@ -98,7 +98,6 @@ namespace Dungeon_Crawler
                         levelFile = "Level1_w_Boss.txt";
                         start.StartUp(levelFile, playerName, newGame);
                         start.GameRunning();
-                        menuSelect = "0";
                         return;
                     case "0":
                         break;
@@ -109,7 +108,7 @@ namespace Dungeon_Crawler
         public void CustomMapSelect(string playerName)
         {
             string? menuSelect = string.Empty;
-            string levelFile = string.Empty;
+            string levelFile;
             bool newGame = true;
 
             GameLoop start = new();
@@ -159,7 +158,7 @@ namespace Dungeon_Crawler
 
             using (var db = new SaveGameContext())
             {
-                List<string> savedGames = new();
+                List<string> savedGames = [];
 
                 var gameList = db.SaveGames.OrderByDescending(sg => sg.SaveDate).Distinct();
 

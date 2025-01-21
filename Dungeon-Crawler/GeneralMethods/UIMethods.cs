@@ -2,16 +2,16 @@
 {
     internal class UIMethods
     {
-        public static void PrintUI(Player player)
+        public static void PrintUI(Player player, int turnCounter, string mapName)
         {
             Dice defDice = new(player.DefDices, player.DefDiceSides, player.DefDiceModifier);
             Dice dmgDice = new(player.DmgDices, player.DmgDiceSides, player.DmgDiceModifier);
             Console.ResetColor();
             Console.SetCursorPosition(0, 0);
-            Console.Write($"Player: {player.Name} | HP: {player.CurrentHealth} / {player.maxHealth}  Turn: {GameLoop.TurnCounter}         ");
+            Console.Write($"Player: {player.Name} | HP: {player.CurrentHealth} / {player.maxHealth}  Turn: {turnCounter}         ");
             Console.WriteLine($"Current Damage: {dmgDice} | Current Defense: {defDice}");
             Console.Write($"Items aquired: Magic Sword: {player.SwordAquired} | Magic Armor: {player.ArmorAquired}  ");
-            Console.WriteLine($"Current Map: {GameLoop.MapName} | Current Score: {Player.CollectedPointMods * 100}".PadRight(50));
+            Console.WriteLine($"Current Map: {mapName} | Current Score: {Player.CollectedPointMods * 100}".PadRight(50));
 
             Console.CursorVisible = false;
             Console.SetCursorPosition(0, 24);
@@ -23,9 +23,9 @@
         public static void DrawCombatLog(Player? player, Dictionary<int, string> combatLog)
         {
 
-            if (combatLog.Count() > 0)
+            if (combatLog.Count > 0)
             {
-                List<string> output = new();
+                List<string> output = [];
                 Console.ResetColor();
                 Console.SetCursorPosition(0, 3);
 
