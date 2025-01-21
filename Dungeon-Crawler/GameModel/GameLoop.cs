@@ -154,6 +154,7 @@ class GameLoop
             DrawGameState(Level.Elements, combatLog);
 
         } while (checkKey.Key != ConsoleKey.Escape);
+        return;
     }
 
     public static void GameLog(List<LevelElements> elements, Dictionary<int, string> combatLog)

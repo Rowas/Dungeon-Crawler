@@ -14,7 +14,7 @@ namespace Dungeon_Crawler.DBModel
             {
                 ClearConsole.ConsoleClear();
                 TextCenter.CenterText("Please select the character to load:");
-                TextCenter.CenterText("(Escape to go back (not implemented yet))");
+                TextCenter.CenterText("(Leave blank to go back)");
                 Console.WriteLine();
                 List<string> savedGames = new List<string>();
 
@@ -31,6 +31,16 @@ namespace Dungeon_Crawler.DBModel
             var currentLine = Console.GetCursorPosition().Top;
             Console.SetCursorPosition(Console.WindowWidth / 2, currentLine);
             var PlayerID = Console.ReadLine();
+
+            Console.WriteLine();
+
+            if (PlayerID == "")
+            {
+                TextCenter.CenterText("No savegame selected.");
+                TextCenter.CenterText("Press any key to return to main menu.");
+                Console.ReadKey();
+                return null;
+            }
 
             selectedGame = possibleSelections[PlayerID];
 

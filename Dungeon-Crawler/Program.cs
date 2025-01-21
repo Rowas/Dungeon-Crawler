@@ -12,30 +12,63 @@ internal class Program
     public static string selectedGame = "";
     private static void Main(string[] args)
     {
+        Program program = new Program();
         Console.ResetColor();
         using (var db = new SaveGameContext())
         {
             db.Database.EnsureCreated();
         }
-        while (levelFile == "")
+
+        string menuChoice = "";
+
+        while (menuChoice != "0")
         {
-            levelFile = MainMenu(levelFile);
+
+            program.MainMenu();
+            Console.SetCursorPosition(Console.WindowWidth / 2, 13);
+            menuChoice = Console.ReadLine();
+
+            switch (menuChoice)
+            {
+                case "1":
+                    levelFile = program.NamePicker(levelFile);
+                    break;
+                case "2":
+                    levelFile = $"{GameLoad.SelectLoadGame()}+GameLoaded";
+                    break;
+                case "3":
+                    PrintHighScore();
+                    levelFile = "+GameLoaded";
+                    break;
+                case "0":
+                    Environment.Exit(0);
+                    break;
+                default:
+                    levelFile = "+GameLoaded";
+                    break;
+            }
+            if (levelFile == "+GameLoaded" || levelFile.Contains("+ ") || levelFile == " ")
+            {
+
+            }
+            else
+            {
+                string[] values = new string[2];
+                values = levelFile.Split('+');
+                var playerName = values[0];
+                levelFile = values[1];
+
+                ClearConsole.ConsoleClear();
+                GameLoop start = new GameLoop();
+
+                start.StartUp(levelFile, playerName);
+                start.GameRunning();
+            }
         }
-        string[] values = new string[2];
-        values = levelFile.Split('+');
-        var playerName = values[0];
-        levelFile = values[1];
-
-        ClearConsole.ConsoleClear();
-        GameLoop start = new GameLoop();
-
-        start.StartUp(levelFile, playerName);
-        start.GameRunning();
     }
 
-    public static string MainMenu(string levelFile)
+    public void MainMenu()
     {
-        string menuChoice;
         Console.Clear();
         Console.ForegroundColor = ConsoleColor.DarkRed;
         TextCenter.CenterText("Main Menu");
@@ -52,31 +85,9 @@ internal class Program
         TextCenter.CenterText("3. View highscores.");
         Console.WriteLine();
         TextCenter.CenterText("0. Exit the game.");
-        Console.SetCursorPosition(Console.WindowWidth / 2, 13);
-        menuChoice = Console.ReadLine();
-
-        switch (menuChoice)
-        {
-            case "1":
-                levelFile = NewGame(levelFile);
-                break;
-            case "2":
-                levelFile = $"{GameLoad.SelectLoadGame()}+GameLoaded";
-                break;
-            case "3":
-                PrintHighScore();
-                break;
-            case "0":
-                Environment.Exit(0);
-                break;
-            default:
-                levelFile = NewGame(levelFile);
-                break;
-        }
-        return levelFile;
     }
 
-    public static string NewGame(string levelFile)
+    public string NamePicker(string levelFile)
     {
         Console.Clear();
         TextCenter.CenterText("Tell me, Adventurer, what is your name? ");
@@ -87,6 +98,13 @@ internal class Program
             playerName = "Adventurer";
         }
         Console.WriteLine();
+        levelFile = NewGame(levelFile, playerName);
+
+        return levelFile;
+    }
+
+    public string NewGame(string levelFile, string playerName)
+    {
         Console.Clear();
         TextCenter.CenterText("Ah, " + playerName + ". I greet you. ");
         TextCenter.CenterText("I hope that your quest will be a fortuitous one.");
@@ -98,9 +116,13 @@ internal class Program
         Console.WriteLine();
         TextCenter.CenterText("1. Load a pre-made map. (Default)");
         TextCenter.CenterText("2. Load a custom map.");
+        Console.WriteLine();
+        TextCenter.CenterText("0. Back one menu");
+
+        string menuChoice = "";
 
         Console.SetCursorPosition(Console.WindowWidth / 2, 12);
-        string menuChoice = Console.ReadLine();
+        menuChoice = Console.ReadLine();
 
         switch (menuChoice)
         {
@@ -110,22 +132,24 @@ internal class Program
             case "2":
                 levelFile = CustomMap();
                 break;
-            default:
-                levelFile = LevelPicker();
-                break;
+            case "0":
+                return levelFile = " ";
         }
         levelFile = playerName + "+" + levelFile;
         return levelFile;
     }
 
-    public static string LevelPicker()
+    public string LevelPicker()
     {
         Console.Clear();
         TextCenter.CenterText("1. Level 1 (Default).");
         TextCenter.CenterText("2. Level 1 (/w Boss & Items).");
         TextCenter.CenterText("Answer with the number matching your choice:");
+
+        string pickedLevel = "";
+
         Console.SetCursorPosition(Console.WindowWidth / 2, 3);
-        string pickedLevel = Console.ReadLine();
+        pickedLevel = Console.ReadLine();
         switch (pickedLevel)
         {
             case "1":
@@ -134,14 +158,13 @@ internal class Program
             case "2":
                 pickedLevel = "Level1_w_Boss.txt";
                 break;
-            default:
-                pickedLevel = "Level1.txt";
-                break;
+            case "0":
+                return pickedLevel = " ";
         }
         return pickedLevel;
     }
 
-    public static string CustomMap()
+    public string CustomMap()
     {
         Console.Clear();
         TextCenter.CenterText("Enter the name of your custom map.");
@@ -149,8 +172,10 @@ internal class Program
         TextCenter.CenterText("as a .txt file and correctly formatted to work.");
         TextCenter.CenterText("Consult pre-made maps for requirements.");
         TextCenter.CenterText("For further information, type 'Help' or '?'.");
+        string customMap = "";
+
         Console.SetCursorPosition(Console.WindowWidth / 2, 5);
-        string customMap = Console.ReadLine();
+        customMap = Console.ReadLine();
         switch (customMap)
         {
             case "help":
@@ -165,11 +190,13 @@ internal class Program
                 MapHelp();
                 Environment.Exit(0);
                 break;
+            case "0":
+                return customMap = " ";
         }
         return customMap;
     }
 
-    public static void MapHelp()
+    public void MapHelp()
     {
         Console.Clear();
         TextCenter.CenterText("The following characters are required for a functioning map: ");
