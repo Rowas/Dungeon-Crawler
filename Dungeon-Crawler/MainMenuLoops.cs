@@ -40,7 +40,7 @@ namespace Dungeon_Crawler
             UI.UIPickName();
             Console.SetCursorPosition(Console.WindowWidth / 2, 2);
             string? playerName = Console.ReadLine();
-            if (playerName == "")
+            if (string.IsNullOrEmpty(playerName))
             {
                 playerName = "Stranger";
             }
