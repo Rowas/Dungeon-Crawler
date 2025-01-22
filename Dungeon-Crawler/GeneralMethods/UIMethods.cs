@@ -20,16 +20,16 @@
             Console.WriteLine("Press \"S\" to save your game.");
         }
 
-        public static void DrawCombatLog(Player? player, Dictionary<int, string> combatLog)
+        public static void DrawCombatLog(Player? player)
         {
 
-            if (combatLog.Count > 0)
+            if (GameLoop.combatLog.Count > 0)
             {
                 List<string> output = [];
                 Console.ResetColor();
                 Console.SetCursorPosition(0, 3);
 
-                int n1 = combatLog.Count;
+                int n1 = GameLoop.combatLog.Count;
                 int n2 = n1 - 9;
 
                 for (int i = 4; i < 24; i++)
@@ -39,17 +39,17 @@
 
                 Console.SetCursorPosition(0, 3);
 
-                var spotCheck = combatLog.Values.Reverse().Take(1).ToList();
-                var combatCheck = combatLog.Values.Reverse().Take(2).ToArray();
+                var spotCheck = GameLoop.combatLog.Values.Reverse().Take(1).ToList();
+                var combatCheck = GameLoop.combatLog.Values.Reverse().Take(2).ToArray();
 
                 if (combatCheck[0].Contains("Counter attack") || combatCheck[0].Contains("slain"))
                 {
-                    spotCheck = combatLog.Where(s => s.Key >= n2 && s.Key <= n1).Select(s => s.Value).ToList();
+                    spotCheck = GameLoop.combatLog.Where(s => s.Key >= n2 && s.Key <= n1).Select(s => s.Value).ToList();
                     if (combatCheck[0].Contains("slain"))
                     {
                         if (spotCheck[1].Contains("Rat"))
                         {
-                            spotCheck = combatLog.Where(s => s.Key >= n2 - 2 && s.Key <= n1).Select(s => s.Value).ToList();
+                            spotCheck = GameLoop.combatLog.Where(s => s.Key >= n2 - 2 && s.Key <= n1).Select(s => s.Value).ToList();
                         }
                         else
                         {
@@ -75,13 +75,13 @@
                         Console.ForegroundColor = ConsoleColor.Red;
                     }
                     n2 = n1 - 3;
-                    output = combatLog.Where(s => s.Key >= n2 && s.Key <= n1).Select(s => s.Value).ToList();
-                    spotCheck = combatLog.Values.Reverse().Take(1).ToList();
+                    output = GameLoop.combatLog.Where(s => s.Key >= n2 && s.Key <= n1).Select(s => s.Value).ToList();
+                    spotCheck = GameLoop.combatLog.Values.Reverse().Take(1).ToList();
 
                     if (spotCheck[0].Contains("slain") && spotCheck[0].Contains("Rat") == false)
                     {
                         n2 = n1 - 1;
-                        output = combatLog.Where(s => s.Key >= n2 && s.Key <= n1).Select(s => s.Value).ToList();
+                        output = GameLoop.combatLog.Where(s => s.Key >= n2 && s.Key <= n1).Select(s => s.Value).ToList();
                         Console.ForegroundColor = ConsoleColor.Cyan;
                         foreach (var log in output)
                         {
@@ -90,7 +90,7 @@
                     }
                     else if (spotCheck[0].Contains("slain") && spotCheck[0].Contains("Rat"))
                     {
-                        output = combatLog.Where(s => s.Key >= n2 - 2 && s.Key <= n1).Select(s => s.Value).ToList();
+                        output = GameLoop.combatLog.Where(s => s.Key >= n2 - 2 && s.Key <= n1).Select(s => s.Value).ToList();
                         foreach (var log in output)
                         {
                             if (log.Contains("slain"))
@@ -112,7 +112,7 @@
                 if (spotCheck[0].Contains("Food ") || spotCheck[0].Contains("Potion "))
                 {
                     n2 = n1 - 1;
-                    output = combatLog.Where(s => s.Key >= n2 && s.Key <= n1).Select(s => s.Value).ToList();
+                    output = GameLoop.combatLog.Where(s => s.Key >= n2 && s.Key <= n1).Select(s => s.Value).ToList();
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     foreach (var log in output)
                     {
@@ -123,7 +123,7 @@
                 if (spotCheck[0].Contains("Attack ") || spotCheck[0].Contains("Defense "))
                 {
                     n2 = n1 - 1;
-                    output = combatLog.Where(s => s.Key >= n2 && s.Key <= n1).Select(s => s.Value).ToList();
+                    output = GameLoop.combatLog.Where(s => s.Key >= n2 && s.Key <= n1).Select(s => s.Value).ToList();
                     Console.ForegroundColor = ConsoleColor.DarkCyan;
                     foreach (var log in output)
                     {

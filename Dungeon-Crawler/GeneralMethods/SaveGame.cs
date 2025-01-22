@@ -4,7 +4,7 @@ namespace Dungeon_Crawler.DBModel
 {
     internal class SaveGame
     {
-        public async Task SavingGame(List<LevelElements> elements, string name, int turn, Dictionary<int, string> combatLog, string levelFile)
+        public async Task SavingGame(List<LevelElements> elements, string name, int turn, string levelFile)
         {
             try
             {
@@ -80,7 +80,7 @@ namespace Dungeon_Crawler.DBModel
 
                     var logMsg = new LogMessage();
 
-                    foreach (var log in combatLog)
+                    foreach (var log in GameLoop.combatLog)
                     {
                         logMsg.Message.Add(log.Value);
                         logMsg.Key.Add(log.Key);

@@ -10,8 +10,8 @@ class GameLoop
     public int MaxHP { get; private set; } = 100;
     public Player CurrentPlayer { get; set; }
 
-    public Dictionary<int, string> combatLog = [];
-    public int LogPosition { get; set; } = 1;
+    public static Dictionary<int, string> combatLog = [];
+    public static int logPosition { get; set; } = 1;
 
     public static int NewHP = 100;
 
@@ -53,7 +53,7 @@ class GameLoop
         {
             return;
         }
-        DrawGameState(Level.Elements, combatLog);
+        DrawGameState(Level.Elements);
 
         foreach (var player in from LevelElements element in Level.Elements
                                where element is Player
@@ -68,7 +68,7 @@ class GameLoop
                              let grue = (Grue)element
                              select grue)
         {
-            grue.Update([.. Level.Elements], combatLog, LogPosition);
+            grue.Update([.. Level.Elements]);
         }
 
         do
@@ -106,7 +106,7 @@ class GameLoop
             if (TurnCounter % 50 == 0)
             {
                 SaveGame saving = new();
-                saving.SavingGame(Level.Elements, CurrentPlayer.Name, TurnCounter, combatLog, MapName);
+                saving.SavingGame(Level.Elements, CurrentPlayer.Name, TurnCounter, MapName);
                 Console.SetCursorPosition(0, 28);
                 Console.Write("Saving Done");
             }
@@ -139,11 +139,11 @@ class GameLoop
                     case Player:
                         Player player = (Player)element;
                         CurrentPlayer = player;
-                        player.Movement(checkKey, Level.Elements, combatLog, LogPosition, MapName);
+                        player.Movement(checkKey, Level.Elements, MapName);
                         break;
                     case Enemy:
                         Enemy enemy = (Enemy)element;
-                        enemy.Update(Level.Elements, combatLog, LogPosition);
+                        enemy.Update(Level.Elements);
                         break;
                     case Wall:
                         Wall wall = (Wall)element;
@@ -160,13 +160,13 @@ class GameLoop
                 }
             }
 
-            DrawGameState(Level.Elements, combatLog);
+            DrawGameState(Level.Elements);
 
         } while (checkKey.Key != ConsoleKey.Escape);
         return;
     }
 
-    public static void GameLog(List<LevelElements> elements, Dictionary<int, string> combatLog)
+    public static void GameLog(List<LevelElements> elements)
     {
         int y = combatLog.Count;
         int x = y - 27;
@@ -213,10 +213,10 @@ class GameLoop
 
         ClearConsole.ConsoleClear();
 
-        DrawGameState(elements, combatLog);
+        DrawGameState(elements);
     }
 
-    public static void DrawGameState(List<LevelElements> elements, Dictionary<int, string> combatLog)
+    public static void DrawGameState(List<LevelElements> elements)
     {
 
         Player? player = null;
@@ -243,7 +243,7 @@ class GameLoop
             }
         }
 
-        UIMethods.DrawCombatLog(player, combatLog);
+        UIMethods.DrawCombatLog(player);
         UIMethods.PrintUI(player, TurnCounter, MapName);
     }
 }

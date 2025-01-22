@@ -60,11 +60,10 @@ namespace Dungeon_Crawler.DBModel
 
         async public Task LoadCombatLog(LogMessage logMessage)
         {
-            GameLoop loop = new();
             for (int i = 0; i < logMessage.Key.Count; i++)
             {
-                loop.combatLog.Add(logMessage.Key[i], logMessage.Message[i]);
-                loop.LogPosition++;
+                GameLoop.combatLog.Add(logMessage.Key[i], logMessage.Message[i]);
+                GameLoop.logPosition++;
             }
         }
     }

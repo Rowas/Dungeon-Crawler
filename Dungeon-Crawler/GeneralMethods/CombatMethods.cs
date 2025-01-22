@@ -2,7 +2,7 @@
 {
     internal class CombatMethods
     {
-        public void Encounter(Player player, Enemy enemy, char F, List<LevelElements> elements, Dictionary<int, string> combatLog, int logPosition)
+        public void Encounter(Player player, Enemy enemy, char F, List<LevelElements> elements)
         {
 
             var (firstActor, secondActor) = DetermineActors(player, enemy, F);
@@ -15,7 +15,7 @@
 
             ApplyDamage(player, enemy, playerDamage, enemyDamage);
 
-            PrintCombatResult(playerCombat, enemyCombat, playerDamage, enemyDamage, firstActor, secondActor, player, enemy, elements, combatLog, logPosition);
+            PrintCombatResult(playerCombat, enemyCombat, playerDamage, enemyDamage, firstActor, secondActor, player, enemy, elements);
 
         }
 
@@ -60,56 +60,50 @@
                                          string secondActor,
                                          Player player,
                                          Enemy enemy,
-                                         List<LevelElements> elements,
-                                         Dictionary<int, string> combatLog,
-                                         int logPosition)
+                                         List<LevelElements> elements)
         {
-            combatLog.Add(logPosition++, "".PadRight(55));
-            combatLog.Add(logPosition++, $"{secondActor} encountered.".PadRight(55));
+            GameLoop.combatLog.Add(GameLoop.logPosition++, "".PadRight(55));
+            GameLoop.combatLog.Add(GameLoop.logPosition++, $"{secondActor} encountered.".PadRight(55));
 
-            PrintAttackResult(firstActor, secondActor, playerCombat, enemyCombat, playerDamage, enemyDamage, player, combatLog, logPosition);
+            PrintAttackResult(firstActor, secondActor, playerCombat, enemyCombat, playerDamage, enemyDamage, player);
 
             if (firstActor == player.Name)
             {
-                HandleAdventurerCombat(playerCombat, enemyCombat, enemyDamage, player, enemy, elements, combatLog, logPosition);
+                HandleAdventurerCombat(playerCombat, enemyCombat, enemyDamage, player, enemy, elements);
             }
             else
             {
-                HandleEnemyCombat(playerCombat, enemyCombat, playerDamage, player, enemy, elements, combatLog, logPosition);
+                HandleEnemyCombat(playerCombat, enemyCombat, playerDamage, player, enemy, elements);
             }
 
-            GameLoop.DrawGameState(elements, combatLog);
+            GameLoop.DrawGameState(elements);
         }
 
         public void PrintAttackResult(string firstActor, string secondActor,
                                               (int, string, int, string) playerCombat,
                                               (int, string, int, string) enemyCombat,
-                                              int playerDamage, int enemyDamage, Player player,
-                                              Dictionary<int, string> combatLog,
-                                              int logPosition)
+                                              int playerDamage, int enemyDamage, Player player)
         {
 
-            combatLog.Add(logPosition++, "".PadRight(55));
-            combatLog.Add(logPosition++, $"{firstActor} rolled {(firstActor == player.Name ? playerCombat.Item2 : enemyCombat.Item2)} to attack, result: {(firstActor == "Adventurer" ? playerCombat.Item1 : enemyCombat.Item1)}.".PadRight(55));
-            combatLog.Add(logPosition++, $"{secondActor} defended using {(firstActor == player.Name ? enemyCombat.Item4 : playerCombat.Item4)}, result: {(firstActor == "Adventurer" ? enemyCombat.Item3 : playerCombat.Item3)}.".PadRight(55));
-            combatLog.Add(logPosition++, $"Damage done by {firstActor} to {secondActor} is: {(firstActor == player.Name ? playerDamage : enemyDamage)}.".PadRight(55));
+            GameLoop.combatLog.Add(GameLoop.logPosition++, "".PadRight(55));
+            GameLoop.combatLog.Add(GameLoop.logPosition++, $"{firstActor} rolled {(firstActor == player.Name ? playerCombat.Item2 : enemyCombat.Item2)} to attack, result: {(firstActor == "Adventurer" ? playerCombat.Item1 : enemyCombat.Item1)}.".PadRight(55));
+            GameLoop.combatLog.Add(GameLoop.logPosition++, $"{secondActor} defended using {(firstActor == player.Name ? enemyCombat.Item4 : playerCombat.Item4)}, result: {(firstActor == "Adventurer" ? enemyCombat.Item3 : playerCombat.Item3)}.".PadRight(55));
+            GameLoop.combatLog.Add(GameLoop.logPosition++, $"Damage done by {firstActor} to {secondActor} is: {(firstActor == player.Name ? playerDamage : enemyDamage)}.".PadRight(55));
         }
 
         public void HandleAdventurerCombat((int, string, int, string) playerCombat,
                                                    (int, string, int, string) enemyCombat,
                                                    int enemyDamage,
                                                    Player player, Enemy enemy,
-                                                   List<LevelElements> elements,
-                                                   Dictionary<int, string> combatLog,
-                                                   int logPosition)
+                                                   List<LevelElements> elements)
         {
             if (enemy.IsDead)
             {
-                PrintEnemySlain(enemy.Name, elements, enemy, combatLog, logPosition);
+                PrintEnemySlain(enemy.Name, elements, enemy);
             }
             else
             {
-                PrintCounterAttack(enemy.Name, player.Name, enemyCombat, playerCombat, enemyDamage, player, enemy, elements, combatLog, logPosition);
+                PrintCounterAttack(enemy.Name, player.Name, enemyCombat, playerCombat, enemyDamage, player, enemy, elements);
             }
         }
 
@@ -117,8 +111,7 @@
                                               (int, string, int, string) enemyCombat,
                                               int playerDamage,
                                               Player player, Enemy enemy,
-                                              List<LevelElements> elements, Dictionary<int, string> combatLog,
-                                              int logPosition)
+                                              List<LevelElements> elements)
         {
             if (player.IsDead)
             {
@@ -126,7 +119,7 @@
             }
             else
             {
-                PrintCounterAttack(player.Name, enemy.Name, playerCombat, enemyCombat, playerDamage, player, enemy, elements, combatLog, logPosition);
+                PrintCounterAttack(player.Name, enemy.Name, playerCombat, enemyCombat, playerDamage, player, enemy, elements);
             }
         }
 
@@ -134,14 +127,12 @@
                                                (int, string, int, string) attackCombat,
                                                (int, string, int, string) defenseCombat,
                                                int damage, Player player, Enemy enemy,
-                                               List<LevelElements> elements,
-                                               Dictionary<int, string> combatLog,
-                                               int logPosition)
+                                               List<LevelElements> elements)
         {
-            combatLog.Add(logPosition++, "".PadRight(55));
-            combatLog.Add(logPosition++, $"Counter attack by {secondActor}, {attackCombat.Item2} with result: {attackCombat.Item1}.".PadRight(55));
-            combatLog.Add(logPosition++, $"{firstActor} defended with {defenseCombat.Item4}, result: {defenseCombat.Item3}.".PadRight(55));
-            combatLog.Add(logPosition++, $"Counter attack by {secondActor} against {firstActor} did {damage}.".PadRight(55));
+            GameLoop.combatLog.Add(GameLoop.logPosition++, "".PadRight(55));
+            GameLoop.combatLog.Add(GameLoop.logPosition++, $"Counter attack by {secondActor}, {attackCombat.Item2} with result: {attackCombat.Item1}.".PadRight(55));
+            GameLoop.combatLog.Add(GameLoop.logPosition++, $"{firstActor} defended with {defenseCombat.Item4}, result: {defenseCombat.Item3}.".PadRight(55));
+            GameLoop.combatLog.Add(GameLoop.logPosition++, $"Counter attack by {secondActor} against {firstActor} did {damage}.".PadRight(55));
 
             if (player.IsDead)
             {
@@ -150,33 +141,33 @@
             if (enemy.IsDead)
             {
                 Player.CollectedPointMods += enemy.PointModifier;
-                PrintEnemySlain(enemy.Name, elements, enemy, combatLog, logPosition);
+                PrintEnemySlain(enemy.Name, elements, enemy);
             }
         }
 
-        public void PrintEnemySlain(string actor, List<LevelElements> elements, Enemy enemy, Dictionary<int, string> combatLog, int logPosition)
+        public void PrintEnemySlain(string actor, List<LevelElements> elements, Enemy enemy)
         {
-            combatLog.Add(logPosition++, " ".PadRight(55));
-            combatLog.Add(logPosition++, $"{actor} has been slain.".PadRight(55));
+            GameLoop.combatLog.Add(GameLoop.logPosition++, " ".PadRight(55));
+            GameLoop.combatLog.Add(GameLoop.logPosition++, $"{actor} has been slain.".PadRight(55));
             Console.ResetColor();
             Player.CollectedPointMods += enemy.PointModifier;
             enemy.Die(elements);
         }
 
-        public void EquipmentPickup(Player player, Equipment equipment, List<LevelElements> elements, Dictionary<int, string> combatLog, int logPosition)
+        public void EquipmentPickup(Player player, Equipment equipment, List<LevelElements> elements)
         {
-            combatLog.Add(logPosition++, " ".PadRight(55));
-            combatLog.Add(logPosition++, $"The {equipment.Name} have been acquired.".PadRight(55));
+            GameLoop.combatLog.Add(GameLoop.logPosition++, " ".PadRight(55));
+            GameLoop.combatLog.Add(GameLoop.logPosition++, $"The {equipment.Name} have been acquired.".PadRight(55));
             switch (equipment.Name)
             {
                 case "Magic Sword":
-                    combatLog.Add(logPosition++, "Attack have been increased to 2D10+2.".PadRight(55));
+                    GameLoop.combatLog.Add(GameLoop.logPosition++, "Attack have been increased to 2D10+2.".PadRight(55));
                     Player.CollectedPointMods += equipment.PointModifier;
                     UpdatingStats(player, equipment.DamageDices, equipment.DmgDiceSides, equipment.DmgDiceModifier, isAttack: true);
                     player.SwordAquired = true;
                     break;
                 case "Magic Armor":
-                    combatLog.Add(logPosition++, "Defense have been increased to 2D8+2.".PadRight(55));
+                    GameLoop.combatLog.Add(GameLoop.logPosition++, "Defense have been increased to 2D8+2.".PadRight(55));
                     Player.CollectedPointMods += equipment.PointModifier;
                     UpdatingStats(player, equipment.DefenseDice, equipment.DefDiceSides, equipment.DefDiceModifier, isAttack: false);
                     player.ArmorAquired = true;
@@ -201,10 +192,10 @@
                 }
             }
         }
-        public void ItemPickup(Player player, Items item, List<LevelElements> elements, Dictionary<int, string> combatLog, int logPosition)
+        public void ItemPickup(Player player, Items item, List<LevelElements> elements)
         {
-            combatLog.Add(logPosition++, " ".PadRight(55));
-            combatLog.Add(logPosition++, $"{item.Name} acquired, HP restored with {item.HealthRestore}.".PadRight(55));
+            GameLoop.combatLog.Add(GameLoop.logPosition++, " ".PadRight(55));
+            GameLoop.combatLog.Add(GameLoop.logPosition++, $"{item.Name} acquired, HP restored with {item.HealthRestore}.".PadRight(55));
 
             switch (item.Name)
             {

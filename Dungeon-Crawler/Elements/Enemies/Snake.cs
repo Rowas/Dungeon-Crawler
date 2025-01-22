@@ -25,7 +25,7 @@
 
     }
 
-    public override void Update(List<LevelElements> elements, Dictionary<int, string> combatLog, int logPosition)
+    public override void Update(List<LevelElements> elements)
     {
 
         IsVisible = false;

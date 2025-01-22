@@ -62,5 +62,5 @@ abstract class Enemy : LevelElements
 
     }
 
-    abstract public void Update(List<LevelElements> elements, Dictionary<int, string> combatLog, int logPosition);
+    abstract public void Update(List<LevelElements> elements);
 }

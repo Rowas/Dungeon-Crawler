@@ -48,24 +48,24 @@ class Player : LevelElements
 
     }
 
-    public async Task Movement(ConsoleKeyInfo checkKey, List<LevelElements> elements, Dictionary<int, string> combatLog, int logPosition, string levelFile)
+    public async Task Movement(ConsoleKeyInfo checkKey, List<LevelElements> elements, string levelFile)
     {
         switch (checkKey.Key)
         {
             case ConsoleKey.RightArrow:
-                TakeStep(1, 'H', elements, combatLog, logPosition);
+                TakeStep(1, 'H', elements);
                 GameLoop.TurnCounter++;
                 break;
             case ConsoleKey.LeftArrow:
-                TakeStep(-1, 'H', elements, combatLog, logPosition);
+                TakeStep(-1, 'H', elements);
                 GameLoop.TurnCounter++;
                 break;
             case ConsoleKey.UpArrow:
-                TakeStep(-1, 'V', elements, combatLog, logPosition);
+                TakeStep(-1, 'V', elements);
                 GameLoop.TurnCounter++;
                 break;
             case ConsoleKey.DownArrow:
-                TakeStep(1, 'V', elements, combatLog, logPosition);
+                TakeStep(1, 'V', elements);
                 GameLoop.TurnCounter++;
                 break;
             case ConsoleKey.Escape:
@@ -75,16 +75,16 @@ class Player : LevelElements
                 SaveGame saving = new();
                 Console.Clear();
                 TextCenter.CenterText("Saving Game.");
-                saving.SavingGame(elements, Name, GameLoop.TurnCounter, combatLog, levelFile);
+                saving.SavingGame(elements, Name, GameLoop.TurnCounter, levelFile);
                 Console.WriteLine();
                 TextCenter.CenterText("Game saved");
                 TextCenter.CenterText("Press any key to continue.");
                 Console.ReadKey();
                 Console.Clear();
-                GameLoop.DrawGameState(elements, combatLog);
+                GameLoop.DrawGameState(elements);
                 break;
             case ConsoleKey.L:
-                GameLoop.GameLog(elements, combatLog);
+                GameLoop.GameLog(elements);
                 break;
             default:
                 GameLoop.TurnCounter++;
@@ -148,12 +148,12 @@ class Player : LevelElements
         }
     }
 
-    public void TakeStep(int d, char direction, List<LevelElements> elements, Dictionary<int, string> combatLog, int logPosition)
+    public void TakeStep(int d, char direction, List<LevelElements> elements)
     {
         if (direction == 'H')
         {
 
-            d = TileCheck(d, direction, elements, combatLog, logPosition);
+            d = TileCheck(d, direction, elements);
             Console.SetCursorPosition(Position.Item1, Position.Item2);
             Position = (Position.Item1 + d, Position.Item2);
             DrawPlayer();
@@ -161,13 +161,13 @@ class Player : LevelElements
         }
         else
         {
-            d = TileCheck(d, direction, elements, combatLog, logPosition);
+            d = TileCheck(d, direction, elements);
             Console.SetCursorPosition(Position.Item1, Position.Item2);
             Position = (Position.Item1, Position.Item2 + d);
             DrawPlayer();
         }
     }
-    public int TileCheck(int d, char direction, List<LevelElements> elements, Dictionary<int, string> combatLog, int logPosition)
+    public int TileCheck(int d, char direction, List<LevelElements> elements)
     {
         CombatMethods combat = new();
         int x = 0;
@@ -189,25 +189,25 @@ class Player : LevelElements
                 switch (element)
                 {
                     case Rat:
-                        combat.Encounter(this, (Rat)element, 'P', elements, combatLog, logPosition);
+                        combat.Encounter(this, (Rat)element, 'P', elements);
                         break;
                     case Snake:
-                        combat.Encounter(this, (Snake)element, 'P', elements, combatLog, logPosition);
+                        combat.Encounter(this, (Snake)element, 'P', elements);
                         break;
                     case Boss:
-                        combat.Encounter(this, (Boss)element, 'P', elements, combatLog, logPosition);
+                        combat.Encounter(this, (Boss)element, 'P', elements);
                         break;
                     case Guard:
-                        combat.Encounter(this, (Guard)element, 'P', elements, combatLog, logPosition);
+                        combat.Encounter(this, (Guard)element, 'P', elements);
                         break;
                     case Grue:
-                        combat.Encounter(this, (Grue)element, 'P', elements, combatLog, logPosition);
+                        combat.Encounter(this, (Grue)element, 'P', elements);
                         break;
                     case Equipment:
-                        combat.EquipmentPickup(this, (Equipment)element, elements, combatLog, logPosition);
+                        combat.EquipmentPickup(this, (Equipment)element, elements);
                         return d;
                     case Items:
-                        combat.ItemPickup(this, (Items)element, elements, combatLog, logPosition);
+                        combat.ItemPickup(this, (Items)element, elements);
                         return d;
                 }
             }
