@@ -5,17 +5,34 @@ namespace Dungeon_Crawler
 {
     internal class MainMenuLoops
     {
+        ConsoleKeyInfo checkKey;
         MainMenuUI UI = new();
         public void MainMenu()
         {
-            string? menuSelect = string.Empty;
+            Console.CursorVisible = false;
+            int x = 1;
 
-            while (menuSelect != "0")
+            do
             {
-                UI.UIMainMenu();
-                Console.SetCursorPosition(Console.WindowWidth / 2, 14);
+                string? menuSelect = string.Empty;
+
+                UI.UIMainMenu(x);
+
+                Console.CursorVisible = false;
+
+                while (Console.KeyAvailable == false)
+                {
+                    Thread.Sleep(16);
+                }
+                checkKey = Console.ReadKey(true);
+
+                if (checkKey.Key == ConsoleKey.DownArrow) x++;
+                if (x >= 4) x = 4;
+                if (checkKey.Key == ConsoleKey.UpArrow) x--;
+                if (x <= 1) x = 1;
+                if (checkKey.Key == ConsoleKey.Enter) menuSelect = x.ToString();
+
                 Console.CursorVisible = true;
-                menuSelect = Console.ReadLine();
 
                 switch (menuSelect)
                 {
@@ -28,15 +45,16 @@ namespace Dungeon_Crawler
                     case "3":
                         ViewHighScore();
                         break;
-                    case "0":
+                    case "4":
                         Environment.Exit(0);
                         break;
                 }
-            }
+            } while (checkKey.Key != ConsoleKey.Escape);
         }
 
         public void PickName()
         {
+            Console.CursorVisible = true;
             UI.UIPickName();
             Console.SetCursorPosition(Console.WindowWidth / 2, 2);
             string? playerName = Console.ReadLine();
@@ -45,18 +63,34 @@ namespace Dungeon_Crawler
                 playerName = "Stranger";
             }
             Console.WriteLine();
+            Console.CursorVisible = false;
             NewGame(playerName);
         }
 
         public void NewGame(string? playerName)
         {
-            string? menuSelect = string.Empty;
+            Console.CursorVisible = false;
+            int x = 1;
 
-            while (menuSelect != "0")
+            do
             {
-                UI.UINewGame(playerName);
-                Console.SetCursorPosition(Console.WindowWidth / 2, 14);
-                menuSelect = Console.ReadLine();
+                string? menuSelect = string.Empty;
+
+                UI.UINewGame(playerName, x);
+
+                Console.CursorVisible = false;
+
+                while (Console.KeyAvailable == false)
+                {
+                    Thread.Sleep(16);
+                }
+                checkKey = Console.ReadKey(true);
+
+                if (checkKey.Key == ConsoleKey.DownArrow) x++;
+                if (x >= 3) x = 3;
+                if (checkKey.Key == ConsoleKey.UpArrow) x--;
+                if (x <= 1) x = 1;
+                if (checkKey.Key == ConsoleKey.Enter) menuSelect = x.ToString();
 
                 switch (menuSelect)
                 {
@@ -66,26 +100,41 @@ namespace Dungeon_Crawler
                     case "2":
                         CustomMapSelect(playerName);
                         return;
-                    case "0":
+                    case "3":
                         return;
                 }
-            }
+            } while (checkKey.Key != ConsoleKey.Escape);
         }
 
         public void PreMadeMapSelect(string? playerName)
         {
+            Console.CursorVisible = false;
             string levelFile;
-            string? menuSelect = string.Empty;
             bool newGame = true;
+
+            int x = 1;
 
             GameLoop start = new();
 
-
-            while (menuSelect != "0")
+            do
             {
-                UI.UIPreMadeMap();
-                Console.SetCursorPosition(Console.WindowWidth / 2, 10);
-                menuSelect = Console.ReadLine();
+                string? menuSelect = string.Empty;
+
+                UI.UIPreMadeMap(x);
+
+                Console.CursorVisible = false;
+
+                while (Console.KeyAvailable == false)
+                {
+                    Thread.Sleep(16);
+                }
+                checkKey = Console.ReadKey(true);
+
+                if (checkKey.Key == ConsoleKey.DownArrow) x++;
+                if (x >= 3) x = 3;
+                if (checkKey.Key == ConsoleKey.UpArrow) x--;
+                if (x <= 1) x = 1;
+                if (checkKey.Key == ConsoleKey.Enter) menuSelect = x.ToString();
 
                 switch (menuSelect)
                 {
@@ -99,14 +148,15 @@ namespace Dungeon_Crawler
                         start.StartUp(levelFile, playerName, newGame);
                         start.GameRunning();
                         return;
-                    case "0":
-                        break;
+                    case "3":
+                        return;
                 }
-            }
+            } while (checkKey.Key != ConsoleKey.Escape);
         }
 
         public void CustomMapSelect(string playerName)
         {
+            Console.CursorVisible = true;
             string? menuSelect = string.Empty;
             string levelFile;
             bool newGame = true;
@@ -132,8 +182,6 @@ namespace Dungeon_Crawler
                     case "?":
                         UI.UICustomMapHelp();
                         Console.ReadKey();
-                        break;
-                    case "0":
                         break;
                     default:
                         levelFile = menuSelect;
@@ -180,6 +228,7 @@ namespace Dungeon_Crawler
                 {
                     TextCenter.CenterText("No savegame selected.");
                     TextCenter.CenterText("Press any key to return to main menu.");
+                    Console.CursorVisible = false;
                     Console.ReadKey();
                     return;
                 }

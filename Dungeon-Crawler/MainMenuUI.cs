@@ -4,7 +4,7 @@ namespace Dungeon_Crawler
 {
     internal class MainMenuUI
     {
-        public void UIMainMenu()
+        public void UIMainMenu(int x)
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.DarkRed;
@@ -17,11 +17,38 @@ namespace Dungeon_Crawler
             Console.WriteLine();
             TextCenter.CenterText("Pick an option: ");
             Console.WriteLine();
-            TextCenter.CenterText("1. Start a new game.");
-            TextCenter.CenterText("2. Load a saved game.");
-            TextCenter.CenterText("3. View highscores.");
+            if (x == 1)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                TextCenter.CenterText("> 1. Start a new game.");
+                Console.ResetColor();
+            }
+            else TextCenter.CenterText("1. Start a new game.");
+
+            if (x == 2)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                TextCenter.CenterText("> 2. Load a saved game.");
+                Console.ResetColor();
+            }
+            else TextCenter.CenterText("2. Load a saved game.");
+
+            if (x == 3)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                TextCenter.CenterText("> 3. View highscores.");
+                Console.ResetColor();
+            }
+            else TextCenter.CenterText("3. View highscores.");
             Console.WriteLine();
-            TextCenter.CenterText("0. Exit the game.");
+
+            if (x == 4)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                TextCenter.CenterText("> 0. Exit the game.");
+                Console.ResetColor();
+            }
+            else TextCenter.CenterText("0. Exit the game.");
             Console.WriteLine();
         }
 
@@ -33,7 +60,7 @@ namespace Dungeon_Crawler
             Console.SetCursorPosition(Console.WindowWidth / 2, 3);
         }
 
-        public void UINewGame(string playerName)
+        public void UINewGame(string playerName, int x)
         {
 
             if (playerName == "Stranger")
@@ -54,24 +81,69 @@ namespace Dungeon_Crawler
             Console.WriteLine();
             TextCenter.CenterText("Pick and option below: ");
             Console.WriteLine();
-            TextCenter.CenterText("1. Load a pre-made map. (Default)");
-            TextCenter.CenterText("2. Load a custom map.");
+            if (x == 1)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                TextCenter.CenterText("> 1. Load a pre-made map. (Default)");
+                Console.ResetColor();
+            }
+            else TextCenter.CenterText("1. Load a pre-made map. (Default)");
+
+            if (x == 2)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                TextCenter.CenterText("> 2. Load a custom map.");
+                Console.ResetColor();
+            }
+            else TextCenter.CenterText("2. Load a custom map.");
+
             Console.WriteLine();
-            TextCenter.CenterText("0. Return to Main Menu");
+
+            if (x == 3)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                TextCenter.CenterText("> 0. Return to Main Menu");
+                Console.ResetColor();
+            }
+            else TextCenter.CenterText("0. Return to Main Menu");
+
             Console.WriteLine();
         }
 
-        public void UIPreMadeMap()
+        public void UIPreMadeMap(int x)
         {
             Console.Clear();
             TextCenter.CenterText("It is time to indicate where, exactly, your adventure takes place..");
             TextCenter.CenterText("Select an option below, and we shall continue.");
             Console.WriteLine();
             TextCenter.CenterText("Select an option:");
-            TextCenter.CenterText("1. Level 1 (Default).");
-            TextCenter.CenterText("2. Level 1 (/w Boss & Items).");
+
+            if (x == 1)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                TextCenter.CenterText("> 1. Level 1 (Default).");
+                Console.ResetColor();
+            }
+            else TextCenter.CenterText("1. Level 1 (Default).");
+
+            if (x == 2)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                TextCenter.CenterText("> 2. Level 1 (/w Boss & Items).");
+                Console.ResetColor();
+            }
+            else TextCenter.CenterText("2. Level 1 (/w Boss & Items).");
+
             Console.WriteLine();
-            TextCenter.CenterText("0. Return to Main Menu");
+
+            if (x == 3)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                TextCenter.CenterText("> 0. Return to Main Menu");
+                Console.ResetColor();
+            }
+            else TextCenter.CenterText("0. Return to Main Menu");
+
             Console.WriteLine();
         }
 
