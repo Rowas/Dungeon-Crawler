@@ -23,8 +23,17 @@ class GameLoop
     public LevelData Level { get { return _level; } }
     public GameLoad Load { get { return _load; } }
 
+    public static bool IsPlayerDead { get; set; } = false;
+
     public void StartUp(string levelFile, string playerName, bool newGame)
     {
+        combatLog = new();
+        TurnCounter = 1;
+        logPosition = new();
+        NewHP = 100;
+        MapName = string.Empty;
+        IsPlayerDead = false;
+
         Console.CursorVisible = false;
         Console.CursorTop = 0;
         Console.CursorLeft = 0;
@@ -73,6 +82,7 @@ class GameLoop
 
         do
         {
+            IsPlayerDead = false;
             if (TurnCounter > 150)
             {
                 var rand = new Random();
@@ -103,13 +113,6 @@ class GameLoop
                     }
                 }
             }
-            if (TurnCounter % 50 == 0)
-            {
-                SaveGame saving = new();
-                saving.SavingGame(Level.Elements, CurrentPlayer.Name, TurnCounter, MapName);
-                Console.SetCursorPosition(0, 28);
-                Console.Write("Saving Done");
-            }
             foreach (var player in from LevelElements element in Level.Elements
                                    where element is Player
                                    let player = (Player)element
@@ -131,6 +134,34 @@ class GameLoop
                 Thread.Sleep(16);
             }
             checkKey = Console.ReadKey(true);
+
+            if (checkKey.Key == ConsoleKey.Escape)
+            {
+                ClearConsole.ConsoleClear();
+                TextCenter.CenterText("Are you sure you wish to exit the game?");
+                Console.WriteLine();
+                TextCenter.CenterText("Press 'Escape' again to exit.");
+                TextCenter.CenterText("Press any other key to continue");
+
+                while (Console.KeyAvailable == false)
+                {
+                    Thread.Sleep(16);
+                }
+                checkKey = Console.ReadKey(true);
+
+                if (checkKey.Key == ConsoleKey.Escape)
+                {
+                    return;
+                }
+
+                Console.SetCursorPosition(0, 0);
+                Console.WriteLine(" ".PadRight(100));
+                Console.WriteLine(" ".PadRight(100));
+                Console.WriteLine(" ".PadRight(100));
+                Console.WriteLine(" ".PadRight(100));
+
+                TurnCounter--;
+            }
 
             foreach (LevelElements element in Level.Elements.ToList())
             {
@@ -158,6 +189,11 @@ class GameLoop
                         equipment.Update(Level.Elements);
                         break;
                 }
+            }
+
+            if (IsPlayerDead == true)
+            {
+                return;
             }
 
             DrawGameState(Level.Elements);

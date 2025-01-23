@@ -257,14 +257,15 @@ class Player : LevelElements
         TextCenter.CenterText("Your score was: " + Math.Round(ScoreCalc()));
         SaveScore();
         Console.ReadKey();
-        Environment.Exit(0);
+        GameLoop.IsPlayerDead = true;
     }
 
     public double ScoreCalc()
     {
         double score;
         double turnMod;
-        turnMod = GameLoop.TurnCounter / 250;
+        double turnCounter = GameLoop.TurnCounter;
+        turnMod = turnCounter / 250;
         score = (CollectedPointMods * 100) / turnMod;
         if (score <= 0) { score = 0; }
         FinalScore = score;

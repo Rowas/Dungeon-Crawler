@@ -75,8 +75,6 @@
             {
                 HandleEnemyCombat(playerCombat, enemyCombat, playerDamage, player, enemy, elements);
             }
-
-            GameLoop.DrawGameState(elements);
         }
 
         public void PrintAttackResult(string firstActor, string secondActor,
