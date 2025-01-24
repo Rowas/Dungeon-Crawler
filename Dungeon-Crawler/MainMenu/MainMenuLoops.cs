@@ -1,13 +1,13 @@
 ﻿using Dungeon_Crawler.DBModel;
 using Dungeon_Crawler.GeneralMethods;
 
-namespace Dungeon_Crawler
+namespace Dungeon_Crawler.MainMenu
 {
     internal class MainMenuLoops
     {
         ConsoleKeyInfo checkKey;
         MainMenuUI UI = new();
-        public void MainMenu()
+        public void MainMenu(bool sg)
         {
             Console.CursorVisible = false;
             int x = 1;
@@ -16,7 +16,7 @@ namespace Dungeon_Crawler
             {
                 string? menuSelect = string.Empty;
 
-                UI.UIMainMenu(x);
+                UI.UIMainMenu(x, sg);
 
                 Console.CursorVisible = false;
 
@@ -34,25 +34,42 @@ namespace Dungeon_Crawler
 
                 Console.CursorVisible = true;
 
-                switch (menuSelect)
+                if (sg == false)
                 {
-                    case "1":
-                        PickName();
-                        break;
-                    case "2":
-                        LoadGameSelect();
-                        break;
-                    case "3":
-                        ViewHighScore();
-                        break;
-                    case "4":
-                        Environment.Exit(0);
-                        break;
+                    if (x >= 2) x = 2;
+
+                    switch (menuSelect)
+                    {
+                        case "1":
+                            PickName(sg);
+                            break;
+                        case "2":
+                            Environment.Exit(0);
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (menuSelect)
+                    {
+                        case "1":
+                            PickName(sg);
+                            break;
+                        case "2":
+                            LoadGameSelect();
+                            break;
+                        case "3":
+                            ViewHighScore();
+                            break;
+                        case "4":
+                            Environment.Exit(0);
+                            break;
+                    }
                 }
             } while (checkKey.Key != ConsoleKey.Escape);
         }
 
-        public void PickName()
+        public void PickName(bool sg)
         {
             Console.CursorVisible = true;
             UI.UIPickName();
@@ -64,10 +81,10 @@ namespace Dungeon_Crawler
             }
             Console.WriteLine();
             Console.CursorVisible = false;
-            NewGame(playerName);
+            NewGame(playerName, sg);
         }
 
-        public void NewGame(string? playerName)
+        public void NewGame(string? playerName, bool sg)
         {
             Console.CursorVisible = false;
             int x = 1;
@@ -95,10 +112,10 @@ namespace Dungeon_Crawler
                 switch (menuSelect)
                 {
                     case "1":
-                        PreMadeMapSelect(playerName);
+                        PreMadeMapSelect(playerName, sg);
                         return;
                     case "2":
-                        CustomMapSelect(playerName);
+                        CustomMapSelect(playerName, sg);
                         return;
                     case "3":
                         return;
@@ -106,7 +123,7 @@ namespace Dungeon_Crawler
             } while (checkKey.Key != ConsoleKey.Escape);
         }
 
-        public void PreMadeMapSelect(string? playerName)
+        public void PreMadeMapSelect(string? playerName, bool sg)
         {
             Console.CursorVisible = false;
             string levelFile;
@@ -141,12 +158,12 @@ namespace Dungeon_Crawler
                     case "1":
                         levelFile = "Level1.txt";
                         start.StartUp(levelFile, playerName, newGame);
-                        start.GameRunning();
+                        start.GameRunning(sg);
                         return;
                     case "2":
                         levelFile = "Level1_w_Boss.txt";
                         start.StartUp(levelFile, playerName, newGame);
-                        start.GameRunning();
+                        start.GameRunning(sg);
                         return;
                     case "3":
                         return;
@@ -154,7 +171,7 @@ namespace Dungeon_Crawler
             } while (checkKey.Key != ConsoleKey.Escape);
         }
 
-        public void CustomMapSelect(string playerName)
+        public void CustomMapSelect(string playerName, bool sg)
         {
             Console.CursorVisible = true;
             string? menuSelect = string.Empty;
@@ -186,7 +203,7 @@ namespace Dungeon_Crawler
                     default:
                         levelFile = menuSelect;
                         start.StartUp(levelFile, playerName, newGame);
-                        start.GameRunning();
+                        start.GameRunning(sg);
                         return;
                 }
             }
@@ -194,6 +211,7 @@ namespace Dungeon_Crawler
 
         public void LoadGameSelect()
         {
+            bool sg = true;
             UI.UILoadGame();
             GameLoop start = new();
 
@@ -220,7 +238,7 @@ namespace Dungeon_Crawler
                 Console.SetCursorPosition(Console.WindowWidth / 2, currentLine + 1);
                 var PlayerID = Console.ReadLine();
 
-                var idcheck = Int32.TryParse(PlayerID, out int x) == false ? 0 : x;
+                var idcheck = int.TryParse(PlayerID, out int x) == false ? 0 : x;
 
                 Console.WriteLine();
 
@@ -240,7 +258,7 @@ namespace Dungeon_Crawler
             TextCenter.CenterText($"Loading Game with Character: {playerName}");
 
             start.StartUp(selectedGame, playerName = string.Empty, newGame);
-            start.GameRunning();
+            start.GameRunning(sg);
 
         }
 

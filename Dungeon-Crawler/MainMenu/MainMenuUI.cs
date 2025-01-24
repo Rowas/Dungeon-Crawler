@@ -1,10 +1,10 @@
 ﻿using Dungeon_Crawler.GeneralMethods;
 
-namespace Dungeon_Crawler
+namespace Dungeon_Crawler.MainMenu
 {
     internal class MainMenuUI
     {
-        public void UIMainMenu(int x)
+        public void UIMainMenu(int x, bool sg)
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.DarkRed;
@@ -16,40 +16,63 @@ namespace Dungeon_Crawler
             TextCenter.CenterText("Let's hope you survive...");
             Console.WriteLine();
             TextCenter.CenterText("Pick an option: ");
-            Console.WriteLine();
-            if (x == 1)
+            if (sg == false)
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                TextCenter.CenterText("> Start a new game.");
-                Console.ResetColor();
-            }
-            else TextCenter.CenterText("Start a new game.");
+                Console.WriteLine();
+                if (x == 1)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    TextCenter.CenterText("> Start a new game.");
+                    Console.ResetColor();
+                }
+                else TextCenter.CenterText("Start a new game.");
 
-            if (x == 2)
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                TextCenter.CenterText("> Load a saved game.");
-                Console.ResetColor();
+                if (x == 2)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    TextCenter.CenterText("> Exit the game.");
+                    Console.ResetColor();
+                }
+                else TextCenter.CenterText("Exit the game.");
+                Console.WriteLine();
             }
-            else TextCenter.CenterText("Load a saved game.");
+            else
+            {
+                Console.WriteLine();
+                if (x == 1)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    TextCenter.CenterText("> Start a new game.");
+                    Console.ResetColor();
+                }
+                else TextCenter.CenterText("Start a new game.");
 
-            if (x == 3)
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                TextCenter.CenterText("> View highscores.");
-                Console.ResetColor();
-            }
-            else TextCenter.CenterText("View highscores.");
-            Console.WriteLine();
+                if (x == 2)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    TextCenter.CenterText("> Load a saved game.");
+                    Console.ResetColor();
+                }
+                else TextCenter.CenterText("Load a saved game.");
 
-            if (x == 4)
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                TextCenter.CenterText("> Exit the game.");
-                Console.ResetColor();
+                if (x == 3)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    TextCenter.CenterText("> View highscores.");
+                    Console.ResetColor();
+                }
+                else TextCenter.CenterText("View highscores.");
+                Console.WriteLine();
+
+                if (x == 4)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    TextCenter.CenterText("> Exit the game.");
+                    Console.ResetColor();
+                }
+                else TextCenter.CenterText("Exit the game.");
+                Console.WriteLine();
             }
-            else TextCenter.CenterText("Exit the game.");
-            Console.WriteLine();
         }
 
         public void UIPickName()
@@ -84,10 +107,10 @@ namespace Dungeon_Crawler
             if (x == 1)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                TextCenter.CenterText("> Load a pre-made map. (Default)");
+                TextCenter.CenterText("> Load a pre-made map.");
                 Console.ResetColor();
             }
-            else TextCenter.CenterText("Load a pre-made map. (Default)");
+            else TextCenter.CenterText("Load a pre-made map.");
 
             if (x == 2)
             {
@@ -121,10 +144,10 @@ namespace Dungeon_Crawler
             if (x == 1)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                TextCenter.CenterText("> Level 1 (Default).");
+                TextCenter.CenterText("> Level 1.");
                 Console.ResetColor();
             }
-            else TextCenter.CenterText("Level 1 (Default).");
+            else TextCenter.CenterText("Level 1.");
 
             if (x == 2)
             {

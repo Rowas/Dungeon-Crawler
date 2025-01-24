@@ -48,7 +48,7 @@ class Player : LevelElements
 
     }
 
-    public async Task Movement(ConsoleKeyInfo checkKey, List<LevelElements> elements, string levelFile)
+    public async Task Movement(ConsoleKeyInfo checkKey, List<LevelElements> elements, string levelFile, bool sg)
     {
         switch (checkKey.Key)
         {
@@ -72,6 +72,7 @@ class Player : LevelElements
                 Console.SetCursorPosition(0, 21);
                 break;
             case ConsoleKey.S:
+                if (sg == false) { break; }
                 SaveGame saving = new();
                 Console.Clear();
                 TextCenter.CenterText("Saving Game.");
@@ -81,10 +82,10 @@ class Player : LevelElements
                 TextCenter.CenterText("Press any key to continue.");
                 Console.ReadKey();
                 Console.Clear();
-                GameLoop.DrawGameState(elements);
+                GameLoop.DrawGameState(elements, sg);
                 break;
             case ConsoleKey.L:
-                GameLoop.GameLog(elements);
+                GameLoop.GameLog(elements, sg);
                 break;
             default:
                 GameLoop.TurnCounter++;
@@ -249,15 +250,18 @@ class Player : LevelElements
     public void GameOver()
     {
         this.ObjectTile = ' ';
+        GameLoop.IsPlayerDead = true;
         Draw();
         Console.Clear();
         Console.SetCursorPosition(0, 12);
         TextCenter.CenterText("It's a sad thing that your adventures have ended here!!");
         TextCenter.CenterText(Name + " has died!!");
-        TextCenter.CenterText("Your score was: " + Math.Round(ScoreCalc()));
-        SaveScore();
+        FinalScore = ScoreCalc();
+        TextCenter.CenterText("Your score was: " + Math.Round(FinalScore));
+        SaveScore(FinalScore);
+        Thread.Sleep(3000);
+        TextCenter.CenterText("Press any key to return to Main Menu");
         Console.ReadKey();
-        GameLoop.IsPlayerDead = true;
     }
 
     public double ScoreCalc()
@@ -268,30 +272,35 @@ class Player : LevelElements
         turnMod = turnCounter / 250;
         score = (CollectedPointMods * 100) / turnMod;
         if (score <= 0) { score = 0; }
-        FinalScore = score;
         return score;
     }
 
-    public void SaveScore()
+    public void SaveScore(double FinalScore)
     {
+        var id = new MongoDB.Bson.ObjectId($"{LevelElements.SaveGameName}");
+        var logId = new MongoDB.Bson.ObjectId($"{LevelElements.CombatLogName}");
         using (var db = new SaveGameContext())
         {
-            var id = new MongoDB.Bson.ObjectId($"{LevelElements.SaveGameName}");
-            var logId = new MongoDB.Bson.ObjectId($"{LevelElements.CombatLogName}");
 
-            var deadSave = db.SaveGames.FirstOrDefault(s => s.Id == id);
-            var deadLog = db.CombatLogs.FirstOrDefault(s => s.Id == logId);
+            var deadSave = db.SaveGames.Find(id);
+            var deadLog = db.CombatLogs.Find(logId);
 
             db.SaveGames.Remove(deadSave);
             db.CombatLogs.Remove(deadLog);
+            var sucess = db.SaveChanges();
+            Console.WriteLine(sucess);
+        }
+
+        using (var db = new SaveGameContext())
+        {
 
             db.Highscores.Add(new Highscore
             {
                 PlayerName = Name,
                 MapName = GameLoop.MapName,
-                Score = ScoreCalc()
+                Score = FinalScore
             });
-            db.SaveChanges();
+            var sucess = db.SaveChanges();
         }
     }
 }

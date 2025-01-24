@@ -2,7 +2,7 @@
 {
     internal class UIMethods
     {
-        public static void PrintUI(Player player, int turnCounter, string mapName)
+        public static void PrintUI(Player player, int turnCounter, string mapName, bool sg)
         {
             Dice defDice = new(player.DefDices, player.DefDiceSides, player.DefDiceModifier);
             Dice dmgDice = new(player.DmgDices, player.DmgDiceSides, player.DmgDiceModifier);
@@ -15,9 +15,9 @@
 
             Console.CursorVisible = false;
             Console.SetCursorPosition(0, 24);
-            Console.WriteLine("Use arrow keys to move, space to wait, and escape to return to the Main Menu.");
+            Console.WriteLine("Use arrow keys to move, spacebar to wait, and escape to return to the Main Menu.");
             Console.WriteLine("Press \"L\" to open the combat log.");
-            Console.WriteLine("Press \"S\" to save your game.");
+            if (sg = false) { Console.WriteLine("Press \"S\" to save your game."); }
         }
 
         public static void DrawCombatLog(Player? player)

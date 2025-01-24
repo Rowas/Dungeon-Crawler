@@ -35,7 +35,7 @@ namespace Dungeon_Crawler.DBModel
             {
                 Console.Clear();
                 TextCenter.CenterText("Unable to load save game.");
-                TextCenter.CenterText("Database corrupted, save game does not exist or save game is from a different version.");
+                TextCenter.CenterText("Database corrupted, save game does not exist or save game is from an incompatible version.");
                 Console.WriteLine();
                 TextCenter.CenterText("Press any key to return to the Main Menu.");
                 Console.ReadKey();

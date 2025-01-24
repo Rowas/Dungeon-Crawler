@@ -33,11 +33,13 @@ class GameLoop
         NewHP = 100;
         MapName = string.Empty;
         IsPlayerDead = false;
+        Player.CollectedPointMods = 0;
 
         Console.CursorVisible = false;
         Console.CursorTop = 0;
         Console.CursorLeft = 0;
         MapName = levelFile;
+        IsPlayerDead = false;
         ClearConsole.ConsoleClear();
 
         if (Directory.GetCurrentDirectory() == "D:\\Dev\\Source\\Repos\\Dungeon-Crawler\\Dungeon-Crawler\\bin\\Debug\\net8.0")
@@ -56,13 +58,13 @@ class GameLoop
 
     }
 
-    public void GameRunning()
+    public void GameRunning(bool sg)
     {
         if (Level.Elements.Count == 0)
         {
             return;
         }
-        DrawGameState(Level.Elements);
+        DrawGameState(Level.Elements, sg);
 
         foreach (var player in from LevelElements element in Level.Elements
                                where element is Player
@@ -82,7 +84,6 @@ class GameLoop
 
         do
         {
-            IsPlayerDead = false;
             if (TurnCounter > 150)
             {
                 var rand = new Random();
@@ -111,6 +112,22 @@ class GameLoop
                             }
                         }
                     }
+                }
+            }
+            if (TurnCounter > 250)
+            {
+                var rand = new Random();
+                if (rand.NextDouble() < 0.5)
+                {
+                    LevelElements.GrueSpawned = true;
+                    Level.Elements.Add(new Grue(107, 13));
+                    Grue.Warning();
+                }
+                else
+                {
+                    LevelElements.GrueSpawned = true;
+                    Level.Elements.Add(new Grue(63, 6));
+                    Grue.Warning();
                 }
             }
             foreach (var player in from LevelElements element in Level.Elements
@@ -170,7 +187,8 @@ class GameLoop
                     case Player:
                         Player player = (Player)element;
                         CurrentPlayer = player;
-                        player.Movement(checkKey, Level.Elements, MapName);
+                        player.Movement(checkKey, Level.Elements, MapName, sg);
+                        if (IsPlayerDead == true) { return; }
                         break;
                     case Enemy:
                         Enemy enemy = (Enemy)element;
@@ -191,18 +209,13 @@ class GameLoop
                 }
             }
 
-            if (IsPlayerDead == true)
-            {
-                return;
-            }
-
-            DrawGameState(Level.Elements);
+            DrawGameState(Level.Elements, sg);
 
         } while (checkKey.Key != ConsoleKey.Escape);
         return;
     }
 
-    public static void GameLog(List<LevelElements> elements)
+    public static void GameLog(List<LevelElements> elements, bool sg)
     {
         int y = combatLog.Count;
         int x = y - 27;
@@ -249,10 +262,10 @@ class GameLoop
 
         ClearConsole.ConsoleClear();
 
-        DrawGameState(elements);
+        DrawGameState(elements, sg);
     }
 
-    public static void DrawGameState(List<LevelElements> elements)
+    public static void DrawGameState(List<LevelElements> elements, bool sg)
     {
 
         Player? player = null;
@@ -280,6 +293,6 @@ class GameLoop
         }
 
         UIMethods.DrawCombatLog(player);
-        UIMethods.PrintUI(player, TurnCounter, MapName);
+        UIMethods.PrintUI(player, TurnCounter, MapName, sg);
     }
 }
