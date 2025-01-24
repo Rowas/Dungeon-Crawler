@@ -277,30 +277,33 @@ class Player : LevelElements
 
     public void SaveScore(double FinalScore)
     {
-        var id = new MongoDB.Bson.ObjectId($"{LevelElements.SaveGameName}");
-        var logId = new MongoDB.Bson.ObjectId($"{LevelElements.CombatLogName}");
-        using (var db = new SaveGameContext())
+        try
         {
-
-            var deadSave = db.SaveGames.Find(id);
-            var deadLog = db.CombatLogs.Find(logId);
-
-            db.SaveGames.Remove(deadSave);
-            db.CombatLogs.Remove(deadLog);
-            var sucess = db.SaveChanges();
-            Console.WriteLine(sucess);
-        }
-
-        using (var db = new SaveGameContext())
-        {
-
-            db.Highscores.Add(new Highscore
+            using (var db = new SaveGameContext())
             {
-                PlayerName = Name,
-                MapName = GameLoop.MapName,
-                Score = FinalScore
-            });
-            var sucess = db.SaveChanges();
+                var id = new MongoDB.Bson.ObjectId($"{LevelElements.SaveGameName}");
+                var logId = new MongoDB.Bson.ObjectId($"{LevelElements.CombatLogName}");
+
+                var deadSave = db.SaveGames.Find(id);
+                var deadLog = db.CombatLogs.Find(logId);
+
+                db.SaveGames.Remove(deadSave);
+                db.CombatLogs.Remove(deadLog);
+
+                db.Highscores.Add(new Highscore
+                {
+                    PlayerName = Name,
+                    MapName = GameLoop.MapName,
+                    Score = FinalScore
+                });
+
+                db.SaveChanges();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+            Console.ReadKey();
         }
     }
 }

@@ -10,9 +10,11 @@ namespace Dungeon_Crawler.DBModel
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // ?serverSelectionTimeoutMS=10000
-            var connectionString = "mongodb://localhost:27017";
+            // 
+            var connectionString = "mongodb://localhost:27017?serverSelectionTimeoutMS=10000";
             var collection = "AndreasLindSahlin";
+
+            Database.AutoTransactionBehavior = AutoTransactionBehavior.Never;
 
             optionsBuilder.UseMongoDB(connectionString, collection);
         }

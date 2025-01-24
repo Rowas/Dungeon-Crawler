@@ -73,6 +73,12 @@ namespace Dungeon_Crawler.MainMenu
                 else TextCenter.CenterText("Exit the game.");
                 Console.WriteLine();
             }
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            TextCenter.CenterText("Up arrow and Down arrow to move selection; Enter/Return to select");
         }
 
         public void UIPickName()
@@ -131,6 +137,11 @@ namespace Dungeon_Crawler.MainMenu
             else TextCenter.CenterText("Return to Main Menu");
 
             Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            TextCenter.CenterText("Up arrow and Down arrow to move selection; Enter/Return to select");
         }
 
         public void UIPreMadeMap(int x)
@@ -166,8 +177,12 @@ namespace Dungeon_Crawler.MainMenu
                 Console.ResetColor();
             }
             else TextCenter.CenterText("Return to Main Menu");
-
             Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            TextCenter.CenterText("Up arrow and Down arrow to move selection; Enter/Return to select");
         }
 
         public void UICustomMap()
