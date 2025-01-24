@@ -61,7 +61,8 @@ class LevelData
         {
             Console.Clear();
             TextCenter.CenterText("Invalid Custom Map selected.");
-            TextCenter.CenterText("Map does not exist.");
+            TextCenter.CenterText("Map not found.");
+            TextCenter.CenterText("Check spelling and map file location.");
             Console.WriteLine();
             TextCenter.CenterText("Press any key to return to the Main Menu.");
             Console.ReadKey();

@@ -17,7 +17,7 @@
             Console.SetCursorPosition(0, 24);
             Console.WriteLine("Use arrow keys to move, spacebar to wait, and escape to return to the Main Menu.");
             Console.WriteLine("Press \"L\" to open the combat log.");
-            if (sg = false) { Console.WriteLine("Press \"S\" to save your game."); }
+            if (sg == true) { Console.WriteLine("Press \"S\" to save your game."); }
         }
 
         public static void DrawCombatLog(Player? player)

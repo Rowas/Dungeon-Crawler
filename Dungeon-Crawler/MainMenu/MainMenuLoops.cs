@@ -234,6 +234,11 @@ namespace Dungeon_Crawler.MainMenu
                     TextCenter.CenterText($"{i}: {game.PlayerName} | {game.MapName} | {game.SaveDate} ");
                     possibleSelections.Add(i.ToString(), game.Id.ToString());
                 }
+                if (possibleSelections.Count == 0)
+                {
+                    TextCenter.CenterText("No save games found.");
+                    TextCenter.CenterText("Press enter/return to go back to the Main Menu.");
+                }
                 var currentLine = Console.GetCursorPosition().Top;
                 Console.SetCursorPosition(Console.WindowWidth / 2, currentLine + 1);
                 var PlayerID = Console.ReadLine();
