@@ -11,7 +11,6 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        bool sg;
         MainMenuLoops loops = new();
         try
         {
@@ -31,7 +30,7 @@ internal class Program
             TextCenter.CenterText("Press any key to continue.");
             Console.ReadKey();
 
-            loops.MainMenu(sg = true);
+            loops.MainMenu(true);
         }
         catch (Exception ex)
         {
@@ -40,7 +39,7 @@ internal class Program
             TextCenter.CenterText("Starting game with Save Game functionality turned off. ");
             TextCenter.CenterText("Press any key to continue.");
             Console.ReadKey();
-            loops.MainMenu(sg = false);
+            loops.MainMenu(false);
         }
     }
 }
