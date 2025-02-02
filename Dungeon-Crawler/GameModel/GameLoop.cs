@@ -25,6 +25,8 @@ class GameLoop
 
     public static bool IsPlayerDead { get; set; } = false;
 
+    public static bool SaveGameFunc { get; set; }
+
     public void StartUp(string levelFile, string playerName, bool newGame)
     {
         combatLog = new();
@@ -35,6 +37,10 @@ class GameLoop
         IsPlayerDead = false;
         Player.CollectedPointMods = 0;
 
+
+        //string testvar = string.Empty;
+
+
         Console.CursorVisible = false;
         Console.CursorTop = 0;
         Console.CursorLeft = 0;
@@ -42,10 +48,7 @@ class GameLoop
         IsPlayerDead = false;
         ClearConsole.ConsoleClear();
 
-        if (Directory.GetCurrentDirectory() == "D:\\Dev\\Source\\Repos\\Dungeon-Crawler\\Dungeon-Crawler\\bin\\Debug\\net8.0")
-        {
-            Directory.SetCurrentDirectory(".\\Levels\\");
-        }
+        Directory.SetCurrentDirectory(".\\Levels\\");
 
         if (newGame == true)
         {
@@ -60,6 +63,7 @@ class GameLoop
 
     public void GameRunning(bool sg)
     {
+        SaveGameFunc = sg;
         if (Level.Elements.Count == 0)
         {
             return;

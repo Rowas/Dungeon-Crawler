@@ -1,5 +1,6 @@
 ﻿using Dungeon_Crawler.DBModel;
 using Dungeon_Crawler.GeneralMethods;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 class Player : LevelElements
@@ -258,7 +259,10 @@ class Player : LevelElements
         TextCenter.CenterText(Name + " has died!!");
         FinalScore = ScoreCalc();
         TextCenter.CenterText("Your score was: " + Math.Round(FinalScore));
-        SaveScore(FinalScore);
+        if (GameLoop.SaveGameFunc == true)
+        {
+            SaveScore(FinalScore);
+        }
         Thread.Sleep(3000);
         TextCenter.CenterText("Press any key to return to Main Menu");
         Console.ReadKey();
