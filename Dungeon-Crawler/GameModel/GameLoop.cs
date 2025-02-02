@@ -35,6 +35,10 @@ class GameLoop
         IsPlayerDead = false;
         Player.CollectedPointMods = 0;
 
+
+        //string testvar = string.Empty;
+
+
         Console.CursorVisible = false;
         Console.CursorTop = 0;
         Console.CursorLeft = 0;
